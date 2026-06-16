@@ -398,9 +398,9 @@ class TestDiminutiveComparative:
         # فُعَيْل pattern includes ي+sukun
         assert "ي" in result.surface
 
-    def test_comparative_ktb(self) -> None:
-        """Comparative: أَفْعَلُ pattern"""
-        root = make_root("كثل")
+    def test_comparative_kthr(self) -> None:
+        """Comparative: أَفْعَلُ pattern (كثر → أَكْثَرُ)."""
+        root = make_root("كثر")
         result = generate_comparative(root)
         assert result.target == GenerationTarget.COMPARATIVE
         assert result.surface.startswith("أ")  # starts with أ
