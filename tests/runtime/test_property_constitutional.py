@@ -242,16 +242,9 @@ class TestNamedFailureProperty(ConstitutionalPropertyTest):
         """Invalid vowels always produce M_00_02.
         Origin: §5 Rule 5."""
         engine = ConstitutionalEngine()
-        # Empty consonant with empty vowel produces M_00_14 (consonant checked first)
-        if invalid_vowel == "":
-            # empty vowel still triggers consonant check first if consonant is valid
-            with pytest.raises(ConstitutionalRuntimeError) as exc_info:
-                engine.step1_phoneme("k", invalid_vowel)
-            assert exc_info.value.failure_code == FailureCode.M_00_02
-        else:
-            with pytest.raises(ConstitutionalRuntimeError) as exc_info:
-                engine.step1_phoneme("k", invalid_vowel)
-            assert exc_info.value.failure_code == FailureCode.M_00_02
+        with pytest.raises(ConstitutionalRuntimeError) as exc_info:
+            engine.step1_phoneme("k", invalid_vowel)
+        assert exc_info.value.failure_code == FailureCode.M_00_02
 
 
 # ═══════════════════════════════════════════════════════════════════════════════

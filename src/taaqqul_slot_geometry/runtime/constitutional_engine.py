@@ -23,13 +23,11 @@ from dataclasses import dataclass, field
 from typing import FrozenSet, List, Tuple
 
 from taaqqul_slot_geometry.constitution.failure_taxonomy import FailureCode
-from taaqqul_slot_geometry.L0.grapheme import _ARABIC_28
 from taaqqul_slot_geometry.L0.phoneme import PhonemeUnit, PhoneticPattern
-from taaqqul_slot_geometry.L0.syllable import Syllable, SyllableType, make_syllable
+from taaqqul_slot_geometry.L0.syllable import Syllable, make_syllable
 from taaqqul_slot_geometry.L0.utterance import Utterance
 from taaqqul_slot_geometry.L0.signifier import Signifier
-from taaqqul_slot_geometry.L0.weight import WeightPattern, WeightUnit
-from taaqqul_slot_geometry.L0.vowel import Vowel
+from taaqqul_slot_geometry.L0.weight import WeightPattern
 
 
 # ── Mapping from Arabic vowel names to PhoneticPattern ────────────────────────

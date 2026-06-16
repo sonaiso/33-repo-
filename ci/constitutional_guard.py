@@ -162,7 +162,20 @@ def check_frozen_dataclasses(file_path: Path) -> List[Violation]:
     for node in ast.walk(tree):
         if isinstance(node, ast.ClassDef):
             for decorator in node.decorator_list:
-                if isinstance(decorator, ast.Call):
+                # Bare @dataclass without parentheses (always mutable)
+                if isinstance(decorator, ast.Name) and decorator.id == "dataclass":
+                    violations.append(Violation(
+                        file_path=str(file_path),
+                        line_number=node.lineno,
+                        rule="Rule 3 (frozen dataclass)",
+                        description=(
+                            f"Class {node.name!r} uses bare @dataclass "
+                            f"without frozen=True"
+                        ),
+                        failure_code="M_CX_06",
+                    ))
+                # @dataclass(...) call form — check for frozen=True
+                elif isinstance(decorator, ast.Call):
                     func = decorator.func
                     if isinstance(func, ast.Name) and func.id == "dataclass":
                         has_frozen = False
