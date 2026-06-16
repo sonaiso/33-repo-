@@ -35,7 +35,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from enum import Enum, unique
-from typing import FrozenSet, Tuple
+from typing import Dict, FrozenSet, Tuple
 
 from taaqqul_slot_geometry.constitution.failure_taxonomy import FailureCode
 
@@ -566,7 +566,7 @@ FORMAL_DEFINITIONS: Tuple[FormalDefinition, ...] = (
 )
 
 # Indexed by term name for lookup
-DEFINITION_BY_TERM: dict[str, FormalDefinition] = {
+DEFINITION_BY_TERM: Dict[str, FormalDefinition] = {
     d.term: d for d in FORMAL_DEFINITIONS
 }
 
