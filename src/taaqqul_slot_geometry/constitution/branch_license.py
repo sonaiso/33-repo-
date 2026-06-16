@@ -105,6 +105,11 @@ class BranchLicense:
                 "roadmap_ref is empty — every branch must reference the roadmap",
                 FailureCode.M_CX_16,
             )
+        if not self.parent_ref:
+            raise BranchLicenseError(
+                "parent_ref is empty — every branch must reference its trunk",
+                FailureCode.M_CX_16,
+            )
         if not self.trunk_complete:
             raise BranchLicenseError(
                 "trunk is not complete — no branching before trunk minimum completeness",
@@ -157,11 +162,6 @@ class BranchLicense:
             raise BranchLicenseError(
                 "rank above CANDIDATE",
                 FailureCode.M_CX_09,
-            )
-        if not self.parent_ref:
-            raise BranchLicenseError(
-                "parent_ref is empty — every branch must reference its trunk",
-                FailureCode.M_CX_16,
             )
 
     def license_sub_branch(self, sub_branch_id: str) -> "BranchLicense":

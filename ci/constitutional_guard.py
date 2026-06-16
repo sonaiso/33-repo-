@@ -348,7 +348,7 @@ def check_roadmap_binding(file_path: Path) -> List[Violation]:
         return violations
     if "test_" in file_path.name or "conftest" in file_path.name:
         return violations
-    if "ci/" in str(file_path):
+    if "ci" in file_path.parts:
         return violations
 
     # Must reference either the constitution OR the roadmap
