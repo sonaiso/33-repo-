@@ -42,4 +42,5 @@ src/taaqqul_slot_geometry/core/slot_graph.py
 src/taaqqul_slot_geometry/core/trace.py
 src/taaqqul_slot_geometry/runtime/__init__.py
 src/taaqqul_slot_geometry/runtime/constitutional_engine.py
+tests/test_kpi_indicators.py
 tests/test_morphology_generator.py
