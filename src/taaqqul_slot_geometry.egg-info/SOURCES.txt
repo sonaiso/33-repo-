@@ -19,6 +19,7 @@ src/taaqqul_slot_geometry/L0/syllable.py
 src/taaqqul_slot_geometry/L0/union.py
 src/taaqqul_slot_geometry/L0/utterance.py
 src/taaqqul_slot_geometry/L0/vowel.py
+src/taaqqul_slot_geometry/L0/waqf_wasl.py
 src/taaqqul_slot_geometry/L0/weight.py
 src/taaqqul_slot_geometry/L1/__init__.py
 src/taaqqul_slot_geometry/L2/__init__.py

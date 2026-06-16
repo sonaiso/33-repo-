@@ -109,6 +109,16 @@ class FailureCode(str, Enum):
     M_03_19 = "l3_manat_reality_check_failed"
     M_03_20 = "l3_tanzil_without_licensed_bridge"
 
+    # ── Waqf-Wasl boundary violations (M_WW_xx) ─────────────────────────────
+    M_WW_01 = "weight_before_word_boundary"
+    M_WW_02 = "word_before_syllable_license"
+    M_WW_03 = "semantic_closure_without_relation"
+    M_WW_04 = "harf_without_operand"
+    M_WW_05 = "incomplete_verb_without_complement"
+    M_WW_06 = "sub_ternary_in_derivational_weight"
+    M_WW_07 = "phonetic_stop_claimed_as_meaning"
+    M_WW_08 = "structural_stop_claimed_as_ifadah"
+
     # ── Cross-cutting violations (M_CX_xx) ──────────────────────────────────
     M_CX_01 = "identity_loss_on_transition"
     M_CX_02 = "leap_between_layers_forbidden"
