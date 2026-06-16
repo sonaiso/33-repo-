@@ -445,8 +445,8 @@ THEOREM_2_STEPS: Tuple[ProofStep, ...] = (
     ),
     ProofStep(
         step_number=2,
-        statement="The 8 patterns are a closed set: no 9th may exist (by P5: Exhaustiveness)",
-        justification="postulate.P8",
+        statement="The 8 patterns are a closed set: no 9th may exist (MCE-1 closure)",
+        justification="definition.S",
         trace_ref="euclid.th2.s2",
     ),
     ProofStep(
