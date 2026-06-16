@@ -96,6 +96,15 @@ class TestBoundaryTest:
         with pytest.raises(Exception):
             bt.status = WaqfStatus.OPEN  # type: ignore[misc]
 
+    def test_closed_boundary_with_complement_fails(self):
+        """A closed boundary must not have a non-empty complement."""
+        with pytest.raises(ValueError, match="closed_boundary_has_complement"):
+            BoundaryTest(
+                level=BoundaryLevel.PHONETIC,
+                status=WaqfStatus.CLOSED,
+                required_complement="should_not_be_here",
+            )
+
 
 # ══════════════════════════════════════════════════════════════════════════════
 # §2  WaqfWaslProfile entity tests
@@ -168,6 +177,25 @@ class TestWaqfWaslProfile:
         """WaqfWaslProfile must be frozen (Rule 3)."""
         with pytest.raises(Exception):
             PROFILE_MIN.unit_label = "changed"  # type: ignore[misc]
+
+    def test_duplicate_levels_fails(self):
+        """Profile with duplicate boundary levels is rejected."""
+        with pytest.raises(ValueError, match="duplicate_boundary_levels"):
+            WaqfWaslProfile(
+                unit_label="dup",
+                word_path=WordPath.ISM_MUTAMAKKIN,
+                tests=(
+                    BoundaryTest(level=BoundaryLevel.PHONETIC, status=WaqfStatus.CLOSED),
+                    BoundaryTest(level=BoundaryLevel.PHONETIC, status=WaqfStatus.CLOSED),
+                    BoundaryTest(level=BoundaryLevel.STRUCTURAL, status=WaqfStatus.CLOSED),
+                    BoundaryTest(level=BoundaryLevel.FUNCTIONAL, status=WaqfStatus.CLOSED),
+                    BoundaryTest(
+                        level=BoundaryLevel.SEMANTIC,
+                        status=WaqfStatus.OPEN,
+                        required_complement="x",
+                    ),
+                ),
+            )
 
 
 # ══════════════════════════════════════════════════════════════════════════════

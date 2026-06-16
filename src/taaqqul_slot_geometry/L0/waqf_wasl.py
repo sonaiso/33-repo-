@@ -111,6 +111,11 @@ class BoundaryTest:
             raise ValueError(
                 f"{FailureCode.M_CX_08.value}: open_boundary_missing_complement"
             )
+        # If closed, complement must be empty (contract: "empty string if CLOSED")
+        if self.status == WaqfStatus.CLOSED and self.required_complement:
+            raise ValueError(
+                f"{FailureCode.M_CX_08.value}: closed_boundary_has_complement"
+            )
 
 
 @dataclass(frozen=True)
@@ -155,8 +160,12 @@ class WaqfWaslProfile:
             raise ValueError(f"{FailureCode.M_CX_08.value}: invalid_word_path")
         if not self.tests:
             raise ValueError(f"{FailureCode.M_CX_08.value}: tests_empty")
+        # Reject duplicate levels
+        levels = tuple(t.level for t in self.tests)
+        if len(levels) != len(frozenset(levels)):
+            raise ValueError(f"{FailureCode.M_CX_08.value}: duplicate_boundary_levels")
         # Verify all four levels are covered
-        levels_present = frozenset(t.level for t in self.tests)
+        levels_present = frozenset(levels)
         levels_required = frozenset(BoundaryLevel)
         if levels_present != levels_required:
             missing = levels_required - levels_present
