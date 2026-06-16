@@ -343,8 +343,10 @@ def check_roadmap_binding(file_path: Path) -> List[Violation]:
     if not content.strip():
         return violations
 
-    # Skip __init__.py, test files, and CI files
-    if file_path.name == "__init__.py" and len(content.strip()) < 200:
+    # Skip __init__.py (small re-export modules), test files, and CI files
+    # Threshold: __init__.py under 200 chars is typically just re-exports
+    _INIT_SKIP_THRESHOLD = 200
+    if file_path.name == "__init__.py" and len(content.strip()) < _INIT_SKIP_THRESHOLD:
         return violations
     if "test_" in file_path.name or "conftest" in file_path.name:
         return violations

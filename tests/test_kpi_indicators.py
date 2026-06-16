@@ -13,8 +13,6 @@ Running these tests provides a quantitative measure of project health:
 from __future__ import annotations
 
 import ast
-import importlib
-import inspect
 import subprocess
 import sys
 from pathlib import Path
@@ -123,8 +121,14 @@ class TestKPIFrozenCompliance:
             for node in ast.walk(tree):
                 if isinstance(node, ast.ClassDef):
                     for decorator in node.decorator_list:
+                        # Check bare @dataclass (unfrozen by default)
+                        if isinstance(decorator, ast.Name) and decorator.id == "dataclass":
+                            violations.append(
+                                f"{f.relative_to(REPO_ROOT)}:{node.lineno} "
+                                f"class {node.name} (bare @dataclass, not frozen)"
+                            )
                         # Check @dataclass(...) calls
-                        if isinstance(decorator, ast.Call):
+                        elif isinstance(decorator, ast.Call):
                             func = decorator.func
                             if isinstance(func, ast.Name) and func.id == "dataclass":
                                 has_frozen = False
