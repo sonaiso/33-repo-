@@ -40,7 +40,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from enum import Enum, unique
-from typing import FrozenSet, Tuple
+from typing import Dict, FrozenSet, Tuple
 
 from taaqqul_slot_geometry.constitution.failure_taxonomy import FailureCode
 
@@ -238,7 +238,7 @@ POSTULATES: Tuple[Postulate, ...] = (
 )
 """All 5 postulates in canonical order."""
 
-POSTULATE_BY_ID: dict[str, Postulate] = {p.postulate_id: p for p in POSTULATES}
+POSTULATE_BY_ID: Dict[str, Postulate] = {p.postulate_id: p for p in POSTULATES}
 """Lookup postulate by ID."""
 
 
