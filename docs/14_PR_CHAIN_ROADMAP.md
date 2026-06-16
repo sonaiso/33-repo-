@@ -15,7 +15,7 @@
 
 ## Phase 0 — L0 Closure ✅ COMPLETE
 
-**Goal**: Implement and test all L0 entities. Close L0 boundary.
+**Goal**: Implement and test all L0 entities — the foundational building blocks for analyzing GPT answer structure.
 
 **Closure**: Formally closed via `docs/L0_CLOSURE_DECLARATION.md`.
 
@@ -48,7 +48,7 @@
 
 **Unblocked by**: L0 formal closure (`docs/L0_CLOSURE_DECLARATION.md`).
 
-**Goal**: Implement formal definitions, postulates, common notions, and L0→L1 bridges.
+**Goal**: Build formal definitions, postulates, and common notions that serve as **reasonableness criteria** — the reference standards against which GPT answers are measured.
 
 ### Deliverables (not yet implemented)
 - [ ] `src/taaqqul_slot_geometry/L1/definition.py`
@@ -63,7 +63,7 @@
 
 **Blocked by**: Phase 1 (L1 must be fully closed).
 
-**Goal**: Implement qiyas engine, proof engine, and L1→L2 bridges.
+**Goal**: Build a **comparison and qiyas engine** that takes a GPT answer (decomposed via L0, defined via L1) and compares it against the reference criteria — testing whether the unifying cause exists, whether the effective description is correct, and whether there is a disqualifying difference.
 
 ### Deliverables (not yet implemented)
 - [ ] `src/taaqqul_slot_geometry/L2/qiyas.py`
@@ -78,7 +78,10 @@
 
 **Blocked by**: Phase 2 (L2 must be fully closed).
 
-**Goal**: Implement evidence types, manat verification, hukm candidates, and L2→L3 bridges.
+**Goal**: Issue the **final reasonableness verdict** on GPT answers:
+- `MAQOOL` (reasonable): All transitions licensed, no barrier, correct cause
+- `GHAYR_MAQOOL` (unreasonable): Barrier exists, disqualifying difference, or incorrect cause
+- `MU'ALLAQ` (suspended): Insufficient evidence to decide
 
 ### Deliverables (not yet implemented)
 - [ ] `src/taaqqul_slot_geometry/L3/evidence.py`
