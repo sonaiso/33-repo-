@@ -24,6 +24,7 @@ src/taaqqul_slot_geometry/L1/__init__.py
 src/taaqqul_slot_geometry/L2/__init__.py
 src/taaqqul_slot_geometry/L3/__init__.py
 src/taaqqul_slot_geometry/constitution/__init__.py
+src/taaqqul_slot_geometry/constitution/euclidean_axioms.py
 src/taaqqul_slot_geometry/constitution/failure_taxonomy.py
 src/taaqqul_slot_geometry/constitution/identity_preservation.py
 src/taaqqul_slot_geometry/constitution/maqool_constitution.py
