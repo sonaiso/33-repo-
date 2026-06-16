@@ -15,8 +15,10 @@ This document is the Maqool Constitution for the `Taaqol-GPT` system.
 
 ## Architecture in One Sentence
 
-> A constitutionally-governed, layer-locked Arabic language analysis engine where every
-> entity is frozen, every function is pure, every rejection has a named `FailureCode`,
+> A constitutionally-governed, layer-locked system for **verifying the reasonableness of GPT answers**,
+> where linguistic analysis (L0-L1) is the enabling condition, comparison (L2) is the engine,
+> and the final verdict (L3: MAQOOL/GHAYR_MAQOOL/MU'ALLAQ) is the goal.
+> Every entity is frozen, every function is pure, every rejection has a named `FailureCode`,
 > and no layer may be opened until the layer below it is fully closed.
 
 ---
