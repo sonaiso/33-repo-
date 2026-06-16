@@ -3,6 +3,9 @@
 ## Authority
 `docs/00_MAQOOL_CONSTITUTION.md §5 Rule 1` (Layered Implementation Order).
 
+## See Also
+**`docs/15_PROJECT_ROADMAP.md`** — خارطة الطريق الشاملة بالأهداف والمدخلات والمخرجات لكل مرحلة.
+
 ## Status Legend
 - ✅ CURRENT — actively being implemented in this PR chain
 - ⏳ PENDING — blocked until previous phase is fully closed

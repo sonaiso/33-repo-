@@ -135,3 +135,10 @@ class FailureCode(str, Enum):
     M_CX_13 = "layer_index_out_of_range"
     M_CX_14 = "adapter_audit_layer_forbidden"
     M_CX_15 = "persistence_in_l0_forbidden"
+
+    # ── Branching governance violations (M_CX_16..M_CX_20) ────────────────────
+    M_CX_16 = "branch_without_roadmap_ref"
+    M_CX_17 = "branch_trunk_incomplete"
+    M_CX_18 = "branch_motive_missing"
+    M_CX_19 = "branch_distinguishing_difference_missing"
+    M_CX_20 = "branch_barrier_not_verified"

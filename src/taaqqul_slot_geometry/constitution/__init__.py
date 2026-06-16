@@ -2,6 +2,10 @@
 Constitution package — root authority for Taaqol-GPT.
 Origin: docs/00_MAQOOL_CONSTITUTION.md
 """
+from taaqqul_slot_geometry.constitution.branch_license import (
+    BranchLicense,
+    BranchLicenseError,
+)
 from taaqqul_slot_geometry.constitution.euclidean_axioms import (
     ALL_DEFINITIONS,
     ALL_POSTULATES,
@@ -35,6 +39,8 @@ __all__ = [
     "ALL_DEFINITIONS",
     "ALL_POSTULATES",
     "ALL_THEOREMS",
+    "BranchLicense",
+    "BranchLicenseError",
     "CONSTITUTION",
     "DefinitionId",
     "EuclideanDefinition",

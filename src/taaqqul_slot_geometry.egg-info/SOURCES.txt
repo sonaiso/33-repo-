@@ -25,6 +25,7 @@ src/taaqqul_slot_geometry/L1/__init__.py
 src/taaqqul_slot_geometry/L2/__init__.py
 src/taaqqul_slot_geometry/L3/__init__.py
 src/taaqqul_slot_geometry/constitution/__init__.py
+src/taaqqul_slot_geometry/constitution/branch_license.py
 src/taaqqul_slot_geometry/constitution/euclidean_axioms.py
 src/taaqqul_slot_geometry/constitution/failure_taxonomy.py
 src/taaqqul_slot_geometry/constitution/identity_preservation.py
@@ -41,4 +42,5 @@ src/taaqqul_slot_geometry/core/slot_graph.py
 src/taaqqul_slot_geometry/core/trace.py
 src/taaqqul_slot_geometry/runtime/__init__.py
 src/taaqqul_slot_geometry/runtime/constitutional_engine.py
+tests/test_kpi_indicators.py
 tests/test_morphology_generator.py
