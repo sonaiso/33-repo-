@@ -2,6 +2,21 @@
 Constitution package — root authority for Taaqol-GPT.
 Origin: docs/00_MAQOOL_CONSTITUTION.md
 """
+from taaqqul_slot_geometry.constitution.euclidean_axioms import (
+    ALL_DEFINITIONS,
+    ALL_POSTULATES,
+    ALL_THEOREMS,
+    DefinitionId,
+    EuclideanDefinition,
+    EuclideanPostulate,
+    EuclideanTheorem,
+    PostulateId,
+    ProofStep,
+    ProofVerificationError,
+    ProofVerifier,
+    SYSTEM_HASH,
+    TheoremId,
+)
 from taaqqul_slot_geometry.constitution.failure_taxonomy import FailureCode
 from taaqqul_slot_geometry.constitution.identity_preservation import (
     IdentityLossError,
@@ -17,11 +32,24 @@ from taaqqul_slot_geometry.constitution.transition_gate import (
 )
 
 __all__ = [
+    "ALL_DEFINITIONS",
+    "ALL_POSTULATES",
+    "ALL_THEOREMS",
+    "CONSTITUTION",
+    "DefinitionId",
+    "EuclideanDefinition",
+    "EuclideanPostulate",
+    "EuclideanTheorem",
     "FailureCode",
     "IdentityLossError",
     "IdentityPreservation",
     "MaqoolConstitution",
-    "CONSTITUTION",
+    "PostulateId",
+    "ProofStep",
+    "ProofVerificationError",
+    "ProofVerifier",
+    "SYSTEM_HASH",
+    "TheoremId",
     "TransitionError",
     "TransitionGate",
 ]
