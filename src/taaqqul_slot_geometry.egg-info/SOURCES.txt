@@ -22,6 +22,7 @@ src/taaqqul_slot_geometry/L0/vowel.py
 src/taaqqul_slot_geometry/L0/waqf_wasl.py
 src/taaqqul_slot_geometry/L0/weight.py
 src/taaqqul_slot_geometry/L1/__init__.py
+src/taaqqul_slot_geometry/L1/definition.py
 src/taaqqul_slot_geometry/L2/__init__.py
 src/taaqqul_slot_geometry/L3/__init__.py
 src/taaqqul_slot_geometry/constitution/__init__.py
@@ -43,4 +44,5 @@ src/taaqqul_slot_geometry/core/trace.py
 src/taaqqul_slot_geometry/runtime/__init__.py
 src/taaqqul_slot_geometry/runtime/constitutional_engine.py
 tests/test_kpi_indicators.py
+tests/test_l0_closure_declaration.py
 tests/test_morphology_generator.py
