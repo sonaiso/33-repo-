@@ -188,11 +188,11 @@ class TestKPINamedFailures:
                     isinstance(node, ast.FunctionDef)
                     and node.name == "__post_init__"
                 ):
+                    lines = content.split("\n")
                     # Check raise statements inside __post_init__
                     for child in ast.walk(node):
                         if isinstance(child, ast.Raise) and child.exc:
                             # Get the source segment for context
-                            lines = content.split("\n")
                             line_content = lines[child.lineno - 1] if child.lineno <= len(lines) else ""
                             has_named = any(
                                 pat in line_content
@@ -246,10 +246,11 @@ class TestKPIL0EntityCount:
     ]
 
     def test_l0_entity_count(self):
-        """L0 must have exactly 13 entity files."""
+        """L0 must have exactly the expected number of entity files."""
         actual_files = [f.name for f in _python_files(L0_DIR)]
-        assert len(actual_files) == 13, (
-            f"KPI-04 FAILED: Expected 13 L0 entities, found {len(actual_files)}"
+        expected_count = len(self.EXPECTED_L0_ENTITIES)
+        assert len(actual_files) == expected_count, (
+            f"KPI-04 FAILED: Expected {expected_count} L0 entities, found {len(actual_files)}"
         )
 
     def test_all_expected_entities_present(self):
@@ -383,9 +384,12 @@ class TestKPIPhaseProgress:
     """
 
     def test_l0_phase_complete(self):
-        """Phase 0 (L0) should be 100% complete — all 13 entities + runtime."""
+        """Phase 0 (L0) should be 100% complete — all entities + runtime."""
         l0_entities = _python_files(L0_DIR)
-        assert len(l0_entities) == 13, f"L0 has {len(l0_entities)} entities, expected 13"
+        expected_count = len(TestKPIL0EntityCount.EXPECTED_L0_ENTITIES)
+        assert len(l0_entities) == expected_count, (
+            f"L0 has {len(l0_entities)} entities, expected {expected_count}"
+        )
 
         runtime_engine = RUNTIME_DIR / "constitutional_engine.py"
         assert runtime_engine.exists(), "Runtime engine missing"
