@@ -35,6 +35,7 @@ class Union:
 
     signifier: Signifier
     signified: ConventionalSignified
+    domain_tag: str = "L0_SIGN"
     trace_ref: str = "docs/00_MAQOOL_CONSTITUTION.md §2 Category 2 (Union)"
     rank: str = "CANDIDATE"
     residuals: FrozenSet[str] = field(default_factory=frozenset)

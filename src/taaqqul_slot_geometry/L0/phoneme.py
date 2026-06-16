@@ -57,6 +57,7 @@ class PhonemeUnit:
 
     consonant: str
     pattern: PhoneticPattern
+    domain_tag: str = "L0_PHONETICS"
     trace_ref: str = "docs/00_MAQOOL_CONSTITUTION.md §3 (MCE-1)"
     rank: str = "CANDIDATE"
     residuals: FrozenSet[str] = field(default_factory=frozenset)

@@ -31,6 +31,7 @@ class Utterance:
     """
 
     syllables: Tuple[Syllable, ...]
+    domain_tag: str = "L0_PHONETICS"
     trace_ref: str = "docs/00_MAQOOL_CONSTITUTION.md §2 Category 2 (Utterance)"
     rank: str = "CANDIDATE"
     residuals: FrozenSet[str] = field(default_factory=frozenset)

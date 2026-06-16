@@ -49,6 +49,7 @@ class Signification:
 
     sign: Union
     signification_type: SignificationType
+    domain_tag: str = "L0_DALALAH"
     trace_ref: str = "docs/00_MAQOOL_CONSTITUTION.md §2 Category 2 (Signification)"
     rank: str = "CANDIDATE"
     residuals: FrozenSet[str] = field(default_factory=frozenset)

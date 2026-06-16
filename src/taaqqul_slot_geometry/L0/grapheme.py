@@ -106,6 +106,7 @@ class Grapheme:
     articulation_point: str
     articulation_manner: str
     phoneme_symbol: str
+    domain_tag: str = "L0_GRAPHEMICS"
     trace_ref: str = "docs/00_MAQOOL_CONSTITUTION.md §2 Category 2 (Grapheme)"
     rank: str = "CANDIDATE"
     residuals: FrozenSet[str] = field(default_factory=frozenset)

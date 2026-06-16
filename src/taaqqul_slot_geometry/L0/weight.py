@@ -53,6 +53,7 @@ class WeightUnit:
 
     pattern: WeightPattern
     root_consonants: str
+    domain_tag: str = "L0_WEIGHT"
     trace_ref: str = "docs/00_MAQOOL_CONSTITUTION.md §5 Rule 10"
     rank: str = "CANDIDATE"
     residuals: FrozenSet[str] = field(default_factory=frozenset)

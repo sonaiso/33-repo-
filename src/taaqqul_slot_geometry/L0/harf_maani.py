@@ -42,6 +42,7 @@ class HarfMaani:
     phonetic_form: str
     function: str
     is_built_on_sukun: bool = True
+    domain_tag: str = "L0_PARTICLE"
     trace_ref: str = "docs/01_L0_PHONETIC_BOUNDARY.md BL-L0-07"
     rank: str = "CANDIDATE"
     residuals: FrozenSet[str] = field(default_factory=frozenset)

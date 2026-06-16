@@ -35,6 +35,7 @@ class Signifier:
 
     utterance: Utterance
     license_ref: str
+    domain_tag: str = "L0_SIGNIFIER"
     trace_ref: str = "docs/00_MAQOOL_CONSTITUTION.md §8 P1"
     rank: str = "CANDIDATE"
     residuals: FrozenSet[str] = field(default_factory=frozenset)
