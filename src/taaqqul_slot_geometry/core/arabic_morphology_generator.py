@@ -201,6 +201,20 @@ def apply_alif_madd() -> str:
 # ── Past Tense Generation ────────────────────────────────────────────────────
 
 
+def _require_trilateral(root: LicensedRoot) -> None:
+    """Reject quadrilateral roots until supported.
+
+    Raises
+    ------
+    ValueError
+        If root is quadrilateral (generation not yet implemented).
+    """
+    if root.root_type == RootType.QUADRILATERAL:
+        raise ValueError(
+            f"{FailureCode.M_00_22.value}: quadrilateral root generation not yet supported"
+        )
+
+
 def generate_past(root: LicensedRoot, form: MorphForm = MorphForm.FORM_I) -> GeneratedForm:
     """Generate past tense form (الماضي) from root and weight pattern.
 
@@ -209,7 +223,7 @@ def generate_past(root: LicensedRoot, form: MorphForm = MorphForm.FORM_I) -> Gen
     Parameters
     ----------
     root : LicensedRoot
-        The licensed root.
+        The licensed root (must be trilateral).
     form : MorphForm
         The morphological form (default: Form I).
 
@@ -217,7 +231,13 @@ def generate_past(root: LicensedRoot, form: MorphForm = MorphForm.FORM_I) -> Gen
     -------
     GeneratedForm
         The generated past tense form.
+
+    Raises
+    ------
+    ValueError
+        If root is quadrilateral (not yet supported).
     """
+    _require_trilateral(root)
     f, a, l = root.consonants[0], root.consonants[1], root.consonants[2]
 
     if form == MorphForm.FORM_I:
@@ -322,6 +342,7 @@ def generate_present(root: LicensedRoot, form: MorphForm = MorphForm.FORM_I) -> 
     GeneratedForm
         The generated present tense form.
     """
+    _require_trilateral(root)
     f, a, l = root.consonants[0], root.consonants[1], root.consonants[2]
 
     if form == MorphForm.FORM_I:
@@ -334,7 +355,7 @@ def generate_present(root: LicensedRoot, form: MorphForm = MorphForm.FORM_I) -> 
         surface = (
             apply_damma("ي")
             + apply_fatha(f)
-            + apply_shadda_fatha(a)  # simplified; true form uses kasra
+            + apply_kasra(apply_shadda(a))
             + apply_damma(l)
         )
         trace = f"Form II present: ي+ُ + {f}+َ + {a}+ّ+ِ + {l}+ُ → يُفَعِّلُ"
@@ -436,6 +457,7 @@ def generate_active_participle(
 
     Form I pattern: فَاعِل = F+fatha + alif + A+kasra + L
     """
+    _require_trilateral(root)
     f, a, l = root.consonants[0], root.consonants[1], root.consonants[2]
 
     if form == MorphForm.FORM_I:
@@ -445,7 +467,7 @@ def generate_active_participle(
 
     elif form == MorphForm.FORM_II:
         # مُفَعِّل = م+damma + F+fatha + A+shadda+kasra + L
-        surface = apply_damma("م") + apply_fatha(f) + apply_shadda_fatha(a) + l
+        surface = apply_damma("م") + apply_fatha(f) + apply_kasra(apply_shadda(a)) + l
         trace = f"Form II active participle: م+ُ + {f}+َ + {a}+ّ+ِ + {l} → مُفَعِّل"
 
     elif form == MorphForm.FORM_IV:
@@ -491,6 +513,7 @@ def generate_passive_participle(
 
     Form I pattern: مَفْعُول = م+fatha + F+sukun + A+damma + و + L
     """
+    _require_trilateral(root)
     f, a, l = root.consonants[0], root.consonants[1], root.consonants[2]
 
     if form == MorphForm.FORM_I:
@@ -547,6 +570,7 @@ def generate_verbal_noun(
     Form I has multiple masdar patterns; we use فِعَال as default.
     Form II: تَفْعِيل
     """
+    _require_trilateral(root)
     f, a, l = root.consonants[0], root.consonants[1], root.consonants[2]
 
     if form == MorphForm.FORM_I:
@@ -648,6 +672,7 @@ def generate_broken_plural(root: LicensedRoot, form: MorphForm = MorphForm.FORM_
     Pattern: فُعَلَاء = F+damma + A+fatha + L+fatha + ا + ء
     (one of several broken plural patterns)
     """
+    _require_trilateral(root)
     f, a, l = root.consonants[0], root.consonants[1], root.consonants[2]
 
     # فُعَلَاء pattern
@@ -671,6 +696,7 @@ def generate_diminutive(root: LicensedRoot, form: MorphForm = MorphForm.FORM_I) 
 
     Pattern: فُعَيْل = F+damma + A+fatha + ي+sukun + L
     """
+    _require_trilateral(root)
     f, a, l = root.consonants[0], root.consonants[1], root.consonants[2]
 
     # فُعَيْل pattern
@@ -694,6 +720,7 @@ def generate_comparative(root: LicensedRoot, form: MorphForm = MorphForm.FORM_I)
 
     Pattern: أَفْعَلُ = أ+fatha + F+sukun + A+fatha + L+damma
     """
+    _require_trilateral(root)
     f, a, l = root.consonants[0], root.consonants[1], root.consonants[2]
 
     # أَفْعَلُ pattern

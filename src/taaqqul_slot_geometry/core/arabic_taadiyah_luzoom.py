@@ -351,7 +351,9 @@ def get_object_count(form: MorphForm) -> int:
     Returns
     -------
     int
-        Number of objects (0 for intransitive).
+        Maximum number of objects this form can take (0 for intransitive).
+        Check determine_transitivity(form).is_variable to distinguish
+        VARIABLE forms from fixed counts.
     """
     verdict = determine_transitivity(form)
     return verdict.object_count

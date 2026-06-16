@@ -220,7 +220,7 @@ def is_weak_root(root: LicensedRoot) -> bool:
     Pure function.
     """
     analysis = classify_root(root)
-    return analysis.classification != WeakRootClass.SAHIH
+    return bool(analysis.weak_positions)
 
 
 # ══════════════════════════════════════════════════════════════════════════════
@@ -406,8 +406,8 @@ def generate_weak_present(root: LicensedRoot, form: MorphForm = MorphForm.FORM_I
 
     elif analysis.classification == WeakRootClass.LAFIF_MAQRUN:
         # لفيف مقرون: ر-و-ي → يَرْوِي
-        surface = apply_fatha("ي") + apply_sukun(f) + apply_kasra(a) + "ي"
-        trace = f"Lafif maqrun present: ي+َ + {f}+ْ + {a}+ِ + ي (weak second+third)"
+        surface = apply_fatha("ي") + apply_sukun(f) + apply_kasra(a) + l
+        trace = f"Lafif maqrun present: ي+َ + {f}+ْ + {a}+ِ + {l} (weak second+third)"
 
     else:
         # Default: regular present tense
