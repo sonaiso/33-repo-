@@ -225,6 +225,73 @@
 
 ---
 
+## حوكمة التفريع — Branching Governance
+
+### المبدأ
+
+> لا يُسمح بأي تفريع (branch) عن الأصل (trunk) حتى يكتمل الأصل بالحد الأدنى.
+> كل فرع يتطلب ترخيصًا (`BranchLicense`) يحمل: دافعًا، ووصفًا مؤثرًا، وفرقًا قادحًا،
+> وشرطًا، وسببًا، وتحققًا من المانع. الفرع المُرخّص يمكنه ترخيص تفريع جديد بنفس المنهجية.
+
+### الإلزام (Enforcement)
+
+| الآلية | الملف | الوصف |
+|--------|-------|-------|
+| `BranchLicense` dataclass | `constitution/branch_license.py` | كيان مجمّد يمنع البناء بدون استيفاء جميع الشروط |
+| CI Guard check | `ci/constitutional_guard.py` | يرفض أي ملف مصدر لا يرجع لمرجع دستوري أو خارطة طريق |
+| Failure codes | `M_CX_16..M_CX_20` | أكواد رفض مسمّاة لكل انتهاك |
+
+### شروط ترخيص الفرع (7 شروط إلزامية)
+
+| # | الشرط | الوصف | كود الرفض |
+|---|--------|-------|-----------|
+| 1 | **مرجع الخارطة** (roadmap_ref) | يجب أن يشير لـ PR مرقّم أو قسم في الخارطة | `M_CX_16` |
+| 2 | **اكتمال الأصل** (trunk_complete) | الأصل يجب أن يكون مكتملاً بالحد الأدنى | `M_CX_17` |
+| 3 | **الدافع** (motive) | لماذا هذا الفرع موجود | `M_CX_18` |
+| 4 | **الوصف المؤثر** (description) | ما الذي يميّز هذا الفرع عن الأصل | `M_CX_19` |
+| 5 | **الفرق القادح** (qualifying_difference) | الفرق الجوهري الذي يفصله عن الأصل | `M_CX_19` |
+| 6 | **الشرط** (condition) + **السبب** (cause) | ماذا يجب أن يتحقق ولماذا | `M_CX_18` / `M_CX_20` |
+| 7 | **غياب المانع** (barrier_absent) | تحقق من عدم وجود ما يمنع الفرع | `M_CX_20` |
+
+### التشجير — Recursive Branching
+
+```
+[الأصل / الخارطة]
+    │
+    ├── فرع مرخّص A (BranchLicense ✓)
+    │       │
+    │       ├── فرع فرعي A.1 (BranchLicense ✓ — الأصل هو A)
+    │       └── فرع فرعي A.2 (BranchLicense ✓ — الأصل هو A)
+    │
+    └── فرع مرخّص B (BranchLicense ✓)
+            │
+            └── فرع فرعي B.1 (BranchLicense ✓ — الأصل هو B)
+```
+
+**القاعدة**: الفرع المُرخّص يمكنه ترخيص تشجير جديد عبر `license_sub_branch()`
+بشرط أن الفرع نفسه مكتمل بالحد الأدنى أولاً.
+
+### مثال على ترخيص
+
+```python
+from taaqqul_slot_geometry.constitution import BranchLicense
+
+license = BranchLicense(
+    roadmap_ref="docs/15_PROJECT_ROADMAP.md Phase 1 PR-10",
+    parent_ref="Phase 1 — L1 Closure",
+    trunk_complete=True,  # L0 مكتمل
+    motive="تحويل كيانات L0 إلى تعريفات رسمية",
+    description="L1/definition.py — تعريف رسمي لكل كيان L0",
+    qualifying_difference="L0 = كيانات خام، L1 = تعريفات رسمية مع شروط حدود",
+    condition="L0 مُغلق رسميًا",
+    cause="الاستدلال المنطقي يحتاج تعريفات رسمية كمدخل",
+    barrier_absent=True,
+    barrier_check_description="لا يوجد كيان L0 ناقص أو residual مفتوح",
+)
+```
+
+---
+
 ## الخطوة التالية الفورية
 
 **PR-9: إعلان إغلاق L0 وفتح L1**

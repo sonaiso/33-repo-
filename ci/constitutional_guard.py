@@ -324,6 +324,59 @@ def check_no_l3_in_l0(file_path: Path) -> List[Violation]:
     return violations
 
 
+def check_roadmap_binding(file_path: Path) -> List[Violation]:
+    """Check that new source files reference the project roadmap.
+
+    Condition: Every source file must trace to the roadmap or constitution.
+    Cause: Branching governance requires roadmap traceability (M_CX_16).
+    Barrier: No roadmap or constitution reference → violation.
+    Motive: Prevent unplanned work that fragments the project.
+    """
+    violations: List[Violation] = []
+    if not file_path.suffix == ".py":
+        return violations
+    try:
+        content = file_path.read_text(encoding="utf-8")
+    except (OSError, UnicodeDecodeError):
+        return violations
+
+    if not content.strip():
+        return violations
+
+    # Skip __init__.py, test files, and CI files
+    if file_path.name == "__init__.py" and len(content.strip()) < 200:
+        return violations
+    if "test_" in file_path.name or "conftest" in file_path.name:
+        return violations
+    if "ci/" in str(file_path):
+        return violations
+
+    # Must reference either the constitution OR the roadmap
+    has_authority_ref = (
+        "docs/00_MAQOOL_CONSTITUTION" in content
+        or "docs/15_PROJECT_ROADMAP" in content
+        or "docs/14_PR_CHAIN_ROADMAP" in content
+        or "docs/01_L0_PHONETIC_BOUNDARY" in content
+        or "docs/01_EUCLIDEAN_PROOFS" in content
+        or "docs/19_MORPHOLOGY_GENERATOR_THEOREM" in content
+        or "docs/20_WAQF_WASL_BOUNDARY_THEOREM" in content
+        or "Origin:" in content
+        or "trace_ref" in content
+    )
+    if not has_authority_ref:
+        violations.append(Violation(
+            file_path=str(file_path),
+            line_number=1,
+            rule="Branching governance (roadmap binding)",
+            description=(
+                "File has no reference to roadmap or constitution — "
+                "all code must trace to an authorized plan"
+            ),
+            failure_code="M_CX_16",
+        ))
+    return violations
+
+
 # ── Guard Runner ─────────────────────────────────────────────────────────────
 
 
@@ -333,6 +386,7 @@ ALL_CHECKS = [
     check_no_io_in_source,
     check_rank_not_promoted,
     check_no_l3_in_l0,
+    check_roadmap_binding,
 ]
 
 
