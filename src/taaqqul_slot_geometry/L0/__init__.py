@@ -26,6 +26,16 @@ from taaqqul_slot_geometry.L0.vowel import (
     is_madd,
     is_short,
 )
+from taaqqul_slot_geometry.L0.waqf_wasl import (
+    CANONICAL_PROFILES,
+    BoundaryLevel,
+    BoundaryTest,
+    WaqfStatus,
+    WaqfWaslProfile,
+    WordPath,
+    can_stop,
+    must_join,
+)
 from taaqqul_slot_geometry.L0.weight import WeightPattern, WeightUnit
 
 __all__ = [
@@ -58,6 +68,14 @@ __all__ = [
     "assert_valid_vowel",
     "is_madd",
     "is_short",
+    "CANONICAL_PROFILES",
+    "BoundaryLevel",
+    "BoundaryTest",
+    "WaqfStatus",
+    "WaqfWaslProfile",
+    "WordPath",
+    "can_stop",
+    "must_join",
     "WeightPattern",
     "WeightUnit",
 ]
