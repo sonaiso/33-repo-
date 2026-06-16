@@ -109,7 +109,7 @@ class BoundaryTest:
         # If open, must declare what complement is required
         if self.status == WaqfStatus.OPEN and not self.required_complement:
             raise ValueError(
-                f"{FailureCode.M_WW_04.value}: open boundary must declare required_complement"
+                f"{FailureCode.M_CX_08.value}: open_boundary_missing_complement"
             )
 
 
@@ -168,29 +168,30 @@ class WaqfWaslProfile:
     @property
     def can_stop_phonetic(self) -> bool:
         """Whether the unit can stop at the phonetic level."""
-        return self._status_at(BoundaryLevel.PHONETIC) == WaqfStatus.CLOSED
+        return self.status_at(BoundaryLevel.PHONETIC) == WaqfStatus.CLOSED
 
     @property
     def can_stop_structural(self) -> bool:
         """Whether the unit can stop at the structural level."""
-        return self._status_at(BoundaryLevel.STRUCTURAL) == WaqfStatus.CLOSED
+        return self.status_at(BoundaryLevel.STRUCTURAL) == WaqfStatus.CLOSED
 
     @property
     def can_stop_functional(self) -> bool:
         """Whether the unit can stop at the functional level."""
-        return self._status_at(BoundaryLevel.FUNCTIONAL) == WaqfStatus.CLOSED
+        return self.status_at(BoundaryLevel.FUNCTIONAL) == WaqfStatus.CLOSED
 
     @property
     def can_stop_semantic(self) -> bool:
         """Whether the unit can stop at the semantic level."""
-        return self._status_at(BoundaryLevel.SEMANTIC) == WaqfStatus.CLOSED
+        return self.status_at(BoundaryLevel.SEMANTIC) == WaqfStatus.CLOSED
 
     @property
     def must_join_levels(self) -> Tuple[BoundaryLevel, ...]:
         """Return all levels where this unit must join (wasl)."""
         return tuple(t.level for t in self.tests if t.status == WaqfStatus.OPEN)
 
-    def _status_at(self, level: BoundaryLevel) -> WaqfStatus:
+    def status_at(self, level: BoundaryLevel) -> WaqfStatus:
+        """Return the WaqfStatus for the given boundary level."""
         for t in self.tests:
             if t.level == level:
                 return t.status
@@ -209,7 +210,7 @@ def can_stop(profile: WaqfWaslProfile, level: BoundaryLevel) -> bool:
 
     Origin: docs/20_WAQF_WASL_BOUNDARY_THEOREM.md §7
     """
-    return profile._status_at(level) == WaqfStatus.CLOSED
+    return profile.status_at(level) == WaqfStatus.CLOSED
 
 
 def must_join(profile: WaqfWaslProfile, level: BoundaryLevel) -> bool:
@@ -219,7 +220,7 @@ def must_join(profile: WaqfWaslProfile, level: BoundaryLevel) -> bool:
 
     Origin: docs/20_WAQF_WASL_BOUNDARY_THEOREM.md §7
     """
-    return profile._status_at(level) == WaqfStatus.OPEN
+    return profile.status_at(level) == WaqfStatus.OPEN
 
 
 def required_complement_at(profile: WaqfWaslProfile, level: BoundaryLevel) -> str:

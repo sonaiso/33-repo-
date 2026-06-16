@@ -61,8 +61,8 @@ class TestBoundaryTest:
         assert bt.required_complement == "majrur"
 
     def test_open_boundary_without_complement_fails(self):
-        """Opening a boundary without declaring complement violates M_WW_04."""
-        with pytest.raises(ValueError, match=FailureCode.M_WW_04.value):
+        """Opening a boundary without declaring complement violates M_CX_08."""
+        with pytest.raises(ValueError, match=FailureCode.M_CX_08.value):
             BoundaryTest(
                 level=BoundaryLevel.FUNCTIONAL,
                 status=WaqfStatus.OPEN,
