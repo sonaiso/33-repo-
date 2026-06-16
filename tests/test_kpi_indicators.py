@@ -72,6 +72,8 @@ class TestKPITraceCoverage:
         "docs/01_EUCLIDEAN_PROOFS",
         "docs/19_MORPHOLOGY_GENERATOR_THEOREM",
         "docs/20_WAQF_WASL_BOUNDARY_THEOREM",
+        "docs/L0_CLOSURE_DECLARATION",
+        "docs/02_L1_META_LANGUAGE_BOUNDARY",
         "Origin:",
         "trace_ref",
     )
@@ -394,14 +396,17 @@ class TestKPIPhaseProgress:
         runtime_engine = RUNTIME_DIR / "constitutional_engine.py"
         assert runtime_engine.exists(), "Runtime engine missing"
 
-    def test_l1_phase_not_started(self):
-        """Phase 1 (L1) should have no production code yet (only __init__.py)."""
+    def test_l1_phase_open(self):
+        """Phase 1 (L1) is open — production code is authorized but not yet started."""
         l1_files = _python_files(L1_DIR)
-        # L1 should be empty (no production files yet)
-        assert l1_files == [], (
-            f"L1 has unexpected files: {[f.name for f in l1_files]} — "
-            "L1 should not start until L0 is formally closed"
-        )
+        # L1 is authorized (L0 formally closed) but may not have files yet
+        # This test documents that L1 is open and validates any files present
+        # follow constitutional rules (trace_ref, frozen, etc.)
+        for f in l1_files:
+            content = f.read_text(encoding="utf-8")
+            assert "trace_ref" in content or "Origin:" in content, (
+                f"L1 file {f.name} missing constitutional trace"
+            )
 
     def test_l2_phase_locked(self):
         """Phase 2 (L2) must have no production code."""
