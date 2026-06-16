@@ -406,8 +406,8 @@ def generate_weak_present(root: LicensedRoot, form: MorphForm = MorphForm.FORM_I
 
     elif analysis.classification == WeakRootClass.LAFIF_MAQRUN:
         # لفيف مقرون: ر-و-ي → يَرْوِي
-        surface = apply_fatha("ي") + apply_sukun(f) + apply_sukun(a) + apply_kasra(l)
-        trace = f"Lafif maqrun present: ي+َ + {f}+ْ + {a}+ْ + {l}+ِ (weak second+third)"
+        surface = apply_fatha("ي") + apply_sukun(f) + apply_kasra(a) + l
+        trace = f"Lafif maqrun present: ي+َ + {f}+ْ + {a}+ِ + {l} (weak second+third)"
 
     else:
         # Default: regular present tense
