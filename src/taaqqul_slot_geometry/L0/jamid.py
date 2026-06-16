@@ -55,6 +55,7 @@ class JamidAnchor:
     anchor_type: JamidAnchorType
     phonemes: Tuple[PhonemeUnit, ...]
     is_derivational_root: bool = False
+    domain_tag: str = "L0_JAMID"
     trace_ref: str = "docs/01_L0_PHONETIC_BOUNDARY.md BL-L0-05"
     rank: str = "CANDIDATE"
     residuals: FrozenSet[str] = field(default_factory=frozenset)

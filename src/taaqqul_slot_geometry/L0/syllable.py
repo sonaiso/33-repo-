@@ -99,6 +99,7 @@ class Syllable:
 
     phonemes: Tuple[PhonemeUnit, ...]
     syllable_type: SyllableType
+    domain_tag: str = "L0_PHONETICS"
     trace_ref: str = "docs/00_MAQOOL_CONSTITUTION.md §4 (MCE-2)"
     rank: str = "CANDIDATE"
     residuals: FrozenSet[str] = field(default_factory=frozenset)

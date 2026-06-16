@@ -29,6 +29,7 @@ class LinguisticSignified:
     """
 
     concept_label: str
+    domain_tag: str = "L0_SIGNIFIED"
     trace_ref: str = (
         "docs/00_MAQOOL_CONSTITUTION.md §2 Category 2 (LinguisticSignified)"
     )
@@ -64,6 +65,7 @@ class ConventionalSignified:
 
     convention_label: str
     linguistic_signified: LinguisticSignified
+    domain_tag: str = "L0_SIGNIFIED"
     trace_ref: str = (
         "docs/00_MAQOOL_CONSTITUTION.md §2 Category 2 (ConventionalSignified)"
     )
