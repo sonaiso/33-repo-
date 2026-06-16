@@ -35,6 +35,7 @@ from taaqqul_slot_geometry.L0.waqf_wasl import (
     WordPath,
     can_stop,
     must_join,
+    required_complement_at,
 )
 from taaqqul_slot_geometry.L0.weight import WeightPattern, WeightUnit
 
@@ -76,6 +77,7 @@ __all__ = [
     "WordPath",
     "can_stop",
     "must_join",
+    "required_complement_at",
     "WeightPattern",
     "WeightUnit",
 ]
