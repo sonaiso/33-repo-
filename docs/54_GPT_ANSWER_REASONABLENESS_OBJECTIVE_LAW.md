@@ -114,9 +114,8 @@ The final output of the system is `GPTAnswerReasonablenessVerdict`:
 | `UNREASONABLE` | Critical gate failure (contradiction, forbidden leap, overclaim) |
 | `OFF_MAQAM` | Answer does not address the user's question |
 | `UNSUPPORTED` | Factual claims lack evidence in the required domain |
-| `CONTRADICTORY` | Answer contradicts a stable knowledge origin |
+| `ORIGIN_CONTRADICTION` | Answer contradicts a stable classified knowledge origin |
 | `OVERCLAIMED` | Claims exceed available evidence |
-| `ORIGIN_CONTRADICTION` | Explicit conflict with classified prior knowledge |
 | `FORBIDDEN_LEAP` | Illegitimate inference (appearance → cause, etc.) |
 | `RESIDUAL_BLOCKED` | Hidden residuals prevent verdict |
 | `NEEDS_CLARIFICATION` | Insufficient information to decide |

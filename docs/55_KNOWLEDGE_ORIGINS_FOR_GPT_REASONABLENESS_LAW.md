@@ -238,12 +238,21 @@ an EvidenceOrigin entry. Absence produces `UNSUPPORTED` verdict.
 The knowledge origins are NOT a complete encyclopedia. They are a **minimal
 classified prior knowledge layer** that prevents the system from judging
 from a vacuum. Missing origins are declared as residuals, not silently skipped.
+Treating origins as an exhaustive encyclopedia is forbidden.
+
+**FailureCode**: `M_K0_05`
 
 ### Rule K0-6 — Frozen origins
 All origin entries are immutable once classified. Updates require a new
 origin entry with trace to the amendment.
 
-**FailureCode**: `M_K0_05`
+**FailureCode**: `M_K0_06`
+
+### Rule K0-7 — Origins serve GPT verification only
+Origins exist to verify GPT claims. Building or extending origins for
+linguistic analysis rather than GPT verification need is forbidden.
+
+**FailureCode**: `M_K0_07`
 
 ---
 
@@ -295,8 +304,8 @@ This is NOT an encyclopedia. It is a **test harness** for the verification engin
 | Silently skipping a missing origin (must declare residual) | `M_K0_02` |
 | Accepting a claim that contradicts a stable origin | `M_K0_03` |
 | Accepting high-risk factual claim without evidence | `M_K0_04` |
-| Mutating a classified origin without amendment trace | `M_K0_05` |
-| Treating origins as exhaustive encyclopedia | `M_K0_06` |
+| Mutating a classified origin without amendment trace | `M_K0_06` |
+| Treating origins as exhaustive encyclopedia | `M_K0_05` |
 | Building origins for linguistic analysis rather than GPT verification | `M_K0_07` |
 
 ---
