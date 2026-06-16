@@ -51,11 +51,11 @@
 
 | Set | Count | Constitutional Ref |
 |-----|-------|--------------------|
-| Phonetic patterns | 8 | Constitution `3 (MCE-1) |
-| Syllable types | 4 | Constitution `4 (MCE-2) |
-| Arabic graphemes | 28 | Constitution `2 Category 2 |
-| Short vowels | 4 | Constitution `2 Category 2 |
-| Madd vowels | 3 | Constitution `2 Category 2 |
+| Phonetic patterns | 8 | Constitution §3 (MCE-1) |
+| Syllable types | 4 | Constitution §4 (MCE-2) |
+| Arabic graphemes | 28 | Constitution §2 Category 2 |
+| Short vowels | 4 | Constitution §2 Category 2 |
+| Madd vowels | 3 | Constitution §2 Category 2 |
 | Binary jamid anchors | 4 | Boundary law BL-L0-05 |
 | Ternary jamid anchors | 3 | Boundary law BL-L0-05 |
 

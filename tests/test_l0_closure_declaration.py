@@ -120,13 +120,15 @@ class TestL0EntitiesComplete:
 
     @pytest.mark.parametrize("entity_file", EXPECTED_L0_ENTITIES)
     def test_entity_has_frozen_dataclass(self, entity_file: str):
-        """Every L0 entity must use frozen dataclasses."""
+        """Every L0 entity must use frozen dataclasses or immutable Enums."""
         path = L0_DIR / entity_file
         content = path.read_text(encoding="utf-8")
-        if "@dataclass" in content:
-            assert "frozen=True" in content, (
-                f"{entity_file} has @dataclass without frozen=True"
-            )
+        # Entities use either frozen dataclasses or immutable Enums
+        has_frozen_dataclass = "@dataclass" in content and "frozen=True" in content
+        has_enum = "Enum)" in content or "Enum):" in content
+        assert has_frozen_dataclass or has_enum, (
+            f"{entity_file} must use @dataclass(frozen=True) or Enum (Rule 3)"
+        )
 
 
 # ══════════════════════════════════════════════════════════════════════════════
