@@ -163,37 +163,37 @@ class GeneratedForm:
 # ══════════════════════════════════════════════════════════════════════════════
 
 
-def _apply_fatha(consonant: str) -> str:
+def apply_fatha(consonant: str) -> str:
     """Apply fatha (short a) to a consonant."""
     return consonant + "\u064E"
 
 
-def _apply_damma(consonant: str) -> str:
+def apply_damma(consonant: str) -> str:
     """Apply damma (short u) to a consonant."""
     return consonant + "\u064F"
 
 
-def _apply_kasra(consonant: str) -> str:
+def apply_kasra(consonant: str) -> str:
     """Apply kasra (short i) to a consonant."""
     return consonant + "\u0650"
 
 
-def _apply_sukun(consonant: str) -> str:
+def apply_sukun(consonant: str) -> str:
     """Apply sukun (no vowel) to a consonant."""
     return consonant + "\u0652"
 
 
-def _apply_shadda(consonant: str) -> str:
+def apply_shadda(consonant: str) -> str:
     """Apply shadda (gemination) to a consonant."""
     return consonant + "\u0651"
 
 
-def _apply_shadda_fatha(consonant: str) -> str:
+def apply_shadda_fatha(consonant: str) -> str:
     """Apply shadda + fatha to a consonant."""
     return consonant + "\u0651\u064E"
 
 
-def _apply_alif_madd() -> str:
+def apply_alif_madd() -> str:
     """Return alif with fatha (long a)."""
     return "\u0627"
 
@@ -222,71 +222,71 @@ def generate_past(root: LicensedRoot, form: MorphForm = MorphForm.FORM_I) -> Gen
 
     if form == MorphForm.FORM_I:
         # فَعَلَ = F+fatha + A+fatha + L+fatha
-        surface = _apply_fatha(f) + _apply_fatha(a) + _apply_fatha(l)
+        surface = apply_fatha(f) + apply_fatha(a) + apply_fatha(l)
         trace = f"Form I past: {f}+َ + {a}+َ + {l}+َ → فَعَلَ"
 
     elif form == MorphForm.FORM_II:
         # فَعَّلَ = F+fatha + A+shadda+fatha + L+fatha
-        surface = _apply_fatha(f) + _apply_shadda_fatha(a) + _apply_fatha(l)
+        surface = apply_fatha(f) + apply_shadda_fatha(a) + apply_fatha(l)
         trace = f"Form II past: {f}+َ + {a}+ّ+َ + {l}+َ → فَعَّلَ"
 
     elif form == MorphForm.FORM_III:
         # فَاعَلَ = F+fatha + alif + A+fatha + L+fatha
-        surface = _apply_fatha(f) + _apply_alif_madd() + _apply_fatha(a) + _apply_fatha(l)
+        surface = apply_fatha(f) + apply_alif_madd() + apply_fatha(a) + apply_fatha(l)
         trace = f"Form III past: {f}+َ + ا + {a}+َ + {l}+َ → فَاعَلَ"
 
     elif form == MorphForm.FORM_IV:
         # أَفْعَلَ = أ+fatha + F+sukun + A+fatha + L+fatha
-        surface = _apply_fatha("أ") + _apply_sukun(f) + _apply_fatha(a) + _apply_fatha(l)
+        surface = apply_fatha("أ") + apply_sukun(f) + apply_fatha(a) + apply_fatha(l)
         trace = f"Form IV past: أ+َ + {f}+ْ + {a}+َ + {l}+َ → أَفْعَلَ"
 
     elif form == MorphForm.FORM_V:
         # تَفَعَّلَ = ت+fatha + F+fatha + A+shadda+fatha + L+fatha
-        surface = _apply_fatha("ت") + _apply_fatha(f) + _apply_shadda_fatha(a) + _apply_fatha(l)
+        surface = apply_fatha("ت") + apply_fatha(f) + apply_shadda_fatha(a) + apply_fatha(l)
         trace = f"Form V past: ت+َ + {f}+َ + {a}+ّ+َ + {l}+َ → تَفَعَّلَ"
 
     elif form == MorphForm.FORM_VI:
         # تَفَاعَلَ = ت+fatha + F+fatha + alif + A+fatha + L+fatha
         surface = (
-            _apply_fatha("ت")
-            + _apply_fatha(f)
-            + _apply_alif_madd()
-            + _apply_fatha(a)
-            + _apply_fatha(l)
+            apply_fatha("ت")
+            + apply_fatha(f)
+            + apply_alif_madd()
+            + apply_fatha(a)
+            + apply_fatha(l)
         )
         trace = f"Form VI past: ت+َ + {f}+َ + ا + {a}+َ + {l}+َ → تَفَاعَلَ"
 
     elif form == MorphForm.FORM_VII:
         # اِنْفَعَلَ = ا+kasra + ن+sukun + F+fatha + A+fatha + L+fatha
         surface = (
-            _apply_kasra("ا")
-            + _apply_sukun("ن")
-            + _apply_fatha(f)
-            + _apply_fatha(a)
-            + _apply_fatha(l)
+            apply_kasra("ا")
+            + apply_sukun("ن")
+            + apply_fatha(f)
+            + apply_fatha(a)
+            + apply_fatha(l)
         )
         trace = f"Form VII past: ا+ِ + ن+ْ + {f}+َ + {a}+َ + {l}+َ → اِنْفَعَلَ"
 
     elif form == MorphForm.FORM_VIII:
         # اِفْتَعَلَ = ا+kasra + F+sukun + ت+fatha + A+fatha + L+fatha
         surface = (
-            _apply_kasra("ا")
-            + _apply_sukun(f)
-            + _apply_fatha("ت")
-            + _apply_fatha(a)
-            + _apply_fatha(l)
+            apply_kasra("ا")
+            + apply_sukun(f)
+            + apply_fatha("ت")
+            + apply_fatha(a)
+            + apply_fatha(l)
         )
         trace = f"Form VIII past: ا+ِ + {f}+ْ + ت+َ + {a}+َ + {l}+َ → اِفْتَعَلَ"
 
     elif form == MorphForm.FORM_X:
         # اِسْتَفْعَلَ = ا+kasra + س+sukun + ت+fatha + F+sukun + A+fatha + L+fatha
         surface = (
-            _apply_kasra("ا")
-            + _apply_sukun("س")
-            + _apply_fatha("ت")
-            + _apply_sukun(f)
-            + _apply_fatha(a)
-            + _apply_fatha(l)
+            apply_kasra("ا")
+            + apply_sukun("س")
+            + apply_fatha("ت")
+            + apply_sukun(f)
+            + apply_fatha(a)
+            + apply_fatha(l)
         )
         trace = f"Form X past: ا+ِ + س+ْ + ت+َ + {f}+ْ + {a}+َ + {l}+َ → اِسْتَفْعَلَ"
 
@@ -326,89 +326,89 @@ def generate_present(root: LicensedRoot, form: MorphForm = MorphForm.FORM_I) -> 
 
     if form == MorphForm.FORM_I:
         # يَفْعُلُ = ي+fatha + F+sukun + A+damma + L+damma
-        surface = _apply_fatha("ي") + _apply_sukun(f) + _apply_damma(a) + _apply_damma(l)
+        surface = apply_fatha("ي") + apply_sukun(f) + apply_damma(a) + apply_damma(l)
         trace = f"Form I present: ي+َ + {f}+ْ + {a}+ُ + {l}+ُ → يَفْعُلُ"
 
     elif form == MorphForm.FORM_II:
         # يُفَعِّلُ = ي+damma + F+fatha + A+shadda+kasra + L+damma
         surface = (
-            _apply_damma("ي")
-            + _apply_fatha(f)
-            + _apply_shadda_fatha(a)  # simplified; true form uses kasra
-            + _apply_damma(l)
+            apply_damma("ي")
+            + apply_fatha(f)
+            + apply_shadda_fatha(a)  # simplified; true form uses kasra
+            + apply_damma(l)
         )
         trace = f"Form II present: ي+ُ + {f}+َ + {a}+ّ+ِ + {l}+ُ → يُفَعِّلُ"
 
     elif form == MorphForm.FORM_III:
         # يُفَاعِلُ = ي+damma + F+fatha + ا + A+kasra + L+damma
         surface = (
-            _apply_damma("ي")
-            + _apply_fatha(f)
-            + _apply_alif_madd()
-            + _apply_kasra(a)
-            + _apply_damma(l)
+            apply_damma("ي")
+            + apply_fatha(f)
+            + apply_alif_madd()
+            + apply_kasra(a)
+            + apply_damma(l)
         )
         trace = f"Form III present: ي+ُ + {f}+َ + ا + {a}+ِ + {l}+ُ → يُفَاعِلُ"
 
     elif form == MorphForm.FORM_IV:
         # يُفْعِلُ = ي+damma + F+sukun + A+kasra + L+damma
-        surface = _apply_damma("ي") + _apply_sukun(f) + _apply_kasra(a) + _apply_damma(l)
+        surface = apply_damma("ي") + apply_sukun(f) + apply_kasra(a) + apply_damma(l)
         trace = f"Form IV present: ي+ُ + {f}+ْ + {a}+ِ + {l}+ُ → يُفْعِلُ"
 
     elif form == MorphForm.FORM_V:
         # يَتَفَعَّلُ = ي+fatha + ت+fatha + F+fatha + A+shadda+fatha + L+damma
         surface = (
-            _apply_fatha("ي")
-            + _apply_fatha("ت")
-            + _apply_fatha(f)
-            + _apply_shadda_fatha(a)
-            + _apply_damma(l)
+            apply_fatha("ي")
+            + apply_fatha("ت")
+            + apply_fatha(f)
+            + apply_shadda_fatha(a)
+            + apply_damma(l)
         )
         trace = f"Form V present: ي+َ + ت+َ + {f}+َ + {a}+ّ+َ + {l}+ُ → يَتَفَعَّلُ"
 
     elif form == MorphForm.FORM_VI:
         # يَتَفَاعَلُ = ي+fatha + ت+fatha + F+fatha + ا + A+fatha + L+damma
         surface = (
-            _apply_fatha("ي")
-            + _apply_fatha("ت")
-            + _apply_fatha(f)
-            + _apply_alif_madd()
-            + _apply_fatha(a)
-            + _apply_damma(l)
+            apply_fatha("ي")
+            + apply_fatha("ت")
+            + apply_fatha(f)
+            + apply_alif_madd()
+            + apply_fatha(a)
+            + apply_damma(l)
         )
         trace = f"Form VI present: ي+َ + ت+َ + {f}+َ + ا + {a}+َ + {l}+ُ → يَتَفَاعَلُ"
 
     elif form == MorphForm.FORM_VII:
         # يَنْفَعِلُ = ي+fatha + ن+sukun + F+fatha + A+kasra + L+damma
         surface = (
-            _apply_fatha("ي")
-            + _apply_sukun("ن")
-            + _apply_fatha(f)
-            + _apply_kasra(a)
-            + _apply_damma(l)
+            apply_fatha("ي")
+            + apply_sukun("ن")
+            + apply_fatha(f)
+            + apply_kasra(a)
+            + apply_damma(l)
         )
         trace = f"Form VII present: ي+َ + ن+ْ + {f}+َ + {a}+ِ + {l}+ُ → يَنْفَعِلُ"
 
     elif form == MorphForm.FORM_VIII:
         # يَفْتَعِلُ = ي+fatha + F+sukun + ت+fatha + A+kasra + L+damma
         surface = (
-            _apply_fatha("ي")
-            + _apply_sukun(f)
-            + _apply_fatha("ت")
-            + _apply_kasra(a)
-            + _apply_damma(l)
+            apply_fatha("ي")
+            + apply_sukun(f)
+            + apply_fatha("ت")
+            + apply_kasra(a)
+            + apply_damma(l)
         )
         trace = f"Form VIII present: ي+َ + {f}+ْ + ت+َ + {a}+ِ + {l}+ُ → يَفْتَعِلُ"
 
     elif form == MorphForm.FORM_X:
         # يَسْتَفْعِلُ = ي+fatha + س+sukun + ت+fatha + F+sukun + A+kasra + L+damma
         surface = (
-            _apply_fatha("ي")
-            + _apply_sukun("س")
-            + _apply_fatha("ت")
-            + _apply_sukun(f)
-            + _apply_kasra(a)
-            + _apply_damma(l)
+            apply_fatha("ي")
+            + apply_sukun("س")
+            + apply_fatha("ت")
+            + apply_sukun(f)
+            + apply_kasra(a)
+            + apply_damma(l)
         )
         trace = f"Form X present: ي+َ + س+ْ + ت+َ + {f}+ْ + {a}+ِ + {l}+ُ → يَسْتَفْعِلُ"
 
@@ -440,34 +440,34 @@ def generate_active_participle(
 
     if form == MorphForm.FORM_I:
         # فَاعِل = F+fatha + ا + A+kasra + L
-        surface = _apply_fatha(f) + _apply_alif_madd() + _apply_kasra(a) + l
+        surface = apply_fatha(f) + apply_alif_madd() + apply_kasra(a) + l
         trace = f"Form I active participle: {f}+َ + ا + {a}+ِ + {l} → فَاعِل"
 
     elif form == MorphForm.FORM_II:
         # مُفَعِّل = م+damma + F+fatha + A+shadda+kasra + L
-        surface = _apply_damma("م") + _apply_fatha(f) + _apply_shadda_fatha(a) + l
+        surface = apply_damma("م") + apply_fatha(f) + apply_shadda_fatha(a) + l
         trace = f"Form II active participle: م+ُ + {f}+َ + {a}+ّ+ِ + {l} → مُفَعِّل"
 
     elif form == MorphForm.FORM_IV:
         # مُفْعِل = م+damma + F+sukun + A+kasra + L
-        surface = _apply_damma("م") + _apply_sukun(f) + _apply_kasra(a) + l
+        surface = apply_damma("م") + apply_sukun(f) + apply_kasra(a) + l
         trace = f"Form IV active participle: م+ُ + {f}+ْ + {a}+ِ + {l} → مُفْعِل"
 
     elif form == MorphForm.FORM_X:
         # مُسْتَفْعِل = م+damma + س+sukun + ت+fatha + F+sukun + A+kasra + L
         surface = (
-            _apply_damma("م")
-            + _apply_sukun("س")
-            + _apply_fatha("ت")
-            + _apply_sukun(f)
-            + _apply_kasra(a)
+            apply_damma("م")
+            + apply_sukun("س")
+            + apply_fatha("ت")
+            + apply_sukun(f)
+            + apply_kasra(a)
             + l
         )
         trace = f"Form X active participle: م+ُ + س+ْ + ت+َ + {f}+ْ + {a}+ِ + {l} → مُسْتَفْعِل"
 
     else:
         # Default: use Form I pattern for simplicity
-        surface = _apply_fatha(f) + _apply_alif_madd() + _apply_kasra(a) + l
+        surface = apply_fatha(f) + apply_alif_madd() + apply_kasra(a) + l
         trace = f"Default active participle (Form I): {f}+َ + ا + {a}+ِ + {l}"
 
     return GeneratedForm(
@@ -495,34 +495,34 @@ def generate_passive_participle(
 
     if form == MorphForm.FORM_I:
         # مَفْعُول = م+fatha + F+sukun + A+damma + و + ل
-        surface = _apply_fatha("م") + _apply_sukun(f) + _apply_damma(a) + "و" + l
+        surface = apply_fatha("م") + apply_sukun(f) + apply_damma(a) + "و" + l
         trace = f"Form I passive participle: م+َ + {f}+ْ + {a}+ُ + و + {l} → مَفْعُول"
 
     elif form == MorphForm.FORM_II:
         # مُفَعَّل = م+damma + F+fatha + A+shadda+fatha + L
-        surface = _apply_damma("م") + _apply_fatha(f) + _apply_shadda_fatha(a) + l
+        surface = apply_damma("م") + apply_fatha(f) + apply_shadda_fatha(a) + l
         trace = f"Form II passive participle: م+ُ + {f}+َ + {a}+ّ+َ + {l} → مُفَعَّل"
 
     elif form == MorphForm.FORM_IV:
         # مُفْعَل = م+damma + F+sukun + A+fatha + L
-        surface = _apply_damma("م") + _apply_sukun(f) + _apply_fatha(a) + l
+        surface = apply_damma("م") + apply_sukun(f) + apply_fatha(a) + l
         trace = f"Form IV passive participle: م+ُ + {f}+ْ + {a}+َ + {l} → مُفْعَل"
 
     elif form == MorphForm.FORM_X:
         # مُسْتَفْعَل = م+damma + س+sukun + ت+fatha + F+sukun + A+fatha + L
         surface = (
-            _apply_damma("م")
-            + _apply_sukun("س")
-            + _apply_fatha("ت")
-            + _apply_sukun(f)
-            + _apply_fatha(a)
+            apply_damma("م")
+            + apply_sukun("س")
+            + apply_fatha("ت")
+            + apply_sukun(f)
+            + apply_fatha(a)
             + l
         )
         trace = f"Form X passive participle: م+ُ + س+ْ + ت+َ + {f}+ْ + {a}+َ + {l} → مُسْتَفْعَل"
 
     else:
         # Default: Form I pattern
-        surface = _apply_fatha("م") + _apply_sukun(f) + _apply_damma(a) + "و" + l
+        surface = apply_fatha("م") + apply_sukun(f) + apply_damma(a) + "و" + l
         trace = f"Default passive participle (Form I): م+َ + {f}+ْ + {a}+ُ + و + {l}"
 
     return GeneratedForm(
@@ -551,21 +551,21 @@ def generate_verbal_noun(
 
     if form == MorphForm.FORM_I:
         # فِعَال = F+kasra + A+fatha + ا + L
-        surface = _apply_kasra(f) + _apply_fatha(a) + _apply_alif_madd() + l
+        surface = apply_kasra(f) + apply_fatha(a) + apply_alif_madd() + l
         trace = f"Form I masdar: {f}+ِ + {a}+َ + ا + {l} → فِعَال"
 
     elif form == MorphForm.FORM_II:
         # تَفْعِيل = ت+fatha + F+sukun + A+kasra + ي + L
-        surface = _apply_fatha("ت") + _apply_sukun(f) + _apply_kasra(a) + "ي" + l
+        surface = apply_fatha("ت") + apply_sukun(f) + apply_kasra(a) + "ي" + l
         trace = f"Form II masdar: ت+َ + {f}+ْ + {a}+ِ + ي + {l} → تَفْعِيل"
 
     elif form == MorphForm.FORM_III:
         # مُفَاعَلَة = م+damma + F+fatha + ا + A+fatha + L + ة
         surface = (
-            _apply_damma("م")
-            + _apply_fatha(f)
-            + _apply_alif_madd()
-            + _apply_fatha(a)
+            apply_damma("م")
+            + apply_fatha(f)
+            + apply_alif_madd()
+            + apply_fatha(a)
             + l
             + "ة"
         )
@@ -573,25 +573,25 @@ def generate_verbal_noun(
 
     elif form == MorphForm.FORM_IV:
         # إِفْعَال = إ+kasra + F+sukun + A+fatha + ا + L
-        surface = _apply_kasra("إ") + _apply_sukun(f) + _apply_fatha(a) + _apply_alif_madd() + l
+        surface = apply_kasra("إ") + apply_sukun(f) + apply_fatha(a) + apply_alif_madd() + l
         trace = f"Form IV masdar: إ+ِ + {f}+ْ + {a}+َ + ا + {l} → إِفْعَال"
 
     elif form == MorphForm.FORM_X:
         # اِسْتِفْعَال = ا+kasra + س+sukun + ت+kasra + F+sukun + A+fatha + ا + L
         surface = (
-            _apply_kasra("ا")
-            + _apply_sukun("س")
-            + _apply_kasra("ت")
-            + _apply_sukun(f)
-            + _apply_fatha(a)
-            + _apply_alif_madd()
+            apply_kasra("ا")
+            + apply_sukun("س")
+            + apply_kasra("ت")
+            + apply_sukun(f)
+            + apply_fatha(a)
+            + apply_alif_madd()
             + l
         )
         trace = f"Form X masdar: ا+ِ + س+ْ + ت+ِ + {f}+ْ + {a}+َ + ا + {l} → اِسْتِفْعَال"
 
     else:
         # Default: Form I pattern (فِعَال)
-        surface = _apply_kasra(f) + _apply_fatha(a) + _apply_alif_madd() + l
+        surface = apply_kasra(f) + apply_fatha(a) + apply_alif_madd() + l
         trace = f"Default masdar (Form I): {f}+ِ + {a}+َ + ا + {l}"
 
     return GeneratedForm(
@@ -651,7 +651,7 @@ def generate_broken_plural(root: LicensedRoot, form: MorphForm = MorphForm.FORM_
     f, a, l = root.consonants[0], root.consonants[1], root.consonants[2]
 
     # فُعَلَاء pattern
-    surface = _apply_damma(f) + _apply_fatha(a) + _apply_fatha(l) + _apply_alif_madd() + "ء"
+    surface = apply_damma(f) + apply_fatha(a) + apply_fatha(l) + apply_alif_madd() + "ء"
     trace = f"Broken plural (فُعَلَاء): {f}+ُ + {a}+َ + {l}+َ + ا + ء"
 
     return GeneratedForm(
@@ -674,7 +674,7 @@ def generate_diminutive(root: LicensedRoot, form: MorphForm = MorphForm.FORM_I) 
     f, a, l = root.consonants[0], root.consonants[1], root.consonants[2]
 
     # فُعَيْل pattern
-    surface = _apply_damma(f) + _apply_fatha(a) + _apply_sukun("ي") + l
+    surface = apply_damma(f) + apply_fatha(a) + apply_sukun("ي") + l
     trace = f"Diminutive (فُعَيْل): {f}+ُ + {a}+َ + ي+ْ + {l}"
 
     return GeneratedForm(
@@ -697,7 +697,7 @@ def generate_comparative(root: LicensedRoot, form: MorphForm = MorphForm.FORM_I)
     f, a, l = root.consonants[0], root.consonants[1], root.consonants[2]
 
     # أَفْعَلُ pattern
-    surface = _apply_fatha("أ") + _apply_sukun(f) + _apply_fatha(a) + _apply_damma(l)
+    surface = apply_fatha("أ") + apply_sukun(f) + apply_fatha(a) + apply_damma(l)
     trace = f"Comparative (أَفْعَلُ): أ+َ + {f}+ْ + {a}+َ + {l}+ُ"
 
     return GeneratedForm(

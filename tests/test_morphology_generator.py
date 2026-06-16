@@ -7,7 +7,7 @@ This test module verifies:
     TH8: Transitivity is a function of weight structure T(W) = class
     TH9: Weak root transformations are deterministic M(R, pos) = rule
 
-Test groups (11 classes, 70+ tests):
+Test groups (12 classes, 66 tests):
     1. TestWeightPatternRegistry — registry integrity
     2. TestPastTenseGeneration — past tense forms
     3. TestPresentTenseGeneration — present tense forms
@@ -19,6 +19,7 @@ Test groups (11 classes, 70+ tests):
     9. TestTransitivitySystem — TH8 transitivity rules
     10. TestWeakRootSystem — TH9 weak root classification
     11. TestFullGenerationPipeline — integration tests
+    12. TestConstitutionalIntegrity — constitutional constraint verification
 """
 from __future__ import annotations
 
@@ -532,8 +533,8 @@ class TestWeakRootSystem:
         """Ajwaf past: ق-و-ل → قَالَ (middle → alif)."""
         root = make_root("قول")
         result = generate_weak_past(root)
-        # Should contain alif (weak middle transformed)
-        assert "ا" in result.surface or _apply_alif_madd() in result.surface
+        # Should contain alif (weak middle transformed to alif)
+        assert "ا" in result.surface or "\u0627" in result.surface
 
 
 # ══════════════════════════════════════════════════════════════════════════════

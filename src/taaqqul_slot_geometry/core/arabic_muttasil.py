@@ -29,11 +29,11 @@ from taaqqul_slot_geometry.core.arabic_morphology_generator import (
     GenerationTarget,
     LicensedRoot,
     RootType,
-    _apply_alif_madd,
-    _apply_damma,
-    _apply_fatha,
-    _apply_kasra,
-    _apply_sukun,
+    apply_alif_madd,
+    apply_damma,
+    apply_fatha,
+    apply_kasra,
+    apply_sukun,
 )
 from taaqqul_slot_geometry.core.arabic_weight_pattern import MorphForm
 
@@ -337,27 +337,27 @@ def generate_weak_past(root: LicensedRoot, form: MorphForm = MorphForm.FORM_I) -
 
     if analysis.classification == WeakRootClass.MITHAL and form == MorphForm.FORM_IV:
         # مثال + أَفْعَلَ: و-ص-ل → أَوْصَلَ
-        surface = _apply_fatha("أ") + _apply_sukun(f) + _apply_fatha(a) + _apply_fatha(l)
+        surface = apply_fatha("أ") + apply_sukun(f) + apply_fatha(a) + apply_fatha(l)
         trace = f"Mithal Form IV: أ+َ + {f}+ْ + {a}+َ + {l}+َ (hamza prefix for weak-first)"
 
     elif analysis.classification == WeakRootClass.AJWAF:
         # أجوف: ق-و-ل → قَالَ (واو → ألف)
-        surface = _apply_fatha(f) + _apply_alif_madd() + _apply_fatha(l)
+        surface = apply_fatha(f) + apply_alif_madd() + apply_fatha(l)
         trace = f"Ajwaf past: {f}+َ + ا (← {a}) + {l}+َ (weak-middle → alif)"
 
     elif analysis.classification == WeakRootClass.NAQIS:
         # ناقص: ر-م-ي → رَمَى
-        surface = _apply_fatha(f) + _apply_fatha(a) + "ى"
+        surface = apply_fatha(f) + apply_fatha(a) + "ى"
         trace = f"Naqis past: {f}+َ + {a}+َ + ى (← {l}) (weak-final → alif maqsura)"
 
     elif analysis.classification == WeakRootClass.LAFIF_MAQRUN:
         # لفيف مقرون: س-و-ي → سَوَى
-        surface = _apply_fatha(f) + _apply_fatha(a) + "ى"
+        surface = apply_fatha(f) + apply_fatha(a) + "ى"
         trace = f"Lafif maqrun past: {f}+َ + {a}+َ + ى (weak second+third)"
 
     else:
         # Default: regular past tense generation
-        surface = _apply_fatha(f) + _apply_fatha(a) + _apply_fatha(l)
+        surface = apply_fatha(f) + apply_fatha(a) + apply_fatha(l)
         trace = f"Regular past: {f}+َ + {a}+َ + {l}+َ"
 
     return GeneratedForm(
@@ -391,27 +391,27 @@ def generate_weak_present(root: LicensedRoot, form: MorphForm = MorphForm.FORM_I
 
     if analysis.classification == WeakRootClass.MITHAL:
         # مثال: و-ص-ل → يَصِلُ (واو deleted)
-        surface = _apply_fatha("ي") + _apply_kasra(a) + _apply_damma(l)
+        surface = apply_fatha("ي") + apply_kasra(a) + apply_damma(l)
         trace = f"Mithal present: ي+َ + {a}+ِ + {l}+ُ (weak-first deleted)"
 
     elif analysis.classification == WeakRootClass.AJWAF:
         # أجوف: ق-و-ل → يَقُولُ (واو preserved as long vowel)
-        surface = _apply_fatha("ي") + _apply_damma(f) + "و" + _apply_damma(l)
+        surface = apply_fatha("ي") + apply_damma(f) + "و" + apply_damma(l)
         trace = f"Ajwaf present: ي+َ + {f}+ُ + و + {l}+ُ (weak-middle as long vowel)"
 
     elif analysis.classification == WeakRootClass.NAQIS:
         # ناقص: ر-م-ي → يَرْمِي
-        surface = _apply_fatha("ي") + _apply_sukun(f) + _apply_kasra(a) + "ي"
+        surface = apply_fatha("ي") + apply_sukun(f) + apply_kasra(a) + "ي"
         trace = f"Naqis present: ي+َ + {f}+ْ + {a}+ِ + ي (weak-final → ya)"
 
     elif analysis.classification == WeakRootClass.LAFIF_MAQRUN:
         # لفيف مقرون: ر-و-ي → يَرْوِي
-        surface = _apply_fatha("ي") + _apply_sukun(f) + _apply_kasra(a) + "ي"
+        surface = apply_fatha("ي") + apply_sukun(f) + apply_kasra(a) + "ي"
         trace = f"Lafif maqrun present: ي+َ + {f}+ْ + {a}+ِ + ي (weak second+third)"
 
     else:
         # Default: regular present tense
-        surface = _apply_fatha("ي") + _apply_sukun(f) + _apply_damma(a) + _apply_damma(l)
+        surface = apply_fatha("ي") + apply_sukun(f) + apply_damma(a) + apply_damma(l)
         trace = f"Regular present: ي+َ + {f}+ْ + {a}+ُ + {l}+ُ"
 
     return GeneratedForm(
