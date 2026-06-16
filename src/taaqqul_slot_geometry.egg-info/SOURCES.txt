@@ -30,9 +30,14 @@ src/taaqqul_slot_geometry/constitution/identity_preservation.py
 src/taaqqul_slot_geometry/constitution/maqool_constitution.py
 src/taaqqul_slot_geometry/constitution/transition_gate.py
 src/taaqqul_slot_geometry/core/__init__.py
+src/taaqqul_slot_geometry/core/arabic_morphology_generator.py
+src/taaqqul_slot_geometry/core/arabic_muttasil.py
+src/taaqqul_slot_geometry/core/arabic_taadiyah_luzoom.py
+src/taaqqul_slot_geometry/core/arabic_weight_pattern.py
 src/taaqqul_slot_geometry/core/rank.py
 src/taaqqul_slot_geometry/core/residual.py
 src/taaqqul_slot_geometry/core/slot_graph.py
 src/taaqqul_slot_geometry/core/trace.py
 src/taaqqul_slot_geometry/runtime/__init__.py
 src/taaqqul_slot_geometry/runtime/constitutional_engine.py
+tests/test_morphology_generator.py
