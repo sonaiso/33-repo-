@@ -27,7 +27,8 @@ This document is the Maqool Constitution for the `Taaqol-GPT` system.
 
 > **"لا كود بلا أصل، ولا فرع بلا ترخيص، ولا انتقال بلا إثبات"**
 
-The project builds an Arabic language analysis engine across 4 sequential layers.
+The project verifies the reasonableness of GPT answers through 4 sequential layers,
+issuing a final verdict: MAQOOL / GHAYR_MAQOOL / MU'ALLAQ.
 See `docs/16_STRATEGIC_METHODOLOGY.md` for the full strategic methodology with
 measurable KPIs enforced through `pytest tests/test_kpi_indicators.py`.
 
