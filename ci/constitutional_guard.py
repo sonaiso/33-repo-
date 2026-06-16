@@ -362,6 +362,8 @@ def check_roadmap_binding(file_path: Path) -> List[Violation]:
         or "docs/01_EUCLIDEAN_PROOFS" in content
         or "docs/19_MORPHOLOGY_GENERATOR_THEOREM" in content
         or "docs/20_WAQF_WASL_BOUNDARY_THEOREM" in content
+        or "docs/L0_CLOSURE_DECLARATION" in content
+        or "docs/02_L1_META_LANGUAGE_BOUNDARY" in content
         or "Origin:" in content
         or "trace_ref" in content
     )

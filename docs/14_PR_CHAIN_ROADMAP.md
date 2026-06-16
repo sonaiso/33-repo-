@@ -13,9 +13,11 @@
 
 ---
 
-## Phase 0 — L0 Closure ✅ CURRENT
+## Phase 0 — L0 Closure ✅ COMPLETE
 
 **Goal**: Implement and test all L0 entities. Close L0 boundary.
+
+**Closure**: Formally closed via `docs/L0_CLOSURE_DECLARATION.md`.
 
 ### Deliverables
 - [x] `src/taaqqul_slot_geometry/constitution/failure_taxonomy.py`
@@ -42,9 +44,9 @@
 
 ---
 
-## Phase 1 — L1 Closure ⏳ PENDING
+## Phase 1 — L1 Closure ✅ OPEN
 
-**Blocked by**: Phase 0 (L0 must be fully closed).
+**Unblocked by**: L0 formal closure (`docs/L0_CLOSURE_DECLARATION.md`).
 
 **Goal**: Implement formal definitions, postulates, common notions, and L0→L1 bridges.
 
