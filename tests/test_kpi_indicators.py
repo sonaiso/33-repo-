@@ -33,7 +33,7 @@ CORE_DIR = SRC_ROOT / "core"
 RUNTIME_DIR = SRC_ROOT / "runtime"
 
 # All source directories that contain production code
-ALL_SOURCE_DIRS = [L0_DIR, CONSTITUTION_DIR, CORE_DIR, RUNTIME_DIR]
+ALL_SOURCE_DIRS = [L0_DIR, L1_DIR, CONSTITUTION_DIR, CORE_DIR, RUNTIME_DIR]
 
 
 def _python_files(directory: Path) -> List[Path]:
