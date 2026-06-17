@@ -1,8 +1,22 @@
 """
 L1 package — Formal Description layer.
 Origin: docs/00_MAQOOL_CONSTITUTION.md §5 Rule 1; §6 L1
-Authority: docs/15_PROJECT_ROADMAP.md Phase 1 PR-10, PR-11
+Authority: docs/15_PROJECT_ROADMAP.md Phase 1 PR-10, PR-11, PR-12
 """
+from taaqqul_slot_geometry.L1.common_notion import (
+    COMMON_NOTION_BY_ID,
+    COMMON_NOTION_CN1,
+    COMMON_NOTION_CN2,
+    COMMON_NOTION_CN3,
+    COMMON_NOTION_CN4,
+    COMMON_NOTIONS,
+    CommonNotion,
+    CommonNotionDomain,
+    common_notions_by_domain,
+    get_common_notion,
+    total_common_notion_count,
+    verify_common_notion_coverage,
+)
 from taaqqul_slot_geometry.L1.definition import (
     DEFINITION_BY_TERM,
     FORMAL_DEFINITIONS,
@@ -61,6 +75,14 @@ __all__ = [
     "AXIOM_OA11",
     "AXIOM_OA12",
     "BoundaryCondition",
+    "COMMON_NOTION_BY_ID",
+    "COMMON_NOTION_CN1",
+    "COMMON_NOTION_CN2",
+    "COMMON_NOTION_CN3",
+    "COMMON_NOTION_CN4",
+    "COMMON_NOTIONS",
+    "CommonNotion",
+    "CommonNotionDomain",
     "DEFINITION_BY_TERM",
     "DefinitionCategory",
     "FORMAL_DEFINITIONS",
@@ -75,14 +97,18 @@ __all__ = [
     "POSTULATES",
     "Postulate",
     "PostulateCategory",
+    "common_notions_by_domain",
     "definitions_by_category",
+    "get_common_notion",
     "get_definition",
     "get_postulate",
     "postulates_by_category",
     "total_axiom_count",
     "total_combined_count",
+    "total_common_notion_count",
     "total_definition_count",
     "total_postulate_count",
+    "verify_common_notion_coverage",
     "verify_identity_preservation",
     "verify_postulate_coverage",
 ]
