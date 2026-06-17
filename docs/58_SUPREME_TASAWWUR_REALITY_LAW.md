@@ -138,13 +138,16 @@ Example: "جاء زيد، وهو مسرور" — "هو" refers discursively to "
 
 ---
 
-## Four Domains
+## Four Domains (Summary)
+
+> Note: This is a simplified grouping of the 29 layers into four broad domains.
+> The full layer enumeration below provides the precise ordering.
 
 ```text
-قبل العقل: واقع وأثر وافتقار وإحالة.
-داخل العقل: تصور ومعرفة وحامل وهوية وجنس وحقيقة وخواص.
-داخل اللغة: لفظ وكلمة وتركيب ونسبة وإعراب وإحالة خطابية.
-بعد اللغة: إفادة وحكم وتنزيل.
+قبل العقل (Layers 0-4): واقع وأثر واستقبال وافتقار وإحالة قبلية.
+داخل العقل (Layers 5-14): تصور ومعرفة وحامل وهوية وجنس وحقيقة وخواص وصفة ومصدر ووزن وأداة.
+داخل اللغة (Layers 15-25): لفظ وإقفال وكلمة وتركيب ونسبة وإعراب وإحالة خطابية وأسلوب ومنطوق ومفهوم ومعقول.
+بعد اللغة (Layers 26-28): إفادة وحكم وتنزيل.
 والإحالة هي العصب الذي يرخص كل انتقال بين هذه الطبقات.
 ```
 
@@ -736,6 +739,11 @@ Example:
 ---
 
 ## Graduated Closure Law (قانون الإقفال المتدرج)
+
+> Note: This law describes 10 coarse-grained closure gates — major checkpoints
+> in the 29-layer chain. Layers between gates are sub-steps within each gate's
+> scope (e.g., CarrierClosure encompasses Layers 7-14; RelationClosure encompasses
+> Layers 19-25). A gate does not close until all its constituent layers are satisfied.
 
 ```text
 إقفال الأثر شرط إمكان التصور.
