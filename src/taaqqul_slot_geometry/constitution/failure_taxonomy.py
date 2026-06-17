@@ -143,9 +143,15 @@ class FailureCode(str, Enum):
     M_CX_19 = "branch_distinguishing_difference_missing"
     M_CX_20 = "branch_barrier_not_verified"
 
-    # ── Algebraic reference violations (M_CX_21..M_CX_25) ───────────────────
+    # ── Algebraic reference violations (M_CX_21..M_CX_31) ───────────────────
     M_CX_21 = "reference_source_type_mismatch"
     M_CX_22 = "reference_target_type_mismatch"
     M_CX_23 = "reference_composition_gap"
     M_CX_24 = "reference_condition_failed"
     M_CX_25 = "reference_preventer_active"
+    M_CX_26 = "reference_domain_missing"
+    M_CX_27 = "reference_condition_missing"
+    M_CX_28 = "reference_cause_missing"
+    M_CX_29 = "reference_layer_leap"
+    M_CX_30 = "reference_identity_proof_missing"
+    M_CX_31 = "reference_condition_not_verified"
