@@ -448,7 +448,7 @@ After composition, another type of reference appears — discourse reference:
 | الخبر (Declarative) | Reference to truth/falsity capability |
 | الإنشاء (Performative) | Reference to request, command, prohibition, interrogation, wish |
 | المقام (Context) | Reference to circumstance of use |
-| السياق (Cotexт) | Reference to preceding and following |
+| السياق (Cotext) | Reference to preceding and following |
 | المتكلم (Speaker) | Reference to intention or address |
 | المخاطب (Addressee) | Reference to capacity for understanding and reception |
 | المنطوق (Explicit) | What the utterance closed within the boundary of saying |
