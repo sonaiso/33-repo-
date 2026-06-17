@@ -178,13 +178,19 @@ class TestRefResult:
             result.status = RefStatus.BLOCKED  # type: ignore[misc]
 
     def test_rank_must_be_candidate(self):
-        """Rank must be CANDIDATE (no promotion in current phase)."""
-        with pytest.raises(ValueError):
+        """Rank must be CANDIDATE (no promotion in current phase).
+
+        The birth guard in __post_init__ enforces rank == Rank.CANDIDATE.
+        We test this by passing a non-Rank value via object.__new__ bypass.
+        """
+        # Since Rank only has CANDIDATE, passing a non-Rank string tests the guard
+        with pytest.raises((ValueError, TypeError)):
+            # Constructing with a string bypasses Rank enum and hits the guard
             RefResult(
                 status=RefStatus.LICENSED,
                 output_layer=ReferenceLayer.GLYPH,
                 identity_preserved=True,
-                rank=Rank("LICENSED"),  # type: ignore[arg-type]
+                rank="PROMOTED",  # type: ignore[arg-type]
             )
 
     def test_trace_ref_required(self):
@@ -379,9 +385,13 @@ class TestAlgebraicReference:
             ref.domain = "mutated"  # type: ignore[misc]
 
     def test_rank_candidate(self):
-        """Rank must be CANDIDATE."""
-        with pytest.raises(ValueError):
-            self._make_digital_ref(rank=Rank("LICENSED"))  # type: ignore[arg-type]
+        """Rank must be CANDIDATE.
+
+        The birth guard in __post_init__ enforces rank == Rank.CANDIDATE.
+        Passing a non-Rank string tests the guard directly.
+        """
+        with pytest.raises((ValueError, TypeError)):
+            self._make_digital_ref(rank="PROMOTED")  # type: ignore[arg-type]
 
     def test_mode_property(self):
         """mode property returns the correct ReferenceMode."""

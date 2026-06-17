@@ -426,12 +426,12 @@ class AlgebraicReference:
                     f"got {self.source_layer.value} → {self.target_layer.value}"
                 )
         else:
-            # Transition must be to adjacent layer (distance == 1)
-            if distance > 1:
+            # Transition must be to adjacent layer (distance == 1 exactly)
+            if distance != 1:
                 raise ValueError(
                     f"{FailureCode.M_CX_29.value}: "
-                    f"leap from {self.source_layer.value} to {self.target_layer.value} "
-                    f"is forbidden (distance={distance})"
+                    f"transition from {self.source_layer.value} to {self.target_layer.value} "
+                    f"requires distance=1, got distance={distance}"
                 )
 
     @property
