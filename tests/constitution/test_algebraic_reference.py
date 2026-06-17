@@ -519,7 +519,7 @@ class TestComposition:
 
     def test_compose_chain_empty_rejected(self):
         """Empty chain must be rejected."""
-        with pytest.raises(ValueError, match="reference_chain_empty"):
+        with pytest.raises(ValueError, match=FailureCode.M_CX_32.value):
             compose_chain(())
 
 
