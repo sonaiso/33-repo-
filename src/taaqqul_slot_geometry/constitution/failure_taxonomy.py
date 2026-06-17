@@ -155,3 +155,5 @@ class FailureCode(str, Enum):
     M_CX_29 = "reference_layer_leap"
     M_CX_30 = "reference_identity_proof_missing"
     M_CX_31 = "reference_condition_not_verified"
+    M_CX_32 = "reference_chain_empty"
+    M_CX_33 = "reference_result_status_invalid"
