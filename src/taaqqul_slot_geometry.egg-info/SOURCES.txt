@@ -38,13 +38,17 @@ src/taaqqul_slot_geometry/core/arabic_morphology_generator.py
 src/taaqqul_slot_geometry/core/arabic_muttasil.py
 src/taaqqul_slot_geometry/core/arabic_taadiyah_luzoom.py
 src/taaqqul_slot_geometry/core/arabic_weight_pattern.py
+src/taaqqul_slot_geometry/core/lafz_closure.py
 src/taaqqul_slot_geometry/core/letter_registry.py
 src/taaqqul_slot_geometry/core/mark_registry.py
 src/taaqqul_slot_geometry/core/rank.py
 src/taaqqul_slot_geometry/core/residual.py
 src/taaqqul_slot_geometry/core/slot_graph.py
+src/taaqqul_slot_geometry/core/syllabifier.py
 src/taaqqul_slot_geometry/core/trace.py
 src/taaqqul_slot_geometry/core/transition_registry.py
+src/taaqqul_slot_geometry/core/vocalized_parser.py
+src/taaqqul_slot_geometry/core/vocalized_unit_builder.py
 src/taaqqul_slot_geometry/runtime/__init__.py
 src/taaqqul_slot_geometry/runtime/constitutional_engine.py
 tests/test_kpi_indicators.py
