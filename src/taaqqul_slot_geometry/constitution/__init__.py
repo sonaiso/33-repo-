@@ -2,6 +2,18 @@
 Constitution package — root authority for Taaqol-GPT.
 Origin: docs/00_MAQOOL_CONSTITUTION.md
 """
+from taaqqul_slot_geometry.constitution.algebraic_reference import (
+    AlgebraicReference,
+    REFERENCE_LAYER_INDEX,
+    REFERENCE_TYPE_DOMAIN,
+    ReferenceCompositionError,
+    ReferenceLayer,
+    ReferenceType,
+    RefResult,
+    RefStatus,
+    compose_chain,
+    compose_references,
+)
 from taaqqul_slot_geometry.constitution.branch_license import (
     BranchLicense,
     BranchLicenseError,
@@ -39,6 +51,7 @@ __all__ = [
     "ALL_DEFINITIONS",
     "ALL_POSTULATES",
     "ALL_THEOREMS",
+    "AlgebraicReference",
     "BranchLicense",
     "BranchLicenseError",
     "CONSTITUTION",
@@ -54,8 +67,17 @@ __all__ = [
     "ProofStep",
     "ProofVerificationError",
     "ProofVerifier",
+    "REFERENCE_LAYER_INDEX",
+    "REFERENCE_TYPE_DOMAIN",
+    "ReferenceCompositionError",
+    "ReferenceLayer",
+    "ReferenceType",
+    "RefResult",
+    "RefStatus",
     "SYSTEM_HASH",
     "TheoremId",
     "TransitionError",
     "TransitionGate",
+    "compose_chain",
+    "compose_references",
 ]
