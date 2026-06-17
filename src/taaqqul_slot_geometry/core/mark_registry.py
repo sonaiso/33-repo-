@@ -33,7 +33,6 @@ class MarkGenus(str, Enum):
     SHADDA = "shadda_operator"
     TANWIN = "tanwin_operator"
     MADD_SIGN = "madd_sign"
-    HAMZA_MARK = "hamza_mark"
     SUPERSCRIPT_ALIF = "superscript_alif"
 
 
@@ -50,7 +49,6 @@ class MarkFunction(str, Enum):
     GEMINATE = "geminate"               # تضعيف الحرف وظيفيًا
     VOWEL_NUNNATION = "vowel_nunnation" # حركة + أثر نوني
     EXTEND = "extend"                   # تطويل/امتداد
-    HAMZA_SEAT_MARK = "hamza_seat_mark" # علامة كرسي الهمزة
 
 
 @dataclass(frozen=True)

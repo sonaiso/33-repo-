@@ -306,14 +306,17 @@ def check_transition_licensed(
     carrier_exists: bool,
     domain_declared: bool,
     identity_preserved: bool,
+    operator_licensed: bool,
     condition_holds: bool,
     cause_exists: bool,
     preventer_active: bool,
+    residuals_declared: bool = True,
 ) -> TransitionVerdict:
     """Pure function: evaluate whether a transition is licensed.
 
     This implements the universal transition rule:
-        IF carrier AND domain AND identity AND condition AND cause AND NOT preventer
+        IF carrier AND domain AND identity AND operator AND condition
+           AND cause AND NOT preventer AND residuals_declared
         THEN licensed
         ELSE verdict from the law's output_on_failure
 
@@ -327,12 +330,16 @@ def check_transition_licensed(
         Whether the domain is declared.
     identity_preserved : bool
         Whether identity is preserved.
+    operator_licensed : bool
+        Whether the operator is licensed for this transition.
     condition_holds : bool
         Whether the transition condition holds.
     cause_exists : bool
         Whether the cause for transition exists.
     preventer_active : bool
         Whether a preventer is blocking.
+    residuals_declared : bool
+        Whether residuals have been declared (defaults to True).
 
     Returns
     -------
@@ -345,9 +352,11 @@ def check_transition_licensed(
         carrier_exists
         and domain_declared
         and identity_preserved
+        and operator_licensed
         and condition_holds
         and cause_exists
         and not preventer_active
+        and residuals_declared
     ):
         return TransitionVerdict.LICENSED
 

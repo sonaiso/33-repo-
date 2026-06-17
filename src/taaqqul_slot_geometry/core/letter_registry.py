@@ -30,7 +30,6 @@ class LetterGenus(str, Enum):
     CONSONANTAL = "consonantal_letter"
     LONG_VOWEL = "long_vowel_letter"
     HAMZA = "hamza"
-    ALIF_SEAT = "alif_seat"
 
 
 @dataclass(frozen=True)
