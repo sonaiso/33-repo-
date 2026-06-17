@@ -54,7 +54,7 @@ class VocalizedUnit:
     letter_glyph : str
         The raw letter glyph.
     mark_id : Optional[str]
-        The mark ID applied (None if sukun/no mark).
+        The mark ID applied (None if no mark is attached).
     transition_verdict : TransitionVerdict
         Whether this unit's formation was licensed.
     is_tanwin : bool

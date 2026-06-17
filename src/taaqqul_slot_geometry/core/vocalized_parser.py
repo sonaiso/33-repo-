@@ -14,7 +14,6 @@ trace_ref: docs/59_ARABIC_DIGITAL_IDENTITY_LAW.md §VocalizedParser
 """
 from __future__ import annotations
 
-import unicodedata
 from dataclasses import dataclass, field
 from typing import FrozenSet, Optional, Tuple
 
@@ -34,10 +33,6 @@ from taaqqul_slot_geometry.core.mark_registry import (
 MARK_BY_GLYPH: dict[str, MarkIdentity] = {
     m.glyph: m for m in MARK_REGISTRY
 }
-
-# Arabic Unicode ranges for letter detection
-_ARABIC_LETTER_RANGE = range(0x0621, 0x064B)  # Letters: U+0621 to U+064A
-_ARABIC_MARK_RANGE = range(0x064B, 0x0670)    # Marks: U+064B to U+066F
 
 # Special characters: Alif (seat/carrier, not a consonant in the 28)
 _ALIF_CODEPOINT = "\u0627"  # ا
@@ -104,12 +99,13 @@ class ParseResult:
         The ordered sequence of parsed (letter, mark) units.
     is_fully_vocalized : bool
         True if every letter has an attached mark.
+        When False, residuals will contain "missing_harakat".
     trace_ref : str
         Constitutional reference.
     rank : str
-        "CANDIDATE" if fully vocalized, "deferred" if not.
+        Always "CANDIDATE" (constitutional mandate).
     residuals : FrozenSet[str]
-        Residual bundle.
+        Residual bundle. Contains "missing_harakat" if not fully vocalized.
     """
 
     units: Tuple[ParsedUnit, ...]
@@ -121,6 +117,8 @@ class ParseResult:
     def __post_init__(self) -> None:
         if not self.trace_ref:
             raise ValueError(FailureCode.M_00_11.value)
+        if self.rank != "CANDIDATE":
+            raise ValueError(FailureCode.M_00_10.value)
 
 
 def _is_arabic_mark(char: str) -> bool:
@@ -290,7 +288,6 @@ def parse_vocalized(text: str) -> ParseResult:
         )
 
     is_fully_vocalized = not has_unvocalized
-    result_rank = "CANDIDATE" if is_fully_vocalized else "deferred"
     result_residuals: FrozenSet[str] = frozenset()
     if not is_fully_vocalized:
         result_residuals = frozenset({"missing_harakat"})
@@ -298,6 +295,5 @@ def parse_vocalized(text: str) -> ParseResult:
     return ParseResult(
         units=tuple(units),
         is_fully_vocalized=is_fully_vocalized,
-        rank=result_rank,
         residuals=result_residuals,
     )

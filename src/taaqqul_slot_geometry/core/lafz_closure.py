@@ -116,11 +116,11 @@ def close_lafz(syllabification: SyllabificationResult) -> LafzCandidate:
 
     # A lafz is closed if:
     # 1. There are syllables
-    # 2. No missing harakat (fully vocalized)
+    # 2. No blocking residuals (fully vocalized, no fallbacks)
     # 3. Syllabification was licensed
     lafz_closed = (
         len(syllables) > 0
-        and "missing_harakat" not in syllabification.residuals
+        and not blocking_residuals
         and syllabification.transition_verdict == TransitionVerdict.LICENSED
     )
 

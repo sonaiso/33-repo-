@@ -135,9 +135,10 @@ class TestVocalizedParsing:
         assert result.units[2].mark.mark_id == "DAMMATAN"
 
     def test_unvocalized_deferred(self) -> None:
-        """كتب without harakat produces rank='deferred'."""
+        """كتب without harakat has rank='CANDIDATE' but is_fully_vocalized=False."""
         result = parse_vocalized("كتب")
-        assert result.rank == "deferred"
+        assert result.rank == "CANDIDATE"  # Constitutional mandate: always CANDIDATE
+        assert result.is_fully_vocalized is False
         assert "missing_harakat" in result.residuals
 
     def test_empty_input_raises(self) -> None:
