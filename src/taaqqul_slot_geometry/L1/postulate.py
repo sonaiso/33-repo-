@@ -273,7 +273,7 @@ AXIOM_OA2 = Postulate(
         "and a licensed branch that the weight witnesses."
     ),
     category=PostulateCategory.OPERATIONAL,
-    constitution_ref="docs/00_MAQOOL_CONSTITUTION.md §8 P4; docs/55 §Origin",
+    constitution_ref="docs/00_MAQOOL_CONSTITUTION.md §8 P4; docs/55_KNOWLEDGE_ORIGINS_FOR_GPT_REASONABLENESS_LAW.md §Origin",
     related_failure_codes=(
         FailureCode.M_02_19.value,
         FailureCode.M_00_22.value,
