@@ -172,7 +172,9 @@ class ReferenceResidualKind(str, Enum):
 
     IDENTITY_NOT_VERIFIED = "identity_not_verified"
     CONDITION_NOT_VERIFIED = "condition_not_verified"
+    CONDITION_FAILED = "condition_failed"
     CAUSE_NOT_ACTIVE = "cause_not_active"
+    CAUSE_FAILED = "cause_failed"
     PREVENTER_ACTIVE = "preventer_active"
     OPERATOR_UNLICENSED = "operator_unlicensed"
     COMPOSITION_GAP = "composition_gap"
@@ -274,7 +276,7 @@ class RefResult:
     def __post_init__(self) -> None:
         """Birth guard — validates RefResult fields."""
         if not isinstance(self.status, RefStatus):
-            raise ValueError(FailureCode.M_CX_24.value)
+            raise ValueError(FailureCode.M_CX_33.value)
         if not isinstance(self.output_layer, ReferenceLayer):
             raise ValueError(FailureCode.M_CX_22.value)
         if not self.trace_ref:
@@ -482,7 +484,7 @@ class AlgebraicReference:
                 output_layer=self.target_layer,
                 identity_preserved=False,
                 reason=f"condition_failed: {self.condition}",
-                residuals=self.residuals | frozenset({ReferenceResidualKind.CONDITION_NOT_VERIFIED}),
+                residuals=self.residuals | frozenset({ReferenceResidualKind.CONDITION_FAILED}),
                 trace=(self.reference_type.value,),
             )
         if self.condition_verdict == GateStatus.NOT_VERIFIED:
@@ -502,7 +504,7 @@ class AlgebraicReference:
                 output_layer=self.target_layer,
                 identity_preserved=False,
                 reason=f"cause_failed: {self.cause}",
-                residuals=self.residuals | frozenset({ReferenceResidualKind.CAUSE_NOT_ACTIVE}),
+                residuals=self.residuals | frozenset({ReferenceResidualKind.CAUSE_FAILED}),
                 trace=(self.reference_type.value,),
             )
         if self.cause_verdict == GateStatus.NOT_VERIFIED:
@@ -521,7 +523,7 @@ class AlgebraicReference:
                 status=RefStatus.DEFERRED,
                 output_layer=self.target_layer,
                 identity_preserved=False,
-                reason="identity_not_verified: no identity_evidence_ref provided",
+                reason=f"{FailureCode.M_CX_30.value}: no identity_evidence_ref provided",
                 residuals=self.residuals | frozenset({ReferenceResidualKind.IDENTITY_NOT_VERIFIED}),
                 trace=(self.reference_type.value,),
             )
@@ -642,7 +644,7 @@ def compose_chain(
         If the chain is empty.
     """
     if not references:
-        raise ValueError(f"{FailureCode.M_CX_24.value}: empty reference chain")
+        raise ValueError(f"{FailureCode.M_CX_32.value}: empty reference chain")
 
     # Verify all adjacent pairs are composable
     for i in range(len(references) - 1):

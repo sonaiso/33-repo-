@@ -184,7 +184,7 @@ class TestRefResult:
         We test this by passing a non-Rank value via object.__new__ bypass.
         """
         # Since Rank only has CANDIDATE, passing a non-Rank string tests the guard
-        with pytest.raises((ValueError, TypeError)):
+        with pytest.raises(ValueError, match=FailureCode.M_CX_09.value):
             # Constructing with a string bypasses Rank enum and hits the guard
             RefResult(
                 status=RefStatus.LICENSED,
@@ -286,7 +286,7 @@ class TestAlgebraicReference:
         ref = self._make_digital_ref(identity_evidence_ref="")
         result = ref.apply()
         assert result.status == RefStatus.DEFERRED
-        assert "identity_not_verified" in result.reason
+        assert FailureCode.M_CX_30.value in result.reason
         assert ReferenceResidualKind.IDENTITY_NOT_VERIFIED in result.residuals
 
     def test_apply_blocked_condition_failed(self):
@@ -295,7 +295,7 @@ class TestAlgebraicReference:
         result = ref.apply()
         assert result.status == RefStatus.BLOCKED
         assert "condition_failed" in result.reason
-        assert ReferenceResidualKind.CONDITION_NOT_VERIFIED in result.residuals
+        assert ReferenceResidualKind.CONDITION_FAILED in result.residuals
 
     def test_apply_deferred_condition_not_verified(self):
         """apply() with condition_verdict=NOT_VERIFIED returns DEFERRED."""
@@ -311,7 +311,7 @@ class TestAlgebraicReference:
         result = ref.apply()
         assert result.status == RefStatus.BLOCKED
         assert "cause_failed" in result.reason
-        assert ReferenceResidualKind.CAUSE_NOT_ACTIVE in result.residuals
+        assert ReferenceResidualKind.CAUSE_FAILED in result.residuals
 
     def test_apply_deferred_cause_not_verified(self):
         """apply() with cause_verdict=NOT_VERIFIED returns DEFERRED."""
@@ -390,7 +390,7 @@ class TestAlgebraicReference:
         The birth guard in __post_init__ enforces rank == Rank.CANDIDATE.
         Passing a non-Rank string tests the guard directly.
         """
-        with pytest.raises((ValueError, TypeError)):
+        with pytest.raises(ValueError, match=FailureCode.M_CX_09.value):
             self._make_digital_ref(rank="PROMOTED")  # type: ignore[arg-type]
 
     def test_mode_property(self):
@@ -519,7 +519,7 @@ class TestComposition:
 
     def test_compose_chain_empty_rejected(self):
         """Empty chain must be rejected."""
-        with pytest.raises(ValueError, match="reference_condition_failed"):
+        with pytest.raises(ValueError, match="reference_chain_empty"):
             compose_chain(())
 
 
@@ -587,7 +587,8 @@ class TestConstitutionalBinding:
     def test_authority_is_not_user_defined_critique(self):
         """Authority must reference constitutional docs, not 'User-defined critique'."""
         import inspect
-        source = inspect.getsource(AlgebraicReference)
+        import taaqqul_slot_geometry.constitution.algebraic_reference as algebraic_reference_mod
+        source = inspect.getsource(algebraic_reference_mod)
         assert "User-defined critique" not in source
 
 
@@ -628,6 +629,7 @@ class TestNegativeConditionCauseIdentity:
         result = ref.apply()
         assert result.status == RefStatus.BLOCKED
         assert "condition_failed" in result.reason
+        assert ReferenceResidualKind.CONDITION_FAILED in result.residuals
 
     def test_cause_declared_but_not_verified_defers(self):
         """A cause that is declared but NOT_VERIFIED must defer."""
@@ -642,13 +644,14 @@ class TestNegativeConditionCauseIdentity:
         result = ref.apply()
         assert result.status == RefStatus.BLOCKED
         assert "cause_failed" in result.reason
+        assert ReferenceResidualKind.CAUSE_FAILED in result.residuals
 
     def test_identity_missing_defers_not_licenses(self):
         """Missing identity_evidence_ref must DEFER, never LICENSE."""
         ref = self._make_ref(identity_evidence_ref="")
         result = ref.apply()
         assert result.status == RefStatus.DEFERRED
-        assert "identity_not_verified" in result.reason
+        assert FailureCode.M_CX_30.value in result.reason
         assert not result.identity_preserved
 
     def test_identity_provided_licenses(self):
@@ -778,13 +781,15 @@ class TestPreciseFailureCodes:
             )
 
     def test_new_failure_codes_exist(self):
-        """New failure codes M_CX_26..M_CX_31 must exist in FailureCode."""
+        """New failure codes M_CX_26..M_CX_33 must exist in FailureCode."""
         assert FailureCode.M_CX_26.value == "reference_domain_missing"
         assert FailureCode.M_CX_27.value == "reference_condition_missing"
         assert FailureCode.M_CX_28.value == "reference_cause_missing"
         assert FailureCode.M_CX_29.value == "reference_layer_leap"
         assert FailureCode.M_CX_30.value == "reference_identity_proof_missing"
         assert FailureCode.M_CX_31.value == "reference_condition_not_verified"
+        assert FailureCode.M_CX_32.value == "reference_chain_empty"
+        assert FailureCode.M_CX_33.value == "reference_result_status_invalid"
 
 
 # ══════════════════════════════════════════════════════════════════════════════
@@ -825,7 +830,9 @@ class TestReferenceResidualKind:
         expected = {
             "identity_not_verified",
             "condition_not_verified",
+            "condition_failed",
             "cause_not_active",
+            "cause_failed",
             "preventer_active",
             "operator_unlicensed",
             "composition_gap",
@@ -836,5 +843,5 @@ class TestReferenceResidualKind:
         assert actual == expected
 
     def test_residual_kind_count(self):
-        """Must have exactly 8 residual kinds."""
-        assert len(ReferenceResidualKind) == 8
+        """Must have exactly 10 residual kinds."""
+        assert len(ReferenceResidualKind) == 10
