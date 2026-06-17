@@ -53,6 +53,36 @@ from taaqqul_slot_geometry.core.arabic_muttasil import (
     generate_weak_past,
     generate_weak_present,
 )
+from taaqqul_slot_geometry.core.letter_registry import (
+    LETTER_BY_CODEPOINT,
+    LETTER_BY_GLYPH,
+    LETTER_BY_ID,
+    LETTER_REGISTRY,
+    LetterGenus,
+    LetterIdentity,
+    get_letter_by_codepoint,
+    get_letter_by_glyph,
+    get_letter_by_id,
+)
+from taaqqul_slot_geometry.core.mark_registry import (
+    MARK_BY_CODEPOINT,
+    MARK_BY_ID,
+    MARK_REGISTRY,
+    MarkFunction,
+    MarkGenus,
+    MarkIdentity,
+    get_mark_by_codepoint,
+    get_mark_by_id,
+)
+from taaqqul_slot_geometry.core.transition_registry import (
+    TRANSITION_BY_ID,
+    TRANSITION_REGISTRY,
+    TransitionLayer,
+    TransitionLaw,
+    TransitionVerdict,
+    check_transition_licensed,
+    get_transition_law,
+)
 
 __all__ = [
     "Rank",
@@ -103,4 +133,31 @@ __all__ = [
     "is_weak_root",
     "generate_weak_past",
     "generate_weak_present",
+    # Letter Registry (docs/59)
+    "LETTER_BY_CODEPOINT",
+    "LETTER_BY_GLYPH",
+    "LETTER_BY_ID",
+    "LETTER_REGISTRY",
+    "LetterGenus",
+    "LetterIdentity",
+    "get_letter_by_codepoint",
+    "get_letter_by_glyph",
+    "get_letter_by_id",
+    # Mark Registry (docs/59)
+    "MARK_BY_CODEPOINT",
+    "MARK_BY_ID",
+    "MARK_REGISTRY",
+    "MarkFunction",
+    "MarkGenus",
+    "MarkIdentity",
+    "get_mark_by_codepoint",
+    "get_mark_by_id",
+    # Transition Registry (docs/59)
+    "TRANSITION_BY_ID",
+    "TRANSITION_REGISTRY",
+    "TransitionLayer",
+    "TransitionLaw",
+    "TransitionVerdict",
+    "check_transition_licensed",
+    "get_transition_law",
 ]
