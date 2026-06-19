@@ -22,13 +22,21 @@ def test_rank_remains_candidate_in_l1_programming_kernel():
     """trace_ref: docs/00A_CONSTITUTIONAL_PROGRAMMING_AMENDMENT.md L1 Output Envelope."""
     content = AMENDMENT_DOC.read_text(encoding="utf-8")
     assert 'rank = "CANDIDATE"' in content
+    assert "Certificate is forbidden in L1 programming kernel." in content
 
 
 def test_b6_does_not_open_l2():
     """trace_ref: docs/02_L1_META_LANGUAGE_BOUNDARY.md Structural Clarification."""
     content = L1_BOUNDARY_DOC.read_text(encoding="utf-8")
     assert "B6" in content
-    assert "does not open L2" in content
+    assert "No opening of L2" in content or "does not open L2" in content
+
+
+def test_no_b6_escalation_to_ifadah_hukm():
+    """trace_ref: docs/00A_CONSTITUTIONAL_PROGRAMMING_AMENDMENT.md Forbidden in this phase."""
+    content = AMENDMENT_DOC.read_text(encoding="utf-8")
+    assert "AttributionCandidate is not Ifadah." in content
+    assert "Ifadah is not Hukm." in content
 
 
 def test_manual_coverage_is_forbidden():

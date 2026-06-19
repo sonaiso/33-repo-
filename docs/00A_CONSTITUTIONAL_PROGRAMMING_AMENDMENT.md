@@ -38,6 +38,7 @@ No coverage dashboards with manual totals.
 ## L1 Output Envelope
 
 All L1 constitutional programming outputs must remain `rank = "CANDIDATE"`.
+Certificate is forbidden in L1 programming kernel.
 L1 outputs are bounded to:
 - Candidate
 - BlockedCandidate
@@ -47,6 +48,10 @@ L1 outputs are bounded to:
 Forbidden in this phase:
 - FinalMeaning
 - FinalSyntaxRole
+- AttributionCandidate is not Ifadah.
+- Ifadah is not Hukm.
+- AttributionCandidate as final Ifadah
+- Ifadah as final Hukm
 - Ifadah
 - Hukm
 - Tanzil
