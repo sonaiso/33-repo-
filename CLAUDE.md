@@ -40,7 +40,7 @@ measurable KPIs enforced through `pytest tests/test_kpi_indicators.py`.
 1. **Trace every change** to the roadmap (`docs/15_PROJECT_ROADMAP.md`) or constitution
 2. **Obtain a BranchLicense** for any work not explicitly listed in the roadmap
 3. **Never write code** without a `trace_ref` to the constitution
-4. **Never open a locked layer** — L1 is pending L0 closure, L2/L3 are locked
+4. **Never open a locked layer** — L0 is closed, L1 is open under Phase 1 scope, L2/L3 are locked
 5. **Never introduce silent exceptions** — all rejections use `FailureCode`
 6. **Never mutate entities** — all dataclasses must be `frozen=True`
 7. **Never perform I/O** in source code — pure functions only
@@ -56,7 +56,7 @@ measurable KPIs enforced through `pytest tests/test_kpi_indicators.py`.
 L0 (Object Language)  →  L1 (Formal Description)  →  L2 (Logical)  →  L3 (Real-world)
 ```
 
-**Current phase: L0 Complete, awaiting formal closure (PR-9)**
+**Current phase: L0 Closed (PR-9 complete), L1 Open (PR-10→PR-13 in progress), L2/L3 Locked**
 
 See `docs/15_PROJECT_ROADMAP.md` for the full roadmap.
 
@@ -128,7 +128,7 @@ src/taaqqul_slot_geometry/
   L0/             ← Phoneme, Grapheme, Vowel, Syllable, Utterance, Signifier,
                      Signified, Union, Signification, JamidAnchor, HarfMaani,
                      Weight, WaqfWasl
-  L1/             ← PENDING (requires PR-9: L0 formal closure)
+  L1/             ← OPEN (Phase 1 active; internal boundaries B0–B9)
   L2/             ← LOCKED
   L3/             ← LOCKED
   runtime/        ← ConstitutionalEngine (5-step pipeline)
@@ -225,7 +225,7 @@ Every PR must pass these measurable indicators:
 ## Best Practices for Agents
 
 1. **Read the roadmap first** — `docs/15_PROJECT_ROADMAP.md` defines what's allowed
-2. **Check current phase** — only L0 work is permitted until PR-9 closes L0
+2. **Check current phase** — L0 is closed; only authorized L1 Phase-1 work is permitted until L1 closure
 3. **Run KPIs before commit** — `pytest tests/test_kpi_indicators.py`
 4. **Run CI guard** — `python -m ci.constitutional_guard --source-dir src`
 5. **Use `BranchLicense`** for any work not in the roadmap
