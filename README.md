@@ -36,9 +36,11 @@ L0 (Object Language)  →  L1 (Formal Description)  →  L2 (Logical)  →  L3 (
 | Layer | Domain | Status | Entities |
 |-------|--------|--------|----------|
 | L0 | لغة موضوعية (صوت، خط، دلالة) | ✅ Complete | 13 entities |
-| L1 | وصف رسمي (تعريفات، مسلّمات، جسور) | ⏳ Pending | 0/5 |
+| L1 | وصف رسمي (تعريفات، مسلّمات، جسور) | ✅ Open | 3/5* |
 | L2 | منطق (قياس، برهان، إغلاق) | 🔒 Locked | 0/4 |
 | L3 | واقع (أدلة، مناط، حكم، تنزيل) | 🔒 Locked | 0/5 |
+
+\* تتبع 3/5 يدويًا وفق خارطة L1 الحالية: definition/postulate/common_notion مكتملة.
 
 ---
 
@@ -64,7 +66,7 @@ src/taaqqul_slot_geometry/
   L0/             ← Phoneme, Grapheme, Vowel, Syllable, Utterance, Signifier,
                      Signified, Union, Signification, JamidAnchor, HarfMaani,
                      Weight, WaqfWasl
-  L1/             ← ⏳ PENDING (requires L0 formal closure)
+  L1/             ← ✅ OPEN (Phase 1 active after L0 closure)
   L2/             ← 🔒 LOCKED
   L3/             ← 🔒 LOCKED
   runtime/        ← ConstitutionalEngine (5-step pipeline)
@@ -153,7 +155,7 @@ python -m ci.constitutional_guard --source-dir src
 | `docs/00_MAQOOL_CONSTITUTION.md` | الدستور الجذري — السلطة العليا |
 | `docs/01_L0_PHONETIC_BOUNDARY.md` | قوانين حدود L0 |
 | `docs/01_EUCLIDEAN_PROOFS.md` | البراهين الإقليدية الأربعة |
-| `docs/02_L1_META_LANGUAGE_BOUNDARY.md` | حدود L1 (معلّق) |
+| `docs/02_L1_META_LANGUAGE_BOUNDARY.md` | حدود L1 (مفتوح + B0–B9 داخلية) |
 | `docs/03_L2_LOGICAL_BOUNDARY.md` | حدود L2 (مقفل) |
 | `docs/04_L3_REALITY_BOUNDARY.md` | حدود L3 (مقفل) |
 | `docs/14_PR_CHAIN_ROADMAP.md` | سلسلة PRs المرقّمة |
@@ -166,7 +168,9 @@ python -m ci.constitutional_guard --source-dir src
 
 ## الخطوة التالية
 
-**PR-9: إعلان إغلاق L0 وفتح L1** — راجع `docs/15_PROJECT_ROADMAP.md`
+**الحالة الحالية:** تم إنجاز PR-9 (إغلاق L0 وفتح L1) — الخطوة التالية PR-10.
+
+**ملاحظة دستورية:** B0–B9 هي حدود داخلية داخل L1، وليست طبقات بديلة عن L0–L3.
 
 ---
 
