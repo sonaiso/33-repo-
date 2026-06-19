@@ -145,46 +145,50 @@ class TestConstitutionalCompliance:
 class TestCommonNotionContent:
     """Verify the content of each common notion matches the constitution."""
 
-    def test_cn1_transitivity(self):
-        """CN1 must assert transitivity of equality."""
+    def test_cn1_self_equality(self):
+        """CN1 must assert self-equality."""
         assert COMMON_NOTION_CN1.notion_id == "CN1"
-        assert COMMON_NOTION_CN1.name == "Transitivity"
-        assert COMMON_NOTION_CN1.name_ar == "التعدّي"
-        assert "equal" in COMMON_NOTION_CN1.statement.lower()
+        assert COMMON_NOTION_CN1.name == "Self-Equality"
+        assert COMMON_NOTION_CN1.name_ar == "المساواة الذاتية"
+        assert COMMON_NOTION_CN1.statement == "Every entity is equal to itself."
         assert COMMON_NOTION_CN1.domain == CommonNotionDomain.EQUALITY
-        assert "A=C" in COMMON_NOTION_CN1.formal_expression
-        assert "A=B" in COMMON_NOTION_CN1.formal_expression
+        assert COMMON_NOTION_CN1.formal_expression == "A=A"
+        assert COMMON_NOTION_CN1.order == 1
 
-    def test_cn2_additive_equality(self):
-        """CN2 must assert additive equality."""
+    def test_cn2_whole_greater_than_part(self):
+        """CN2 must assert whole-greater-than-part."""
         assert COMMON_NOTION_CN2.notion_id == "CN2"
-        assert COMMON_NOTION_CN2.name == "Additive Equality"
-        assert COMMON_NOTION_CN2.name_ar == "الجمع"
-        assert "add" in COMMON_NOTION_CN2.statement.lower()
-        assert "equal" in COMMON_NOTION_CN2.statement.lower()
-        assert COMMON_NOTION_CN2.domain == CommonNotionDomain.EQUALITY
-        assert "A+C" in COMMON_NOTION_CN2.formal_expression
+        assert COMMON_NOTION_CN2.name == "Whole Greater Than Part"
+        assert COMMON_NOTION_CN2.name_ar == "الكل أكبر من الجزء"
+        assert COMMON_NOTION_CN2.statement == "If A contains B and B is not empty, then A is greater than B."
+        assert COMMON_NOTION_CN2.domain == CommonNotionDomain.ORDER
+        assert COMMON_NOTION_CN2.formal_expression == "B⊂A ∧ B≠∅ → A>B"
+        assert COMMON_NOTION_CN2.order == 2
 
-    def test_cn3_subtractive_equality(self):
-        """CN3 must assert subtractive equality."""
+    def test_cn3_substitution(self):
+        """CN3 must assert substitution."""
         assert COMMON_NOTION_CN3.notion_id == "CN3"
-        assert COMMON_NOTION_CN3.name == "Subtractive Equality"
-        assert COMMON_NOTION_CN3.name_ar == "الطرح"
-        assert "subtract" in COMMON_NOTION_CN3.statement.lower()
-        assert "equal" in COMMON_NOTION_CN3.statement.lower()
+        assert COMMON_NOTION_CN3.name == "Substitution"
+        assert COMMON_NOTION_CN3.name_ar == "الاستبدال"
+        assert COMMON_NOTION_CN3.statement == "If A = B and B = C, then A = C."
         assert COMMON_NOTION_CN3.domain == CommonNotionDomain.EQUALITY
-        assert "A-C" in COMMON_NOTION_CN3.formal_expression
+        assert COMMON_NOTION_CN3.formal_expression == "A=B ∧ B=C → A=C"
+        assert COMMON_NOTION_CN3.order == 3
 
-    def test_cn4_whole_greater_than_part(self):
-        """CN4 must assert whole is greater than part."""
+    def test_cn4_transitivity_of_subsumption(self):
+        """CN4 must assert transitivity of subsumption."""
         assert COMMON_NOTION_CN4.notion_id == "CN4"
-        assert COMMON_NOTION_CN4.name == "Whole Greater Than Part"
-        assert COMMON_NOTION_CN4.name_ar == "الكل أكبر من الجزء"
-        assert "whole" in COMMON_NOTION_CN4.statement.lower()
-        assert "part" in COMMON_NOTION_CN4.statement.lower()
+        assert COMMON_NOTION_CN4.name == "Transitivity of Subsumption"
+        assert COMMON_NOTION_CN4.name_ar == "تعدّي الاشتمال"
+        assert COMMON_NOTION_CN4.statement == (
+            "If Identity(a) ⊆ Identity(b) and Identity(b) ⊆ Identity(c), "
+            "then Identity(a) ⊆ Identity(c)."
+        )
         assert COMMON_NOTION_CN4.domain == CommonNotionDomain.ORDER
-        assert "B⊂A" in COMMON_NOTION_CN4.formal_expression
-        assert "A>B" in COMMON_NOTION_CN4.formal_expression
+        assert COMMON_NOTION_CN4.formal_expression == (
+            "Identity(a) ⊆ Identity(b) ∧ Identity(b) ⊆ Identity(c) → Identity(a) ⊆ Identity(c)"
+        )
+        assert COMMON_NOTION_CN4.order == 4
 
 
 # ══════════════════════════════════════════════════════════════════════════════
@@ -198,12 +202,12 @@ class TestDomainCoverage:
     def test_equality_domain_has_notions(self):
         """EQUALITY domain must have common notions."""
         notions = common_notions_by_domain(CommonNotionDomain.EQUALITY)
-        assert len(notions) == 3  # CN1, CN2, CN3
+        assert len(notions) == 2  # CN1, CN3
 
     def test_order_domain_has_notions(self):
         """ORDER domain must have common notions."""
         notions = common_notions_by_domain(CommonNotionDomain.ORDER)
-        assert len(notions) == 1  # CN4
+        assert len(notions) == 2  # CN2, CN4
 
     def test_domains_sum_to_4(self):
         """Sum of all domain counts must equal 4."""
@@ -226,25 +230,25 @@ class TestDomainCoverage:
 class TestRelatedFailureCodes:
     """Common notions must reference their related failure codes."""
 
-    def test_cn1_has_transitivity_failure_code(self):
-        """CN1 must reference transitivity failure code."""
+    def test_cn1_has_self_equality_failure_code(self):
+        """CN1 must reference self-equality failure code."""
         assert len(COMMON_NOTION_CN1.related_failure_codes) >= 1
-        assert FailureCode.M_01_13.value in COMMON_NOTION_CN1.related_failure_codes
+        assert FailureCode.M_01_10.value in COMMON_NOTION_CN1.related_failure_codes
 
-    def test_cn2_has_substitution_failure_code(self):
-        """CN2 must reference substitution failure code."""
+    def test_cn2_has_whole_part_failure_code(self):
+        """CN2 must reference whole-greater-than-part failure code."""
         assert len(COMMON_NOTION_CN2.related_failure_codes) >= 1
-        assert FailureCode.M_01_12.value in COMMON_NOTION_CN2.related_failure_codes
+        assert FailureCode.M_01_11.value in COMMON_NOTION_CN2.related_failure_codes
 
     def test_cn3_has_substitution_failure_code(self):
         """CN3 must reference substitution failure code."""
         assert len(COMMON_NOTION_CN3.related_failure_codes) >= 1
         assert FailureCode.M_01_12.value in COMMON_NOTION_CN3.related_failure_codes
 
-    def test_cn4_has_whole_part_failure_code(self):
-        """CN4 must reference whole-greater-than-part failure code."""
+    def test_cn4_has_transitivity_failure_code(self):
+        """CN4 must reference transitivity-of-subsumption failure code."""
         assert len(COMMON_NOTION_CN4.related_failure_codes) >= 1
-        assert FailureCode.M_01_11.value in COMMON_NOTION_CN4.related_failure_codes
+        assert FailureCode.M_01_13.value in COMMON_NOTION_CN4.related_failure_codes
 
     @pytest.mark.parametrize("notion", COMMON_NOTIONS)
     def test_all_notions_have_failure_codes(self, notion: CommonNotion):
@@ -268,8 +272,9 @@ class TestCommonNotionBirthGuards:
             "name_ar": "فكرة اختبارية",
             "statement": "This is a test statement.",
             "formal_expression": "A=B",
+            "order": 1,
             "domain": CommonNotionDomain.EQUALITY,
-            "constitution_ref": "docs/00_MAQOOL_CONSTITUTION.md §6 L1",
+            "constitution_ref": "docs/00_MAQOOL_CONSTITUTION.md §9 CN1",
         }
 
     def test_rejects_empty_notion_id(self):
@@ -311,6 +316,13 @@ class TestCommonNotionBirthGuards:
         """Invalid domain must be rejected (M_01_04)."""
         kwargs = self._valid_kwargs()
         kwargs["domain"] = "not_a_domain"
+        with pytest.raises(ValueError, match=FailureCode.M_01_04.value):
+            CommonNotion(**kwargs)
+
+    def test_rejects_invalid_order(self):
+        """Order outside CN1..CN4 must be rejected (M_01_04)."""
+        kwargs = self._valid_kwargs()
+        kwargs["order"] = 5
         with pytest.raises(ValueError, match=FailureCode.M_01_04.value):
             CommonNotion(**kwargs)
 
@@ -363,7 +375,7 @@ class TestLookupFunctions:
     def test_common_notions_by_domain_returns_correct_count(self):
         """common_notions_by_domain must return correct counts."""
         equality = common_notions_by_domain(CommonNotionDomain.EQUALITY)
-        assert len(equality) == 3
+        assert len(equality) == 2
 
     def test_total_common_notion_count(self):
         """total_common_notion_count must return 4."""
