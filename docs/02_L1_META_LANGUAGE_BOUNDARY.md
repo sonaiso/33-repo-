@@ -8,11 +8,13 @@ Derived from `docs/00_MAQOOL_CONSTITUTION.md §6` (L1 layer definition).
 
 ## Structural Clarification
 L1 is a single constitutional layer with **internal boundaries B0–B9**.
-These B-boundaries are **not** replacement layers for L0→L3, and they may not be used to bypass the global layer order.
+These B-boundaries are **not replacement layers** for `L0 → L1 → L2 → L3`, and they may not be used to bypass the global layer order.
 
 - Global order remains immutable: `L0 → L1 → L2 → L3`.
 - B0–B9 are internal checkpoints inside L1 only.
 - No opening of L2 or L3 is licensed by crossing any B-boundary.
+- Example of forbidden bypass: treating B6 completion as a direct license to open L2 comparison logic is invalid.
+- B6 is still inside L1 and cannot replace the L1→L2 constitutional transition.
 
 ## Boundary Laws (Reserved)
 

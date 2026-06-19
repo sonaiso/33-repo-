@@ -36,9 +36,11 @@ L0 (Object Language)  →  L1 (Formal Description)  →  L2 (Logical)  →  L3 (
 | Layer | Domain | Status | Entities |
 |-------|--------|--------|----------|
 | L0 | لغة موضوعية (صوت، خط، دلالة) | ✅ Complete | 13 entities |
-| L1 | وصف رسمي (تعريفات، مسلّمات، جسور) | ✅ Open | 3/5 |
+| L1 | وصف رسمي (تعريفات، مسلّمات، جسور) | ✅ Open | 3/5* |
 | L2 | منطق (قياس، برهان، إغلاق) | 🔒 Locked | 0/4 |
 | L3 | واقع (أدلة، مناط، حكم، تنزيل) | 🔒 Locked | 0/5 |
+
+\* تتبع 3/5 يدويًا وفق خارطة L1 الحالية: definition/postulate/common_notion مكتملة.
 
 ---
 
