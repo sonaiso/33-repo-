@@ -275,6 +275,7 @@ class TestCommonNotionBirthGuards:
             "order": 1,
             "domain": CommonNotionDomain.EQUALITY,
             "constitution_ref": "docs/00_MAQOOL_CONSTITUTION.md §9 CN1",
+            "trace_ref": "docs/00_MAQOOL_CONSTITUTION.md §9 CN1",
         }
 
     def test_rejects_empty_notion_id(self):

@@ -108,7 +108,7 @@ def test_common_notion_payload_matches_explicit_constitutional_constants():
 
 def test_regression_constitution_section_9_contains_expected_cn_text():
     """Intentional file-based regression check against constitutional source text."""
-    constitution_text = CONSTITUTION_PATH.read_text(encoding="utf-8")
+    constitution_text = CONSTITUTION_PATH.read_text(encoding="utf-8").replace("\r\n", "\n")
     expected_snippets = (
         "### CN1 — Self-Equality\nEvery entity is equal to itself.",
         "### CN2 — Whole Greater Than Part\nIf A contains B and B is not empty, then A is greater than B.",
