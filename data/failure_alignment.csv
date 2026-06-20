@@ -1,0 +1,4 @@
+row_id,audit_scope,legacy_label,primary_canonical_code,secondary_canonical_codes,is_executable_row,executable_mapping,notes
+FA-001,L1,missing_trace_ref,M_CX_12,,false,AUDIT_ONLY,Canonical mapping for trace reference violations
+FA-002,L1,identity_not_preserved,M_CX_01,M_01_20,false,AUDIT_ONLY,Identity violations remain constitutional failures
+FA-003,L1,silent_exception_forbidden,M_CX_08,,false,AUDIT_ONLY,No silent exception path is executable in audit layer
