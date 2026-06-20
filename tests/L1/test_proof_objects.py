@@ -96,6 +96,17 @@ def test_trace_requires_evidence_refs():
         )
 
 
+def test_trace_rejects_explicit_empty_evidence_refs():
+    """trace_ref: docs/08_PROOF_OBJECT_CONSTITUTION.md Core Law."""
+    with pytest.raises(ValueError, match=FailureCode.M_00_22.value):
+        ProofTrace(
+            trace_id="trace-1",
+            trace_ref="docs/08_PROOF_OBJECT_CONSTITUTION.md",
+            steps=("step-1",),
+            evidence_refs=(),
+        )
+
+
 def test_trace_accepts_evidence_refs():
     """trace_ref: docs/08_PROOF_OBJECT_CONSTITUTION.md Core Law."""
     trace = _trace()
@@ -108,13 +119,26 @@ def test_evidence_proof_requires_invalidators():
         EvidenceProof(**_base(), evidence_scope=("domain",))
 
 
-def test_evidence_proof_requires_residual_indicator():
+def test_evidence_proof_rejects_explicit_empty_invalidators():
     """trace_ref: docs/08_PROOF_OBJECT_CONSTITUTION.md Core Law."""
     with pytest.raises(ValueError, match=FailureCode.M_00_22.value):
         EvidenceProof(
             **_base(),
             evidence_scope=("domain",),
+            invalidators_checked=(),
+        )
+
+
+def test_evidence_proof_requires_residual_indicator():
+    """trace_ref: docs/08_PROOF_OBJECT_CONSTITUTION.md Core Law."""
+    payload = _base()
+    payload["residual_codes"] = ()
+    with pytest.raises(ValueError, match=FailureCode.M_00_22.value):
+        EvidenceProof(
+            **payload,
+            evidence_scope=("domain",),
             invalidators_checked=("inv-1",),
+            residuals=frozenset(),
         )
 
 
