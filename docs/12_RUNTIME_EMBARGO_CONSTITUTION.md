@@ -4,9 +4,8 @@
 Derived from `docs/00_MAQOOL_CONSTITUTION.md §5`, `docs/00A_CONSTITUTIONAL_PROGRAMMING_AMENDMENT.md`, and PR #37 (`D1_DAL_ONLY → D2_LAFZI_FORM` declarative bridge-spec only).
 
 ## Embargo Rule (PR #38)
-Runtime remains embargoed until all constitutional prerequisites are closed.
-
-Runtime remains embargoed until:
+Runtime remains embargoed.
+Runtime prerequisites before embargo lift:
 1. D1_DAL_ONLY contracts are frozen.
 2. D2_LAFZI_FORM contracts are frozen.
 3. DalToLafziBridgeSpec is declared.

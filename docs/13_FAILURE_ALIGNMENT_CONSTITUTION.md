@@ -10,8 +10,8 @@ FailureAlignment does not open runtime.
 
 ## Alignment Constraints
 - Every alignment row must define a primary canonical code.
+- Secondary canonical codes are optional supporting references and never replace the primary canonical code.
 - No executable row may use `NONE` as executable mapping.
-- one-to-many alignment requires a primary canonical code.
 - Alignment rows are review artifacts, not execution directives.
 
 ## Scope Boundary
