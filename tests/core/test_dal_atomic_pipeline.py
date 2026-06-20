@@ -41,6 +41,11 @@ class TestDalAtomicOutputs:
         assert artifacts.surface_skeleton.status == SurfaceSkeletonStatus.DAL_BLOCKED_INITIAL_SUKUN
         assert "initial_sukun_requires_repair_gate" in artifacts.surface_skeleton.residuals
 
+    def test_specialized_marks_stay_unresolved_in_dal(self) -> None:
+        artifacts = build_dal_atomic_artifacts("بً")
+        assert artifacts.haraka_slots[0].outgoing_operation == HarakaOperation.UNRESOLVED
+        assert "tanwin_requires_word_layer" in artifacts.haraka_slots[0].residuals
+
 
 class TestRoleEligibilityGate:
     """Role eligibility opens only after DalToLafziBridge is licensed."""

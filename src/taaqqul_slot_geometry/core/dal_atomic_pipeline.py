@@ -126,7 +126,7 @@ class HarakaFunctionSlot:
     outgoing_operation: HarakaOperation
     incoming_edge: str
     outgoing_edge: str
-    possible_lafzi_potentials: Tuple[str, ...]
+    next_layer_markers: Tuple[str, ...]
     forbidden_outputs: Tuple[str, ...] = _DAL_FORBIDDEN_OUTPUTS
     trace_ref: str = _DAL_TRACE_REF
     rank: str = "CANDIDATE"
@@ -239,12 +239,13 @@ def _operation_for_mark(mark_id: str) -> HarakaOperation:
         "DAMMA": HarakaOperation.OPEN_U,
         "KASRA": HarakaOperation.OPEN_I,
         "SUKUN": HarakaOperation.CLOSE,
-        "SHADDA": HarakaOperation.COMPRESS,
-        "FATHATAN": HarakaOperation.NASALIZE,
-        "DAMMATAN": HarakaOperation.NASALIZE,
-        "KASRATAN": HarakaOperation.NASALIZE,
-        "MADDAH": HarakaOperation.LENGTHEN,
-        "SUPERSCRIPT_ALIF": HarakaOperation.LENGTHEN,
+        # Specialized marks are preserved as DAL residuals until bridged.
+        "SHADDA": HarakaOperation.UNRESOLVED,
+        "FATHATAN": HarakaOperation.UNRESOLVED,
+        "DAMMATAN": HarakaOperation.UNRESOLVED,
+        "KASRATAN": HarakaOperation.UNRESOLVED,
+        "MADDAH": HarakaOperation.UNRESOLVED,
+        "SUPERSCRIPT_ALIF": HarakaOperation.UNRESOLVED,
         "MISSING": HarakaOperation.UNRESOLVED,
     }
     return mapping.get(mark_id, HarakaOperation.UNRESOLVED)
@@ -297,6 +298,12 @@ def build_dal_atomic_artifacts(text: str) -> DalAtomicArtifacts:
         slot_residuals = set(unit.residuals)
         if mark_id == "MISSING":
             slot_residuals.add("missing_harakat")
+        if mark_id == "SHADDA":
+            slot_residuals.add("shadda_requires_identity_expansion_proof")
+        if mark_id in {"FATHATAN", "DAMMATAN", "KASRATAN"}:
+            slot_residuals.add("tanwin_requires_word_layer")
+        if mark_id in {"MADDAH", "SUPERSCRIPT_ALIF"}:
+            slot_residuals.add("madd_requires_carrier_compatibility_proof")
 
         harakat.append(
             HarakaFunctionSlot(
@@ -306,10 +313,10 @@ def build_dal_atomic_artifacts(text: str) -> DalAtomicArtifacts:
                 outgoing_operation=operation,
                 incoming_edge=incoming_edge,
                 outgoing_edge=outgoing_edge,
-                possible_lafzi_potentials=(
-                    "PATTERN_POTENTIAL",
-                    "CASE_POTENTIAL",
-                    "MOOD_POTENTIAL",
+                next_layer_markers=(
+                    "BRIDGE_REQUIRED_TO_LAFZI",
+                    "ROLE_ELIGIBILITY_LOCKED_IN_DAL",
+                    "NO_DIRECT_LEXICAL_OR_RELATION_CLAIM",
                 ),
                 residuals=frozenset(slot_residuals),
             )
@@ -382,4 +389,3 @@ def open_role_eligibility_operations(
             f"{FailureCode.M_00_09.value}: DalToLafziBridge must be licensed first"
         )
     return "ROLE_ELIGIBILITY_OPEN"
-
