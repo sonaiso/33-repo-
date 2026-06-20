@@ -6,6 +6,8 @@ Authority: docs/15_PROJECT_ROADMAP.md Phase 1 PR-33
 """
 from __future__ import annotations
 
+from dataclasses import MISSING, fields
+
 import pytest
 
 from taaqqul_slot_geometry.constitution.failure_taxonomy import FailureCode
@@ -94,6 +96,12 @@ def test_trace_requires_evidence_refs():
             trace_ref="docs/08_PROOF_OBJECT_CONSTITUTION.md",
             steps=("step-1",),
         )
+
+
+def test_trace_declares_evidence_refs_as_required_field():
+    """trace_ref: docs/08_PROOF_OBJECT_CONSTITUTION.md Core Law."""
+    evidence_field = next(field for field in fields(ProofTrace) if field.name == "evidence_refs")
+    assert evidence_field.default is MISSING
 
 
 def test_trace_rejects_explicit_empty_evidence_refs():

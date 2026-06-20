@@ -141,8 +141,7 @@ class EvidenceProof(ProofObject):
             raise ValueError(FailureCode.M_00_22.value)
         if not self.invalidators_checked:
             raise ValueError(FailureCode.M_00_22.value)
-        has_residual_indicator = bool(self.residual_codes or self.residuals)
-        if not has_residual_indicator:
+        if not (self.residual_codes or self.residuals):
             raise ValueError(FailureCode.M_00_22.value)
 
 
