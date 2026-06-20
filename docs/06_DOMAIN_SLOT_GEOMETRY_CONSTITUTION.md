@@ -20,7 +20,7 @@ Every transform must be governed by `OperationSpec` and produce proof-carrying t
 
 - RootCarrier → LexicalRoot
 - PatternSurface → Meaning
-- LafziMadlul → LexicalMadlul
+- LafziForm → LexicalMadlul
 - LexicalMadlul → Relation
 - Relation → Ifadah
 

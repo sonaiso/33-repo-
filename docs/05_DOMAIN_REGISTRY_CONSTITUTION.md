@@ -14,12 +14,75 @@ No exit from domain without BridgeProof.
 
 - D0_TRACE
 - D1_DAL_ONLY
-- D2_LAFZI_MADLUL_ONLY
+- D2_LAFZI_FORM
 - D3_LEXICAL_MADLUL
 - D4_RELATION
 - D5_IFADAH
 - D6_HUKM
 - D7_TANZIL
+
+## Domain Vocabulary Contracts
+
+### D1_DAL_ONLY
+
+Allowed outputs:
+- carrier
+- haraka
+- syllable
+- surface
+
+Forbidden outputs:
+- root
+- weight
+- word
+- masdar
+- tool
+- meaning
+- relation
+
+### D2_LAFZI_FORM
+
+Allowed outputs:
+- root form
+- pattern form
+- word form
+- bare verb form
+- jamid form
+- masdar form
+- tool form
+- mabni noun form
+
+Forbidden outputs:
+- lexical meaning
+- lexical usage
+- relation
+- ifadah
+- hukm
+
+### D3_LEXICAL_MADLUL
+
+Allowed outputs:
+- meaning
+- usage
+- tool meaning
+- masdar meaning
+- lexical root
+
+Forbidden outputs:
+- final relation verdict
+- ifadah
+- hukm
+
+### D4_RELATION
+
+Allowed outputs:
+- relation candidate
+- isnad candidate
+
+Forbidden outputs:
+- ifadah
+- hukm
+- tanzil
 
 ## Required Contract Headers Per Domain
 
@@ -40,5 +103,5 @@ Each domain contract must define:
 ## Cross-Domain Restrictions
 
 No direct DalOnly → LexicalMadlul.
-No LafziMadlul → LexicalMadlul without LexicalProof.
+No LafziForm → LexicalMadlul without LexicalProof.
 No LexicalMadlul → Relation without RelationBridge.
