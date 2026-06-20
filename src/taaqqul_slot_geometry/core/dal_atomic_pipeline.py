@@ -178,9 +178,9 @@ class SurfaceSkeletonCandidate:
         if not self.skeleton_id:
             raise ValueError(FailureCode.M_00_22.value)
         if not self.carriers or not self.haraka_slots:
-            raise ValueError(FailureCode.M_00_22.value)
+            raise ValueError(f"{FailureCode.M_00_22.value}: carriers/haraka_slots cannot be empty")
         if len(self.carriers) != len(self.haraka_slots):
-            raise ValueError(FailureCode.M_00_22.value)
+            raise ValueError(f"{FailureCode.M_00_22.value}: carriers and haraka_slots length mismatch")
         if not isinstance(self.status, SurfaceSkeletonStatus):
             raise ValueError(FailureCode.M_00_22.value)
         if not self.trace_ref:
@@ -343,6 +343,7 @@ def build_dal_atomic_artifacts(text: str) -> DalAtomicArtifacts:
     status = SurfaceSkeletonStatus.DAL_SKELETON_LICENSED
     failure_codes: Tuple[str, ...] = ()
     if has_initial_sukun:
+        # Blocking gate takes precedence; other issues remain as residuals.
         status = SurfaceSkeletonStatus.DAL_BLOCKED_INITIAL_SUKUN
         failure_codes = (FailureCode.M_00_22.value,)
         all_residuals.add(_RESIDUAL_INITIAL_SUKUN_REPAIR)
@@ -402,7 +403,7 @@ def open_role_eligibility_operations(
 ) -> Literal["ROLE_ELIGIBILITY_OPEN"]:
     """Open role eligibility only after a licensed DalToLafziBridge."""
     if bridge_marker.required_bridge != "DalToLafziBridge":
-        raise ValueError(FailureCode.M_00_09.value)
+        raise ValueError(f"{FailureCode.M_00_09.value}: missing DalToLafziBridge requirement")
     if bridge_verdict != TransitionVerdict.LICENSED:
         raise ValueError(
             f"{FailureCode.M_00_09.value}: DalToLafziBridge must be licensed first"
