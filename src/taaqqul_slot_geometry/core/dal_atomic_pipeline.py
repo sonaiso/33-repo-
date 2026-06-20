@@ -225,7 +225,7 @@ class DalAtomicArtifacts:
 
 def _profile_for_parsed_unit(unit: ParsedUnit) -> CarrierOperationProfile:
     """Infer DAL carrier operation profile from parsed unit."""
-    if unit.is_alif_seat or unit.raw_letter in {"ء", "أ", "إ", "ؤ", "ئ"}:
+    if unit.letter is None or unit.raw_letter in {"ء", "أ", "إ", "ؤ", "ئ"}:
         return CarrierOperationProfile.HAMZA_OR_SEAT_CARRIER
     if unit.letter is not None and unit.letter.genus == LetterGenus.LONG_VOWEL:
         return CarrierOperationProfile.MADD_CARRIER
@@ -293,7 +293,7 @@ def build_dal_atomic_artifacts(text: str) -> DalAtomicArtifacts:
         mark_id = unit.mark.mark_id if unit.mark is not None else "MISSING"
         operation = _operation_for_mark(mark_id)
         incoming_edge, outgoing_edge = _edge_signature(idx, len(parsed.units), operation)
-        edge_states.append(outgoing_edge if outgoing_edge != "FINAL_WAQF" else f"E{idx + 1}")
+        edge_states.append(f"E{idx + 1}")
 
         slot_residuals = set(unit.residuals)
         if mark_id == "MISSING":
@@ -323,13 +323,18 @@ def build_dal_atomic_artifacts(text: str) -> DalAtomicArtifacts:
         )
         all_residuals |= slot_residuals
 
+    has_initial_sukun = harakat[0].outgoing_operation == HarakaOperation.CLOSE
+    has_missing_marks = any(slot.mark_id == "MISSING" for slot in harakat)
+
     status = SurfaceSkeletonStatus.DAL_SKELETON_LICENSED
     failure_codes: Tuple[str, ...] = ()
-    if harakat[0].outgoing_operation == HarakaOperation.CLOSE:
+    if has_initial_sukun:
         status = SurfaceSkeletonStatus.DAL_BLOCKED_INITIAL_SUKUN
         failure_codes = (FailureCode.M_00_22.value,)
         all_residuals.add("initial_sukun_requires_repair_gate")
-    elif any(slot.mark_id == "MISSING" for slot in harakat):
+        if has_missing_marks:
+            all_residuals.add("missing_harakat")
+    elif has_missing_marks:
         status = SurfaceSkeletonStatus.DAL_SUSPENDED_MISSING_MARK
     else:
         status = SurfaceSkeletonStatus.DAL_BRIDGE_REQUIRED_TO_LAFZI
