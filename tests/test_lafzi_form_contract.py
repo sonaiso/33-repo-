@@ -58,3 +58,49 @@ def test_required_exit_bridge_requires_lexical_proof():
     section = get_section(content, "## Required exit bridge", "## ")
     assert "LafziToLexicalBridge" in section
     assert "LexicalProof" in section
+
+
+def test_branch_types_cover_all_declared_form_candidates():
+    """trace_ref: docs/11_LAFZI_FORM_CONTRACT.md Branch types."""
+    content = LAFZI_CONTRACT_DOC.read_text(encoding="utf-8")
+    section = get_section(content, "## Branch types", "## ")
+    expected_branch_types = (
+        "- RootFormCandidate",
+        "- PatternFormCandidate",
+        "- WordFormCandidate",
+        "- BareVerbFormCandidate",
+        "- JamidFormCandidate",
+        "- MasdarFormCandidate",
+        "- ToolFormCandidate",
+        "- MabniNounFormCandidate",
+    )
+    for branch_type in expected_branch_types:
+        assert branch_type in section
+
+
+def test_failure_codes_lock_d2_contract_enforcement():
+    """trace_ref: docs/11_LAFZI_FORM_CONTRACT.md Failure codes."""
+    content = LAFZI_CONTRACT_DOC.read_text(encoding="utf-8")
+    section = get_section(content, "## Failure codes", "## ")
+    expected_failure_codes = (
+        "`M_00_09`",
+        "`M_00_10`",
+        "`M_00_11`",
+        "`M_00_22`",
+    )
+    for failure_code in expected_failure_codes:
+        assert failure_code in section
+
+
+def test_residual_policy_declares_all_residual_classes():
+    """trace_ref: docs/11_LAFZI_FORM_CONTRACT.md Residual policy."""
+    content = LAFZI_CONTRACT_DOC.read_text(encoding="utf-8")
+    section = get_section(content, "## Residual policy", "## ")
+    expected_residual_classes = (
+        "- Blocking residual:",
+        "- Resolvable residual:",
+        "- Non-blocking residual:",
+        "- Trace residual:",
+    )
+    for residual_class in expected_residual_classes:
+        assert residual_class in section
