@@ -100,7 +100,9 @@ def test_trace_requires_evidence_refs():
 
 def test_trace_declares_evidence_refs_as_required_field():
     """trace_ref: docs/08_PROOF_OBJECT_CONSTITUTION.md Core Law."""
-    evidence_field = next(field for field in fields(ProofTrace) if field.name == "evidence_refs")
+    evidence_fields = [field for field in fields(ProofTrace) if field.name == "evidence_refs"]
+    assert len(evidence_fields) == 1
+    evidence_field = evidence_fields[0]
     assert evidence_field.default is MISSING
 
 
@@ -162,7 +164,8 @@ def test_no_certificate_symbol_exported():
 
 
 def test_boolean_is_not_accepted_as_proof():
-    """trace_ref: docs/08_PROOF_OBJECT_CONSTITUTION.md Forbidden substitutions, including identity_preserved: bool."""
+    """trace_ref: docs/08_PROOF_OBJECT_CONSTITUTION.md Forbidden substitutions."""
+    # Guard explicit forbidden boolean substitutions from the constitution text.
     assert not hasattr(MRKProof, "domain_proved")
     assert not hasattr(MRKProof, "gate_passed")
     assert not hasattr(IdentityProof, "identity_preserved")
