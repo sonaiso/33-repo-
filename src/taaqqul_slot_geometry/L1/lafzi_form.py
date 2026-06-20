@@ -7,12 +7,11 @@ Authority: docs/15_PROJECT_ROADMAP.md Phase 1 PR-36
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import FrozenSet, Literal, Tuple
+from typing import FrozenSet, Tuple
 
 from taaqqul_slot_geometry.constitution.failure_taxonomy import FailureCode
+from taaqqul_slot_geometry.core.rank import Rank
 from taaqqul_slot_geometry.L1.domain_ids import DomainID
-
-Rank = Literal["CANDIDATE"]
 
 LAFZI_FORM_FORBIDDEN_OUTPUTS: Tuple[str, ...] = (
     "LEXICAL_MEANING",
@@ -44,7 +43,7 @@ def _validate_common(
 ) -> None:
     if not trace_ref:
         raise ValueError(FailureCode.M_01_14.value)
-    if rank != "CANDIDATE":
+    if rank != Rank.CANDIDATE:
         raise ValueError(FailureCode.M_01_16.value)
     if domain_id != DomainID.D2_LAFZI_FORM:
         raise ValueError(FailureCode.M_00_22.value)
@@ -56,7 +55,7 @@ def _validate_common(
         raise ValueError(FailureCode.M_00_22.value)
     if not forbidden_outputs:
         raise ValueError(FailureCode.M_00_22.value)
-    if not LAFZI_FORM_FORBIDDEN_OUTPUTS_SET.issubset(set(forbidden_outputs)):
+    if not LAFZI_FORM_FORBIDDEN_OUTPUTS_SET.issubset(forbidden_outputs):
         raise ValueError(FailureCode.M_00_22.value)
     if not proof_object_ref and not proof_trace_ref:
         raise ValueError(FailureCode.M_00_22.value)
@@ -75,7 +74,7 @@ class RootFormCandidate:
     domain_id: DomainID = DomainID.D2_LAFZI_FORM
     forbidden_outputs: Tuple[str, ...] = LAFZI_FORM_FORBIDDEN_OUTPUTS
     trace_ref: str = "docs/11_LAFZI_FORM_CONSTITUTION.md"
-    rank: Rank = "CANDIDATE"
+    rank: Rank = Rank.CANDIDATE
     residuals: FrozenSet[str] = field(default_factory=frozenset)
 
     def __post_init__(self) -> None:
@@ -109,7 +108,7 @@ class PatternFormCandidate:
     domain_id: DomainID = DomainID.D2_LAFZI_FORM
     forbidden_outputs: Tuple[str, ...] = LAFZI_FORM_FORBIDDEN_OUTPUTS
     trace_ref: str = "docs/11_LAFZI_FORM_CONSTITUTION.md"
-    rank: Rank = "CANDIDATE"
+    rank: Rank = Rank.CANDIDATE
     residuals: FrozenSet[str] = field(default_factory=frozenset)
 
     def __post_init__(self) -> None:
@@ -142,7 +141,7 @@ class WordFormCandidate:
     domain_id: DomainID = DomainID.D2_LAFZI_FORM
     forbidden_outputs: Tuple[str, ...] = LAFZI_FORM_FORBIDDEN_OUTPUTS
     trace_ref: str = "docs/11_LAFZI_FORM_CONSTITUTION.md"
-    rank: Rank = "CANDIDATE"
+    rank: Rank = Rank.CANDIDATE
     residuals: FrozenSet[str] = field(default_factory=frozenset)
 
     def __post_init__(self) -> None:
@@ -175,7 +174,7 @@ class BareTriliteralVerbFormCandidate:
     domain_id: DomainID = DomainID.D2_LAFZI_FORM
     forbidden_outputs: Tuple[str, ...] = LAFZI_FORM_FORBIDDEN_OUTPUTS
     trace_ref: str = "docs/11_LAFZI_FORM_CONSTITUTION.md"
-    rank: Rank = "CANDIDATE"
+    rank: Rank = Rank.CANDIDATE
     residuals: FrozenSet[str] = field(default_factory=frozenset)
 
     def __post_init__(self) -> None:
@@ -210,7 +209,7 @@ class BareQuadriliteralVerbFormCandidate:
     domain_id: DomainID = DomainID.D2_LAFZI_FORM
     forbidden_outputs: Tuple[str, ...] = LAFZI_FORM_FORBIDDEN_OUTPUTS
     trace_ref: str = "docs/11_LAFZI_FORM_CONSTITUTION.md"
-    rank: Rank = "CANDIDATE"
+    rank: Rank = Rank.CANDIDATE
     residuals: FrozenSet[str] = field(default_factory=frozenset)
 
     def __post_init__(self) -> None:
@@ -243,7 +242,7 @@ class TriliteralJamidFormCandidate:
     domain_id: DomainID = DomainID.D2_LAFZI_FORM
     forbidden_outputs: Tuple[str, ...] = LAFZI_FORM_FORBIDDEN_OUTPUTS
     trace_ref: str = "docs/11_LAFZI_FORM_CONSTITUTION.md"
-    rank: Rank = "CANDIDATE"
+    rank: Rank = Rank.CANDIDATE
     residuals: FrozenSet[str] = field(default_factory=frozenset)
 
     def __post_init__(self) -> None:
@@ -274,7 +273,7 @@ class QuadriliteralJamidFormCandidate:
     domain_id: DomainID = DomainID.D2_LAFZI_FORM
     forbidden_outputs: Tuple[str, ...] = LAFZI_FORM_FORBIDDEN_OUTPUTS
     trace_ref: str = "docs/11_LAFZI_FORM_CONSTITUTION.md"
-    rank: Rank = "CANDIDATE"
+    rank: Rank = Rank.CANDIDATE
     residuals: FrozenSet[str] = field(default_factory=frozenset)
 
     def __post_init__(self) -> None:
@@ -306,7 +305,7 @@ class MasdarFormCandidate:
     domain_id: DomainID = DomainID.D2_LAFZI_FORM
     forbidden_outputs: Tuple[str, ...] = LAFZI_FORM_FORBIDDEN_OUTPUTS
     trace_ref: str = "docs/11_LAFZI_FORM_CONSTITUTION.md"
-    rank: Rank = "CANDIDATE"
+    rank: Rank = Rank.CANDIDATE
     residuals: FrozenSet[str] = field(default_factory=frozenset)
 
     def __post_init__(self) -> None:
@@ -340,7 +339,7 @@ class ToolFormCandidate:
     domain_id: DomainID = DomainID.D2_LAFZI_FORM
     forbidden_outputs: Tuple[str, ...] = LAFZI_FORM_FORBIDDEN_OUTPUTS
     trace_ref: str = "docs/11_LAFZI_FORM_CONSTITUTION.md"
-    rank: Rank = "CANDIDATE"
+    rank: Rank = Rank.CANDIDATE
     residuals: FrozenSet[str] = field(default_factory=frozenset)
 
     def __post_init__(self) -> None:
@@ -373,7 +372,7 @@ class MabniNounFormCandidate:
     domain_id: DomainID = DomainID.D2_LAFZI_FORM
     forbidden_outputs: Tuple[str, ...] = LAFZI_FORM_FORBIDDEN_OUTPUTS
     trace_ref: str = "docs/11_LAFZI_FORM_CONSTITUTION.md"
-    rank: Rank = "CANDIDATE"
+    rank: Rank = Rank.CANDIDATE
     residuals: FrozenSet[str] = field(default_factory=frozenset)
 
     def __post_init__(self) -> None:

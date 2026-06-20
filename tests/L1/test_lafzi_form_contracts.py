@@ -146,7 +146,7 @@ def test_lafzi_entities_keep_candidate_rank(entity_cls, payload_factory):
 ])
 def test_lafzi_entities_reject_rank_promotion(entity_cls, payload_factory):
     with pytest.raises(ValueError, match=FailureCode.M_01_16.value):
-        entity_cls(**payload_factory(), rank="CERTIFICATE")  # type: ignore[arg-type]
+        entity_cls(**payload_factory(), rank="CERTIFIED")  # type: ignore[arg-type]
 
 
 @pytest.mark.parametrize("entity_cls,payload_factory", [
