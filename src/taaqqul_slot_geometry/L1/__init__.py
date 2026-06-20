@@ -59,6 +59,18 @@ from taaqqul_slot_geometry.L1.postulate import (
     total_postulate_count,
     verify_postulate_coverage,
 )
+from taaqqul_slot_geometry.L1.proof_objects import (
+    BridgeProof,
+    CoverageProof,
+    DomainProof,
+    EvidenceProof,
+    GateProof,
+    IdentityProof,
+    MRKProof,
+    ProofObject,
+    ProofTrace,
+    Rank,
+)
 
 __all__ = [
     "ALL_POSTULATES_AND_AXIOMS",
@@ -97,6 +109,16 @@ __all__ = [
     "POSTULATES",
     "Postulate",
     "PostulateCategory",
+    "ProofObject",
+    "ProofTrace",
+    "Rank",
+    "MRKProof",
+    "DomainProof",
+    "IdentityProof",
+    "GateProof",
+    "BridgeProof",
+    "EvidenceProof",
+    "CoverageProof",
     "common_notions_by_domain",
     "definitions_by_category",
     "get_common_notion",
