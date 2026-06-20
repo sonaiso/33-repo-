@@ -6,6 +6,7 @@ Authority: docs/15_PROJECT_ROADMAP.md Phase 1 (No leap across layers)
 """
 from __future__ import annotations
 
+import hashlib
 from dataclasses import dataclass, field
 from enum import Enum, unique
 from typing import FrozenSet, Literal, Tuple
@@ -17,6 +18,17 @@ from taaqqul_slot_geometry.core.vocalized_parser import ParsedUnit, parse_vocali
 
 
 _DAL_TRACE_REF = "docs/06_DOMAIN_SLOT_GEOMETRY_CONSTITUTION.md §DAL_ONLY"
+_HAMZA_SEAT_GLYPHS = frozenset({"ء", "أ", "إ", "ؤ", "ئ"})
+_MARK_ID_MISSING = "MISSING"
+_MARK_ID_SHADDA = "SHADDA"
+_MARK_IDS_TANWIN = frozenset({"FATHATAN", "DAMMATAN", "KASRATAN"})
+_MARK_IDS_MADD = frozenset({"MADDAH", "SUPERSCRIPT_ALIF"})
+_RESIDUAL_MISSING_HARAKAT = "missing_harakat"
+_RESIDUAL_SHADDA_PROOF = "shadda_requires_identity_expansion_proof"
+_RESIDUAL_TANWIN_WORD_LAYER = "tanwin_requires_word_layer"
+_RESIDUAL_MADD_PROOF = "madd_requires_carrier_compatibility_proof"
+_RESIDUAL_INITIAL_SUKUN_REPAIR = "initial_sukun_requires_repair_gate"
+_RESIDUAL_BRIDGE_REQUIRED = "bridge_required_to_open_role_eligibility"
 _DAL_FORBIDDEN_OUTPUTS = (
     "ROOT_FORM",
     "PATTERN_FORM",
@@ -225,7 +237,7 @@ class DalAtomicArtifacts:
 
 def _profile_for_parsed_unit(unit: ParsedUnit) -> CarrierOperationProfile:
     """Infer DAL carrier operation profile from parsed unit."""
-    if unit.letter is None or unit.raw_letter in {"ء", "أ", "إ", "ؤ", "ئ"}:
+    if unit.letter is None or unit.raw_letter in _HAMZA_SEAT_GLYPHS:
         return CarrierOperationProfile.HAMZA_OR_SEAT_CARRIER
     if unit.letter is not None and unit.letter.genus == LetterGenus.LONG_VOWEL:
         return CarrierOperationProfile.MADD_CARRIER
@@ -246,7 +258,7 @@ def _operation_for_mark(mark_id: str) -> HarakaOperation:
         "KASRATAN": HarakaOperation.UNRESOLVED,
         "MADDAH": HarakaOperation.UNRESOLVED,
         "SUPERSCRIPT_ALIF": HarakaOperation.UNRESOLVED,
-        "MISSING": HarakaOperation.UNRESOLVED,
+        _MARK_ID_MISSING: HarakaOperation.UNRESOLVED,
     }
     return mapping.get(mark_id, HarakaOperation.UNRESOLVED)
 
@@ -263,6 +275,8 @@ def build_dal_atomic_artifacts(text: str) -> DalAtomicArtifacts:
     parsed = parse_vocalized(text)
     if not parsed.units:
         raise ValueError(FailureCode.M_00_06.value)
+
+    fingerprint = hashlib.sha1(text.encode("utf-8")).hexdigest()[:12]
 
     carriers: list[CarrierIdentityProfile] = []
     harakat: list[HarakaFunctionSlot] = []
@@ -290,20 +304,20 @@ def build_dal_atomic_artifacts(text: str) -> DalAtomicArtifacts:
             )
         )
 
-        mark_id = unit.mark.mark_id if unit.mark is not None else "MISSING"
+        mark_id = unit.mark.mark_id if unit.mark is not None else _MARK_ID_MISSING
         operation = _operation_for_mark(mark_id)
         incoming_edge, outgoing_edge = _edge_signature(idx, len(parsed.units), operation)
         edge_states.append(f"E{idx + 1}")
 
         slot_residuals = set(unit.residuals)
-        if mark_id == "MISSING":
-            slot_residuals.add("missing_harakat")
-        if mark_id == "SHADDA":
-            slot_residuals.add("shadda_requires_identity_expansion_proof")
-        if mark_id in {"FATHATAN", "DAMMATAN", "KASRATAN"}:
-            slot_residuals.add("tanwin_requires_word_layer")
-        if mark_id in {"MADDAH", "SUPERSCRIPT_ALIF"}:
-            slot_residuals.add("madd_requires_carrier_compatibility_proof")
+        if mark_id == _MARK_ID_MISSING:
+            slot_residuals.add(_RESIDUAL_MISSING_HARAKAT)
+        if mark_id == _MARK_ID_SHADDA:
+            slot_residuals.add(_RESIDUAL_SHADDA_PROOF)
+        if mark_id in _MARK_IDS_TANWIN:
+            slot_residuals.add(_RESIDUAL_TANWIN_WORD_LAYER)
+        if mark_id in _MARK_IDS_MADD:
+            slot_residuals.add(_RESIDUAL_MADD_PROOF)
 
         harakat.append(
             HarakaFunctionSlot(
@@ -324,23 +338,23 @@ def build_dal_atomic_artifacts(text: str) -> DalAtomicArtifacts:
         all_residuals |= slot_residuals
 
     has_initial_sukun = harakat[0].outgoing_operation == HarakaOperation.CLOSE
-    has_missing_marks = any(slot.mark_id == "MISSING" for slot in harakat)
+    has_missing_marks = any(slot.mark_id == _MARK_ID_MISSING for slot in harakat)
 
     status = SurfaceSkeletonStatus.DAL_SKELETON_LICENSED
     failure_codes: Tuple[str, ...] = ()
     if has_initial_sukun:
         status = SurfaceSkeletonStatus.DAL_BLOCKED_INITIAL_SUKUN
         failure_codes = (FailureCode.M_00_22.value,)
-        all_residuals.add("initial_sukun_requires_repair_gate")
+        all_residuals.add(_RESIDUAL_INITIAL_SUKUN_REPAIR)
         if has_missing_marks:
-            all_residuals.add("missing_harakat")
+            all_residuals.add(_RESIDUAL_MISSING_HARAKAT)
     elif has_missing_marks:
         status = SurfaceSkeletonStatus.DAL_SUSPENDED_MISSING_MARK
     else:
         status = SurfaceSkeletonStatus.DAL_BRIDGE_REQUIRED_TO_LAFZI
 
     proof = DalProofObject(
-        proof_id="DAL-PROOF-1",
+        proof_id=f"DAL-PROOF-{fingerprint}",
         domain_id="DAL_ONLY",
         checked_gates=(
             "NO_INDEPENDENT_MARK",
@@ -354,7 +368,7 @@ def build_dal_atomic_artifacts(text: str) -> DalAtomicArtifacts:
     )
 
     skeleton = SurfaceSkeletonCandidate(
-        skeleton_id="DAL-SKEL-1",
+        skeleton_id=f"DAL-SKEL-{fingerprint}",
         carriers=tuple(carriers),
         haraka_slots=tuple(harakat),
         edge_signature=tuple(edge_states),
@@ -364,13 +378,13 @@ def build_dal_atomic_artifacts(text: str) -> DalAtomicArtifacts:
     )
 
     bridge_marker = BridgeRequiredMarker(
-        marker_id="DAL-BRIDGE-1",
+        marker_id=f"DAL-BRIDGE-{fingerprint}",
         source_domain="DAL_ONLY",
         target_domain="LAFZI_FORM",
         required_bridge="DalToLafziBridge",
         status="BRIDGE_REQUIRED",
         reason="RoleEligibilityOperations are forbidden before DalToLafziBridge.",
-        residuals=frozenset({"bridge_required_to_open_role_eligibility"}),
+        residuals=frozenset({_RESIDUAL_BRIDGE_REQUIRED}),
     )
 
     return DalAtomicArtifacts(
@@ -378,7 +392,7 @@ def build_dal_atomic_artifacts(text: str) -> DalAtomicArtifacts:
         haraka_slots=tuple(harakat),
         surface_skeleton=skeleton,
         bridge_required_marker=bridge_marker,
-        residuals=frozenset(all_residuals | {"bridge_required_to_open_role_eligibility"}),
+        residuals=frozenset(all_residuals | {_RESIDUAL_BRIDGE_REQUIRED}),
     )
 
 
