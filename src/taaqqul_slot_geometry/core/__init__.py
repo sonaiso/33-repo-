@@ -83,6 +83,19 @@ from taaqqul_slot_geometry.core.transition_registry import (
     check_transition_licensed,
     get_transition_law,
 )
+from taaqqul_slot_geometry.core.dal_atomic_pipeline import (
+    CarrierIdentityProfile,
+    CarrierOperationProfile,
+    BridgeRequiredMarker,
+    DalAtomicArtifacts,
+    DalProofObject,
+    HarakaFunctionSlot,
+    HarakaOperation,
+    SurfaceSkeletonCandidate,
+    SurfaceSkeletonStatus,
+    build_dal_atomic_artifacts,
+    open_role_eligibility_operations,
+)
 
 __all__ = [
     "Rank",
@@ -160,4 +173,16 @@ __all__ = [
     "TransitionVerdict",
     "check_transition_licensed",
     "get_transition_law",
+    # DAL Atomic Pipeline (DAL_ONLY)
+    "CarrierIdentityProfile",
+    "CarrierOperationProfile",
+    "BridgeRequiredMarker",
+    "DalAtomicArtifacts",
+    "DalProofObject",
+    "HarakaFunctionSlot",
+    "HarakaOperation",
+    "SurfaceSkeletonCandidate",
+    "SurfaceSkeletonStatus",
+    "build_dal_atomic_artifacts",
+    "open_role_eligibility_operations",
 ]
