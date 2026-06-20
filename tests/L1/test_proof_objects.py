@@ -96,6 +96,12 @@ def test_trace_requires_evidence_refs():
         )
 
 
+def test_trace_accepts_evidence_refs():
+    """trace_ref: docs/08_PROOF_OBJECT_CONSTITUTION.md Core Law."""
+    trace = _trace()
+    assert trace.evidence_refs == ("ev-1",)
+
+
 def test_evidence_proof_requires_invalidators():
     """trace_ref: docs/08_PROOF_OBJECT_CONSTITUTION.md Core Law."""
     with pytest.raises(ValueError, match=FailureCode.M_00_22.value):
