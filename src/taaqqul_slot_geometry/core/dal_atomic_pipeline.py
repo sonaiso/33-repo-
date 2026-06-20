@@ -276,7 +276,7 @@ def build_dal_atomic_artifacts(text: str) -> DalAtomicArtifacts:
     if not parsed.units:
         raise ValueError(FailureCode.M_00_06.value)
 
-    fingerprint = hashlib.sha1(text.encode("utf-8")).hexdigest()[:12]
+    fingerprint = hashlib.sha256(text.encode("utf-8")).hexdigest()[:12]
 
     carriers: list[CarrierIdentityProfile] = []
     harakat: list[HarakaFunctionSlot] = []
