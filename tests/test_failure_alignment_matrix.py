@@ -6,6 +6,8 @@ from pathlib import Path
 
 import pytest
 
+from taaqqul_slot_geometry.constitution.failure_taxonomy import FailureCode
+
 
 REPO_ROOT = Path(__file__).parent.parent
 ALIGNMENT_DOC = REPO_ROOT / "docs" / "13_FAILURE_ALIGNMENT_CONSTITUTION.md"
@@ -63,6 +65,26 @@ def test_every_row_has_primary_canonical_code(alignment_rows: list[dict[str, str
         assert primary.upper() != "NONE", f"row {row['row_id']} cannot use NONE as primary"
 
 
+def test_alignment_covers_all_failure_codes(alignment_rows: list[dict[str, str]]):
+    """trace_ref: docs/13_FAILURE_ALIGNMENT_CONSTITUTION.md Audit-Only Law (PR #38)."""
+    expected = {failure_code.name for failure_code in FailureCode}
+    actual = {(row["primary_canonical_code"] or "").strip() for row in alignment_rows}
+    assert expected <= actual, (
+        "failure_alignment.csv must include an audit row for every canonical FailureCode"
+    )
+
+
+def test_alignment_primary_codes_are_unique(alignment_rows: list[dict[str, str]]):
+    """trace_ref: docs/13_FAILURE_ALIGNMENT_CONSTITUTION.md Alignment Constraints."""
+    expected = {failure_code.name for failure_code in FailureCode}
+    seen: set[str] = set()
+    for row in alignment_rows:
+        primary = (row["primary_canonical_code"] or "").strip()
+        assert primary in expected, f"row {row['row_id']} has unknown primary code: {primary}"
+        assert primary not in seen, f"primary_canonical_code duplicated: {primary}"
+        seen.add(primary)
+
+
 def test_executable_rows_require_non_none_mapping(alignment_rows: list[dict[str, str]]):
     """trace_ref: docs/13_FAILURE_ALIGNMENT_CONSTITUTION.md Alignment Constraints."""
     for row in alignment_rows:
@@ -72,6 +94,16 @@ def test_executable_rows_require_non_none_mapping(alignment_rows: list[dict[str,
             assert mapping not in {"", "NONE"}, (
                 f"row {row['row_id']} is executable and cannot map to NONE"
             )
+
+
+def test_all_rows_stay_non_executable_while_embargoed(
+    alignment_rows: list[dict[str, str]],
+):
+    """trace_ref: docs/12_RUNTIME_EMBARGO_CONSTITUTION.md Embargo Rule (PR #38)."""
+    for row in alignment_rows:
+        assert not _parse_bool_string(row["is_executable_row"]), (
+            f"row {row['row_id']} cannot become executable before runtime embargo lift"
+        )
 
 
 def test_audit_rows_remain_non_executable(alignment_rows: list[dict[str, str]]):
