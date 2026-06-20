@@ -27,6 +27,7 @@ LAFZI_FORM_FORBIDDEN_OUTPUTS: Tuple[str, ...] = (
     "HUKM",
     "TANZIL",
 )
+LAFZI_FORM_FORBIDDEN_OUTPUTS_SET = frozenset(LAFZI_FORM_FORBIDDEN_OUTPUTS)
 
 
 def _validate_common(
@@ -55,7 +56,7 @@ def _validate_common(
         raise ValueError(FailureCode.M_00_22.value)
     if not forbidden_outputs:
         raise ValueError(FailureCode.M_00_22.value)
-    if not set(LAFZI_FORM_FORBIDDEN_OUTPUTS).issubset(set(forbidden_outputs)):
+    if not LAFZI_FORM_FORBIDDEN_OUTPUTS_SET.issubset(set(forbidden_outputs)):
         raise ValueError(FailureCode.M_00_22.value)
     if not proof_object_ref and not proof_trace_ref:
         raise ValueError(FailureCode.M_00_22.value)
