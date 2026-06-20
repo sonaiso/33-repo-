@@ -34,7 +34,7 @@ Forbidden in DAL_ONLY:
 - No HarakaFunctionSlot without ProofObject.
 - No meaning from haraka.
 - No i'rab from haraka before relation.
-- No hukm from i'rab before ifadeh.
+- No hukm from i'rab before ifadah.
 
 ## Forbidden Shortcut Claims
 

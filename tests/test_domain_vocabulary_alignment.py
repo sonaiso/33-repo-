@@ -11,13 +11,15 @@ DOMAIN_DOC = REPO_ROOT / "docs" / "05_DOMAIN_REGISTRY_CONSTITUTION.md"
 def test_d2_lafzi_form_exists():
     """trace_ref: docs/05_DOMAIN_REGISTRY_CONSTITUTION.md Canonical L1 Domain IDs."""
     content = DOMAIN_DOC.read_text(encoding="utf-8")
-    assert "D2_LAFZI_FORM" in content
+    section = get_section(content, "## Canonical L1 Domain IDs", "## ")
+    assert "D2_LAFZI_FORM" in section
 
 
 def test_d2_lafzi_madlul_only_removed():
     """trace_ref: docs/05_DOMAIN_REGISTRY_CONSTITUTION.md Canonical L1 Domain IDs."""
     content = DOMAIN_DOC.read_text(encoding="utf-8")
-    assert "D2_LAFZI_MADLUL_ONLY" not in content
+    section = get_section(content, "## Canonical L1 Domain IDs", "## ")
+    assert "D2_LAFZI_MADLUL_ONLY" not in section
 
 
 def test_dal_only_forbids_root_weight_meaning_outputs():

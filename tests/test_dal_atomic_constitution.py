@@ -37,16 +37,18 @@ def test_dal_only_forbidden_form_and_meaning_entities():
 def test_dal_atomic_rules_prohibit_premature_inference():
     """trace_ref: docs/10_DAL_ATOMIC_CONSTITUTION.md Central Atomic Laws."""
     content = DAL_ATOMIC_DOC.read_text(encoding="utf-8")
-    assert "No meaning from haraka." in content
-    assert "No i'rab from haraka before relation." in content
-    assert "No hukm from i'rab before ifadeh." in content
+    section = get_section(content, "## Central Atomic Laws", "## ")
+    assert "No meaning from haraka." in section
+    assert "No i'rab from haraka before relation." in section
+    assert "No hukm from i'rab before ifadah." in section
 
 
 def test_dal_atomic_forbidden_shortcuts_are_explicit():
     """trace_ref: docs/10_DAL_ATOMIC_CONSTITUTION.md Forbidden Shortcut Claims."""
     content = DAL_ATOMIC_DOC.read_text(encoding="utf-8")
-    assert "`C=1 => tool`" in content
-    assert "`C=3 => root`" in content
-    assert "`CVCVCV => verb`" in content
-    assert "`fatha => accusative`" in content
-    assert "`damma => nominative`" in content
+    section = get_section(content, "## Forbidden Shortcut Claims", "## ")
+    assert "`C=1 => tool`" in section
+    assert "`C=3 => root`" in section
+    assert "`CVCVCV => verb`" in section
+    assert "`fatha => accusative`" in section
+    assert "`damma => nominative`" in section
