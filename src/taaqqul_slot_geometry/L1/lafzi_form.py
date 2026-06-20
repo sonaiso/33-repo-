@@ -29,7 +29,6 @@ LAFZI_FORM_FORBIDDEN_OUTPUTS: Tuple[str, ...] = (
 )
 
 
-
 def _validate_common(
     *,
     trace_ref: str,
