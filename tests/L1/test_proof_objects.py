@@ -6,6 +6,8 @@ Authority: docs/15_PROJECT_ROADMAP.md Phase 1 PR-33
 """
 from __future__ import annotations
 
+from dataclasses import MISSING, fields
+
 import pytest
 
 from taaqqul_slot_geometry.constitution.failure_taxonomy import FailureCode
@@ -27,6 +29,7 @@ def _trace() -> ProofTrace:
         trace_id="trace-1",
         trace_ref="docs/08_PROOF_OBJECT_CONSTITUTION.md",
         steps=("step-1",),
+        evidence_refs=("ev-1",),
     )
 
 
@@ -85,6 +88,70 @@ def test_evidence_proof_requires_scope():
         EvidenceProof(**_base())
 
 
+def test_trace_requires_evidence_refs():
+    """trace_ref: docs/08_PROOF_OBJECT_CONSTITUTION.md Core Law."""
+    with pytest.raises(TypeError):
+        ProofTrace(
+            trace_id="trace-1",
+            trace_ref="docs/08_PROOF_OBJECT_CONSTITUTION.md",
+            steps=("step-1",),
+        )
+
+
+def test_trace_declares_evidence_refs_as_required_field():
+    """trace_ref: docs/08_PROOF_OBJECT_CONSTITUTION.md Core Law."""
+    evidence_fields = [field for field in fields(ProofTrace) if field.name == "evidence_refs"]
+    assert len(evidence_fields) == 1
+    evidence_field = evidence_fields[0]
+    assert evidence_field.default is MISSING
+
+
+def test_trace_rejects_explicit_empty_evidence_refs():
+    """trace_ref: docs/08_PROOF_OBJECT_CONSTITUTION.md Core Law."""
+    with pytest.raises(ValueError, match=FailureCode.M_00_22.value):
+        ProofTrace(
+            trace_id="trace-1",
+            trace_ref="docs/08_PROOF_OBJECT_CONSTITUTION.md",
+            steps=("step-1",),
+            evidence_refs=(),
+        )
+
+
+def test_trace_accepts_evidence_refs():
+    """trace_ref: docs/08_PROOF_OBJECT_CONSTITUTION.md Core Law."""
+    trace = _trace()
+    assert trace.evidence_refs == ("ev-1",)
+
+
+def test_evidence_proof_requires_invalidators():
+    """trace_ref: docs/08_PROOF_OBJECT_CONSTITUTION.md Core Law."""
+    with pytest.raises(ValueError, match=FailureCode.M_00_22.value):
+        EvidenceProof(**_base(), evidence_scope=("domain",))
+
+
+def test_evidence_proof_rejects_explicit_empty_invalidators():
+    """trace_ref: docs/08_PROOF_OBJECT_CONSTITUTION.md Core Law."""
+    with pytest.raises(ValueError, match=FailureCode.M_00_22.value):
+        EvidenceProof(
+            **_base(),
+            evidence_scope=("domain",),
+            invalidators_checked=(),
+        )
+
+
+def test_evidence_proof_requires_residual_indicator():
+    """trace_ref: docs/08_PROOF_OBJECT_CONSTITUTION.md Core Law."""
+    payload = _base()
+    payload["residual_codes"] = ()
+    with pytest.raises(ValueError, match=FailureCode.M_00_22.value):
+        EvidenceProof(
+            **payload,
+            evidence_scope=("domain",),
+            invalidators_checked=("inv-1",),
+            residuals=frozenset(),
+        )
+
+
 def test_coverage_proof_requires_positive_negative_residual_cases():
     """trace_ref: docs/09_COMPUTED_COVERAGE_CONSTITUTION.md."""
     with pytest.raises(ValueError, match=FailureCode.M_00_22.value):
@@ -98,8 +165,10 @@ def test_no_certificate_symbol_exported():
 
 def test_boolean_is_not_accepted_as_proof():
     """trace_ref: docs/08_PROOF_OBJECT_CONSTITUTION.md Forbidden substitutions."""
+    # Guard explicit forbidden boolean substitutions from the constitution text.
     assert not hasattr(MRKProof, "domain_proved")
     assert not hasattr(MRKProof, "gate_passed")
+    assert not hasattr(IdentityProof, "identity_preserved")
     assert not hasattr(IdentityProof, "is_preserved")
 
 

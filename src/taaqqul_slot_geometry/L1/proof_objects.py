@@ -22,6 +22,7 @@ class ProofTrace:
     trace_id: str
     trace_ref: str
     steps: Tuple[str, ...]
+    evidence_refs: Tuple[str, ...]
     rank: Rank = "CANDIDATE"
     residuals: FrozenSet[str] = field(default_factory=frozenset)
 
@@ -30,6 +31,8 @@ class ProofTrace:
             raise ValueError(FailureCode.M_00_22.value)
         if not self.trace_ref:
             raise ValueError(FailureCode.M_01_14.value)
+        if not self.evidence_refs:
+            raise ValueError(FailureCode.M_00_22.value)
         if self.rank != "CANDIDATE":
             raise ValueError(FailureCode.M_01_16.value)
 
@@ -135,6 +138,10 @@ class EvidenceProof(ProofObject):
     def __post_init__(self) -> None:
         super().__post_init__()
         if not self.evidence_scope:
+            raise ValueError(FailureCode.M_00_22.value)
+        if not self.invalidators_checked:
+            raise ValueError(FailureCode.M_00_22.value)
+        if not (self.residual_codes or self.residuals):
             raise ValueError(FailureCode.M_00_22.value)
 
 
