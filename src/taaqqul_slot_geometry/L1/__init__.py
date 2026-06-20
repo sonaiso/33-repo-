@@ -28,6 +28,15 @@ from taaqqul_slot_geometry.L1.definition import (
     total_definition_count,
     verify_identity_preservation,
 )
+from taaqqul_slot_geometry.L1.domain_bridge_gate import (
+    BridgeSpec,
+    GateSpec,
+    OperationSpec,
+)
+from taaqqul_slot_geometry.L1.domain_ids import (
+    CANONICAL_DOMAIN_IDS,
+    DomainID,
+)
 from taaqqul_slot_geometry.L1.postulate import (
     ALL_POSTULATES_AND_AXIOMS,
     AXIOM_OA1,
@@ -119,6 +128,11 @@ __all__ = [
     "BridgeProof",
     "EvidenceProof",
     "CoverageProof",
+    "DomainID",
+    "CANONICAL_DOMAIN_IDS",
+    "OperationSpec",
+    "GateSpec",
+    "BridgeSpec",
     "common_notions_by_domain",
     "definitions_by_category",
     "get_common_notion",
