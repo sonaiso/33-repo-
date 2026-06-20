@@ -10,7 +10,6 @@ DAL_ONLY contains only:
 - HarakaFunctionSlot
 - EdgeState
 - ClosureCell
-- SyllableSurfaceTemplate
 - SurfaceSkeletonCandidate
 - BridgeRequiredMarker
 
@@ -19,11 +18,12 @@ Forbidden in DAL_ONLY:
 - PatternFormCandidate
 - WordFormCandidate
 - ToolFormCandidate
-- MabniFormCandidate
+- MabniNounFormCandidate
 - LexicalMeaning
 - Isnad
 - Ifadah
 - Hukm
+- Tanzil
 
 ## Central Atomic Laws
 
