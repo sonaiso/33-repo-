@@ -27,6 +27,7 @@ def _trace() -> ProofTrace:
         trace_id="trace-1",
         trace_ref="docs/08_PROOF_OBJECT_CONSTITUTION.md",
         steps=("step-1",),
+        evidence_refs=("ev-1",),
     )
 
 
@@ -85,6 +86,32 @@ def test_evidence_proof_requires_scope():
         EvidenceProof(**_base())
 
 
+def test_trace_requires_evidence_refs():
+    """trace_ref: docs/08_PROOF_OBJECT_CONSTITUTION.md Core Law."""
+    with pytest.raises(ValueError, match=FailureCode.M_00_22.value):
+        ProofTrace(
+            trace_id="trace-1",
+            trace_ref="docs/08_PROOF_OBJECT_CONSTITUTION.md",
+            steps=("step-1",),
+        )
+
+
+def test_evidence_proof_requires_invalidators():
+    """trace_ref: docs/08_PROOF_OBJECT_CONSTITUTION.md Core Law."""
+    with pytest.raises(ValueError, match=FailureCode.M_00_22.value):
+        EvidenceProof(**_base(), evidence_scope=("domain",))
+
+
+def test_evidence_proof_requires_residual_indicator():
+    """trace_ref: docs/08_PROOF_OBJECT_CONSTITUTION.md Core Law."""
+    with pytest.raises(ValueError, match=FailureCode.M_00_22.value):
+        EvidenceProof(
+            **_base(),
+            evidence_scope=("domain",),
+            invalidators_checked=("inv-1",),
+        )
+
+
 def test_coverage_proof_requires_positive_negative_residual_cases():
     """trace_ref: docs/09_COMPUTED_COVERAGE_CONSTITUTION.md."""
     with pytest.raises(ValueError, match=FailureCode.M_00_22.value):
@@ -100,6 +127,7 @@ def test_boolean_is_not_accepted_as_proof():
     """trace_ref: docs/08_PROOF_OBJECT_CONSTITUTION.md Forbidden substitutions."""
     assert not hasattr(MRKProof, "domain_proved")
     assert not hasattr(MRKProof, "gate_passed")
+    assert not hasattr(IdentityProof, "identity_preserved")
     assert not hasattr(IdentityProof, "is_preserved")
 
 
