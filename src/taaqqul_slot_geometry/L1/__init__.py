@@ -42,6 +42,15 @@ from taaqqul_slot_geometry.L1.dal_atomic import (
     HarakaFunctionSlot,
     SurfaceSkeletonCandidate,
 )
+from taaqqul_slot_geometry.L1.dal_to_lafzi_bridge import (
+    DAL_SURFACE_TO_LAFZI_ENTRY_GATE,
+    DAL_SURFACE_TO_LAFZI_GATE_ID,
+    DAL_SURFACE_TO_LAFZI_OPERATION_ID,
+    DAL_SURFACE_TO_LAFZI_OPERATION_SPEC,
+    DAL_TO_LAFZI_BRIDGE_ID,
+    DAL_TO_LAFZI_BRIDGE_SPEC,
+    PERMITTED_DOMAIN_PATHS,
+)
 from taaqqul_slot_geometry.L1.domain_ids import (
     CANONICAL_DOMAIN_IDS,
     DomainID,
@@ -119,6 +128,7 @@ __all__ = [
     "FORMAL_DEFINITIONS",
     "FormalDefinition",
     "OPERATIONAL_AXIOMS",
+    "PERMITTED_DOMAIN_PATHS",
     "POSTULATE_BY_ID",
     "POSTULATE_P1",
     "POSTULATE_P2",
@@ -143,6 +153,12 @@ __all__ = [
     "CarrierIdentitySlot",
     "ClosureCell",
     "DAL_ONLY_FORBIDDEN_OUTPUTS",
+    "DAL_SURFACE_TO_LAFZI_ENTRY_GATE",
+    "DAL_SURFACE_TO_LAFZI_GATE_ID",
+    "DAL_SURFACE_TO_LAFZI_OPERATION_ID",
+    "DAL_SURFACE_TO_LAFZI_OPERATION_SPEC",
+    "DAL_TO_LAFZI_BRIDGE_ID",
+    "DAL_TO_LAFZI_BRIDGE_SPEC",
     "EdgeState",
     "HarakaFunctionSlot",
     "OperationSpec",
