@@ -88,7 +88,7 @@ def test_evidence_proof_requires_scope():
 
 def test_trace_requires_evidence_refs():
     """trace_ref: docs/08_PROOF_OBJECT_CONSTITUTION.md Core Law."""
-    with pytest.raises(ValueError, match=FailureCode.M_00_22.value):
+    with pytest.raises(TypeError):
         ProofTrace(
             trace_id="trace-1",
             trace_ref="docs/08_PROOF_OBJECT_CONSTITUTION.md",
@@ -154,7 +154,7 @@ def test_no_certificate_symbol_exported():
 
 
 def test_boolean_is_not_accepted_as_proof():
-    """trace_ref: docs/08_PROOF_OBJECT_CONSTITUTION.md Forbidden substitutions."""
+    """trace_ref: docs/08_PROOF_OBJECT_CONSTITUTION.md Forbidden substitutions, including identity_preserved: bool."""
     assert not hasattr(MRKProof, "domain_proved")
     assert not hasattr(MRKProof, "gate_passed")
     assert not hasattr(IdentityProof, "identity_preserved")

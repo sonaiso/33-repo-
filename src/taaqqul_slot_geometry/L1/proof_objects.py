@@ -22,7 +22,7 @@ class ProofTrace:
     trace_id: str
     trace_ref: str
     steps: Tuple[str, ...]
-    evidence_refs: Tuple[str, ...] = ()
+    evidence_refs: Tuple[str, ...]
     rank: Rank = "CANDIDATE"
     residuals: FrozenSet[str] = field(default_factory=frozenset)
 
