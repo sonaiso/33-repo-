@@ -19,10 +19,10 @@ def test_no_direct_dalonly_to_lexicalmadlul():
     assert "No direct DalOnly → LexicalMadlul." in content
 
 
-def test_lafzimadlul_requires_lexicalproof_for_lexicalmadlul():
+def test_lafziform_requires_lexicalproof_for_lexicalmadlul():
     """trace_ref: docs/05_DOMAIN_REGISTRY_CONSTITUTION.md Cross-Domain Restrictions."""
     content = DOMAIN_DOC.read_text(encoding="utf-8")
-    assert "No LafziMadlul → LexicalMadlul without LexicalProof." in content
+    assert "No LafziForm → LexicalMadlul without LexicalProof." in content
 
 
 def test_lexicalmadlul_requires_relationbridge_for_relation():
