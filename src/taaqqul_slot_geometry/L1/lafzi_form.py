@@ -27,6 +27,7 @@ LAFZI_FORM_FORBIDDEN_OUTPUTS: Tuple[str, ...] = (
     "TANZIL",
 )
 LAFZI_FORM_FORBIDDEN_OUTPUTS_SET = frozenset(LAFZI_FORM_FORBIDDEN_OUTPUTS)
+TRACE_REF = "docs/11_LAFZI_FORM_CONSTITUTION.md §Entry constraints"
 
 
 def _validate_common(
@@ -73,7 +74,7 @@ class RootFormCandidate:
     source_domain_id: DomainID = DomainID.D1_DAL_ONLY
     domain_id: DomainID = DomainID.D2_LAFZI_FORM
     forbidden_outputs: Tuple[str, ...] = LAFZI_FORM_FORBIDDEN_OUTPUTS
-    trace_ref: str = "docs/11_LAFZI_FORM_CONSTITUTION.md"
+    trace_ref: str = TRACE_REF
     rank: Rank = Rank.CANDIDATE
     residuals: FrozenSet[str] = field(default_factory=frozenset)
 
@@ -107,7 +108,7 @@ class PatternFormCandidate:
     source_domain_id: DomainID = DomainID.D1_DAL_ONLY
     domain_id: DomainID = DomainID.D2_LAFZI_FORM
     forbidden_outputs: Tuple[str, ...] = LAFZI_FORM_FORBIDDEN_OUTPUTS
-    trace_ref: str = "docs/11_LAFZI_FORM_CONSTITUTION.md"
+    trace_ref: str = TRACE_REF
     rank: Rank = Rank.CANDIDATE
     residuals: FrozenSet[str] = field(default_factory=frozenset)
 
@@ -140,7 +141,7 @@ class WordFormCandidate:
     source_domain_id: DomainID = DomainID.D1_DAL_ONLY
     domain_id: DomainID = DomainID.D2_LAFZI_FORM
     forbidden_outputs: Tuple[str, ...] = LAFZI_FORM_FORBIDDEN_OUTPUTS
-    trace_ref: str = "docs/11_LAFZI_FORM_CONSTITUTION.md"
+    trace_ref: str = TRACE_REF
     rank: Rank = Rank.CANDIDATE
     residuals: FrozenSet[str] = field(default_factory=frozenset)
 
@@ -173,7 +174,7 @@ class BareTriliteralVerbFormCandidate:
     source_domain_id: DomainID = DomainID.D1_DAL_ONLY
     domain_id: DomainID = DomainID.D2_LAFZI_FORM
     forbidden_outputs: Tuple[str, ...] = LAFZI_FORM_FORBIDDEN_OUTPUTS
-    trace_ref: str = "docs/11_LAFZI_FORM_CONSTITUTION.md"
+    trace_ref: str = TRACE_REF
     rank: Rank = Rank.CANDIDATE
     residuals: FrozenSet[str] = field(default_factory=frozenset)
 
@@ -208,7 +209,7 @@ class BareQuadriliteralVerbFormCandidate:
     source_domain_id: DomainID = DomainID.D1_DAL_ONLY
     domain_id: DomainID = DomainID.D2_LAFZI_FORM
     forbidden_outputs: Tuple[str, ...] = LAFZI_FORM_FORBIDDEN_OUTPUTS
-    trace_ref: str = "docs/11_LAFZI_FORM_CONSTITUTION.md"
+    trace_ref: str = TRACE_REF
     rank: Rank = Rank.CANDIDATE
     residuals: FrozenSet[str] = field(default_factory=frozenset)
 
@@ -241,7 +242,7 @@ class TriliteralJamidFormCandidate:
     source_domain_id: DomainID = DomainID.D1_DAL_ONLY
     domain_id: DomainID = DomainID.D2_LAFZI_FORM
     forbidden_outputs: Tuple[str, ...] = LAFZI_FORM_FORBIDDEN_OUTPUTS
-    trace_ref: str = "docs/11_LAFZI_FORM_CONSTITUTION.md"
+    trace_ref: str = TRACE_REF
     rank: Rank = Rank.CANDIDATE
     residuals: FrozenSet[str] = field(default_factory=frozenset)
 
@@ -272,7 +273,7 @@ class QuadriliteralJamidFormCandidate:
     source_domain_id: DomainID = DomainID.D1_DAL_ONLY
     domain_id: DomainID = DomainID.D2_LAFZI_FORM
     forbidden_outputs: Tuple[str, ...] = LAFZI_FORM_FORBIDDEN_OUTPUTS
-    trace_ref: str = "docs/11_LAFZI_FORM_CONSTITUTION.md"
+    trace_ref: str = TRACE_REF
     rank: Rank = Rank.CANDIDATE
     residuals: FrozenSet[str] = field(default_factory=frozenset)
 
@@ -304,7 +305,7 @@ class MasdarFormCandidate:
     source_domain_id: DomainID = DomainID.D1_DAL_ONLY
     domain_id: DomainID = DomainID.D2_LAFZI_FORM
     forbidden_outputs: Tuple[str, ...] = LAFZI_FORM_FORBIDDEN_OUTPUTS
-    trace_ref: str = "docs/11_LAFZI_FORM_CONSTITUTION.md"
+    trace_ref: str = TRACE_REF
     rank: Rank = Rank.CANDIDATE
     residuals: FrozenSet[str] = field(default_factory=frozenset)
 
@@ -338,7 +339,7 @@ class ToolFormCandidate:
     source_domain_id: DomainID = DomainID.D1_DAL_ONLY
     domain_id: DomainID = DomainID.D2_LAFZI_FORM
     forbidden_outputs: Tuple[str, ...] = LAFZI_FORM_FORBIDDEN_OUTPUTS
-    trace_ref: str = "docs/11_LAFZI_FORM_CONSTITUTION.md"
+    trace_ref: str = TRACE_REF
     rank: Rank = Rank.CANDIDATE
     residuals: FrozenSet[str] = field(default_factory=frozenset)
 
@@ -371,7 +372,7 @@ class MabniNounFormCandidate:
     source_domain_id: DomainID = DomainID.D1_DAL_ONLY
     domain_id: DomainID = DomainID.D2_LAFZI_FORM
     forbidden_outputs: Tuple[str, ...] = LAFZI_FORM_FORBIDDEN_OUTPUTS
-    trace_ref: str = "docs/11_LAFZI_FORM_CONSTITUTION.md"
+    trace_ref: str = TRACE_REF
     rank: Rank = Rank.CANDIDATE
     residuals: FrozenSet[str] = field(default_factory=frozenset)
 
