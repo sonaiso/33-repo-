@@ -256,6 +256,13 @@ def test_lafzi_entities_require_non_empty_forbidden_outputs(entity_cls, payload_
         entity_cls(**payload_factory(), forbidden_outputs=())
 
 
+def test_lafzi_entities_reject_missing_required_forbidden_output():
+    payload = _word_payload()
+    reduced = tuple(item for item in LAFZI_FORM_FORBIDDEN_OUTPUTS if item != "HUKM")
+    with pytest.raises(ValueError, match=FailureCode.M_00_22.value):
+        WordFormCandidate(**payload, forbidden_outputs=reduced)
+
+
 def test_lafzi_forbidden_outputs_cover_required_semantic_blocks():
     required = {
         "LEXICAL_MEANING",
@@ -270,7 +277,7 @@ def test_lafzi_forbidden_outputs_cover_required_semantic_blocks():
         "HUKM",
         "TANZIL",
     }
-    assert required.issubset(set(LAFZI_FORM_FORBIDDEN_OUTPUTS))
+    assert set(LAFZI_FORM_FORBIDDEN_OUTPUTS) == required
 
 
 def test_root_form_candidate_is_not_lexical_root():

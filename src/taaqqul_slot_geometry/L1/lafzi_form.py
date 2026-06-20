@@ -55,7 +55,7 @@ def _validate_common(
         raise ValueError(FailureCode.M_00_22.value)
     if not forbidden_outputs:
         raise ValueError(FailureCode.M_00_22.value)
-    if not LAFZI_FORM_FORBIDDEN_OUTPUTS_SET.issubset(forbidden_outputs):
+    if not set(forbidden_outputs).issuperset(LAFZI_FORM_FORBIDDEN_OUTPUTS_SET):
         raise ValueError(FailureCode.M_00_22.value)
     if not proof_object_ref and not proof_trace_ref:
         raise ValueError(FailureCode.M_00_22.value)
