@@ -196,8 +196,10 @@ def test_lafzi_entities_reject_non_dal_source_domain(entity_cls, payload_factory
     (MabniNounFormCandidate, _mabni_payload),
 ])
 def test_lafzi_entities_require_source_surface(entity_cls, payload_factory):
+    payload = payload_factory()
+    payload["source_surface_ref"] = ""
     with pytest.raises(ValueError, match=FailureCode.M_00_22.value):
-        entity_cls(**payload_factory(), source_surface_ref="")
+        entity_cls(**payload)
 
 
 @pytest.mark.parametrize("entity_cls,payload_factory", [
