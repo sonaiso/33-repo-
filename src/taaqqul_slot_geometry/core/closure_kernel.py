@@ -57,6 +57,11 @@ _ALLOWED_AUGMENTED_PATTERNS = frozenset({
 })
 
 
+def _validate_residual_codes(residuals: FrozenSet[str]) -> None:
+    if not isinstance(residuals, frozenset) or any(not isinstance(item, str) for item in residuals):
+        raise ValueError(FailureCode.M_CX_08.value)
+
+
 @dataclass(frozen=True)
 class Trace:
     trace_id: str
@@ -148,10 +153,7 @@ class ClosureCertificate:
         }
         if invalid_permissions:
             raise ValueError(FailureCode.M_CX_04.value)
-        if not isinstance(self.residuals, frozenset) or any(
-            not isinstance(item, str) for item in self.residuals
-        ):
-            raise ValueError(FailureCode.M_CX_08.value)
+        _validate_residual_codes(self.residuals)
 
 
 @dataclass(frozen=True)
@@ -300,10 +302,7 @@ class ConflictClaim:
             raise ValueError(FailureCode.M_CX_12.value)
         if self.rank != Rank.CANDIDATE:
             raise ValueError(FailureCode.M_CX_09.value)
-        if not isinstance(self.residuals, frozenset) or any(
-            not isinstance(item, str) for item in self.residuals
-        ):
-            raise ValueError(FailureCode.M_CX_08.value)
+        _validate_residual_codes(self.residuals)
 
 
 @dataclass(frozen=True)
@@ -329,10 +328,7 @@ class ConflictCertificate:
             raise ValueError(FailureCode.M_CX_12.value)
         if self.rank != Rank.CANDIDATE:
             raise ValueError(FailureCode.M_CX_09.value)
-        if not isinstance(self.residuals, frozenset) or any(
-            not isinstance(item, str) for item in self.residuals
-        ):
-            raise ValueError(FailureCode.M_CX_08.value)
+        _validate_residual_codes(self.residuals)
 
 
 @dataclass(frozen=True)
@@ -497,7 +493,7 @@ def _make_conflict_certificate(
     claims: Tuple[ConflictClaim, ...],
     residual_entries: Tuple[Residual, ...],
 ) -> ConflictCertificate:
-    residual_keys = frozenset(f"{r.family}:{r.message}" for r in residual_entries)
+    residual_signatures = frozenset(f"{r.family}:{r.message}" for r in residual_entries)
     return ConflictCertificate(
         status=status,
         resolution_path=resolution_path,
@@ -507,7 +503,7 @@ def _make_conflict_certificate(
         blocked_transition=(
             status == "blocked" or any(item.severity == "blocker" for item in residual_entries)
         ),
-        residuals=residual_keys,
+        residuals=residual_signatures,
     )
 
 
@@ -526,7 +522,7 @@ def resolve_closure_conflicts(
     if not claims:
         raise ValueError(FailureCode.M_CX_08.value)
 
-    path: Tuple[str, ...] = ("collect_candidate_certificates",)
+    path = ["collect_candidate_certificates"]
 
     unique_domain_count = len({claim.domain_scope for claim in claims})
     if unique_domain_count == len(claims):
@@ -536,31 +532,31 @@ def resolve_closure_conflicts(
             claims=claims,
             residual_entries=(),
         )
-    path = (*path, "domain_separation_failed")
+    path.append("domain_separation_failed")
 
     jam_possible = all(claim.coexistence_permitted for claim in claims)
-    if jam_possible and attempt_tarjih:
-        return _make_conflict_certificate(
-            status="suspended",
-            resolution_path=(*path, "jam_available", "tarjih_blocked"),
-            claims=claims,
-            residual_entries=(
-                Residual(
-                    family="scope",
-                    severity="blocker",
-                    message="tarjih_blocked_until_jam_fails",
-                    remediation_hint="apply jam/coexistence first; tarjih is licensed only after jam failure",
-                ),
-            ),
-        )
     if jam_possible:
+        if attempt_tarjih:
+            return _make_conflict_certificate(
+                status="suspended",
+                resolution_path=(*path, "jam_available", "tarjih_blocked"),
+                claims=claims,
+                residual_entries=(
+                    Residual(
+                        family="scope",
+                        severity="blocker",
+                        message="tarjih_blocked_until_jam_fails",
+                        remediation_hint="apply jam/coexistence first; tarjih is licensed only after jam failure",
+                    ),
+                ),
+            )
         return _make_conflict_certificate(
             status="coexistent",
             resolution_path=(*path, "jam"),
             claims=claims,
             residual_entries=(),
         )
-    path = (*path, "jam_failed")
+    path.append("jam_failed")
 
     has_blocker_conflict = any(_claim_has_blocker(claim) for claim in claims)
     if has_blocker_conflict:

@@ -23,8 +23,8 @@ TARJIH_BLOCKED_UNTIL_JAM_FAILS = "tarjih_blocked_until_jam_fails"
 NASKH_WITHOUT_CHRONOLOGY = "naskh_like_without_chronology_evidence"
 
 
-def _trace(trace_id: str, layer: str = "L1_Atom") -> Trace:
-    return Trace(trace_id=trace_id, source_layer=layer, evidence=("e1",))
+def _trace(trace_id: str, layer: str = "L1_Atom", evidence: tuple[str, ...] = ("e1",)) -> Trace:
+    return Trace(trace_id=trace_id, source_layer=layer, evidence=evidence)
 
 
 def _closed_cert(layer: str, trace_id: str) -> object:
