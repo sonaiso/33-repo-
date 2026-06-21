@@ -17,6 +17,11 @@ from taaqqul_slot_geometry.core.closure_kernel import (
     resolve_closure_conflicts,
 )
 
+BLOCKER_RESIDUAL_CONFLICT = "blocker_residual_conflict"
+UNRESOLVED_CONFLICT_SUSPENDED = "unresolved_conflict_suspended"
+TARJIH_BLOCKED_UNTIL_JAM_FAILS = "tarjih_blocked_until_jam_fails"
+NASKH_WITHOUT_CHRONOLOGY = "naskh_like_without_chronology_evidence"
+
 
 def _trace(trace_id: str, layer: str = "L1_Atom") -> Trace:
     return Trace(trace_id=trace_id, source_layer=layer, evidence=("e1",))
@@ -66,7 +71,7 @@ def test_blocker_residual_prevents_transition():
     )
     assert result.status == "blocked"
     assert result.blocked_transition is True
-    assert any(item.message == "blocker_residual_conflict" for item in result.residual_entries)
+    assert any(item.message == BLOCKER_RESIDUAL_CONFLICT for item in result.residual_entries)
 
 
 def test_unresolved_conflict_returns_suspended_certificate():
@@ -79,7 +84,9 @@ def test_unresolved_conflict_returns_suspended_certificate():
         )
     )
     assert result.status == "suspended"
-    assert any(item.message == "unresolved_conflict_suspended" for item in result.residual_entries)
+    assert any(
+        item.message == UNRESOLVED_CONFLICT_SUSPENDED for item in result.residual_entries
+    )
 
 
 def test_tarjih_is_blocked_unless_jam_fails():
@@ -93,7 +100,9 @@ def test_tarjih_is_blocked_unless_jam_fails():
         attempt_tarjih=True,
     )
     assert result.status == "suspended"
-    assert any(item.message == "tarjih_blocked_until_jam_fails" for item in result.residual_entries)
+    assert any(
+        item.message == TARJIH_BLOCKED_UNTIL_JAM_FAILS for item in result.residual_entries
+    )
 
 
 def test_no_naskh_like_behavior_without_chronology_evidence():
@@ -107,7 +116,7 @@ def test_no_naskh_like_behavior_without_chronology_evidence():
     )
     assert result.status == "suspended"
     assert any(
-        item.message == "naskh_like_without_chronology_evidence"
+        item.message == NASKH_WITHOUT_CHRONOLOGY
         for item in result.residual_entries
     )
 

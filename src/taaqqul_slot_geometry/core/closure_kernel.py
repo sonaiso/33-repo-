@@ -43,6 +43,7 @@ _ALLOWED_LAYERS: Tuple[str, ...] = (
 )
 
 _ALLOWED_MOTION_STATES = frozenset({"فتحة", "ضمة", "كسرة", "سكون"})
+_ALLOWED_CONFLICT_STATUSES = frozenset({"separated", "coexistent", "blocked", "suspended", "provisional"})
 _ALLOWED_EVENT_PATTERNS = frozenset({"فَعَلَ", "فَعِلَ", "فَعُلَ"})
 _ALLOWED_AUGMENTED_PATTERNS = frozenset({
     "أفعل",
@@ -287,6 +288,10 @@ class ConflictClaim:
     def __post_init__(self) -> None:
         if not self.domain_scope:
             raise ValueError(FailureCode.M_CX_08.value)
+        if getattr(self.certificate, "trace", None) is None:
+            raise ValueError(FailureCode.M_CX_08.value)
+        if not getattr(self.certificate.trace, "trace_id", ""):
+            raise ValueError(FailureCode.M_CX_08.value)
         if not self.trace_ref:
             raise ValueError(FailureCode.M_CX_12.value)
         if self.rank != Rank.CANDIDATE:
@@ -306,12 +311,12 @@ class ConflictCertificate:
     residuals: FrozenSet[str] = field(default_factory=frozenset)
 
     def __post_init__(self) -> None:
-        if self.status not in {"separated", "coexistent", "blocked", "suspended", "provisional"}:
+        if self.status not in _ALLOWED_CONFLICT_STATUSES:
             raise ValueError(FailureCode.M_CX_08.value)
         if not self.candidate_layers or not self.candidate_trace_ids:
             raise ValueError(FailureCode.M_CX_08.value)
         if len(self.candidate_layers) != len(self.candidate_trace_ids):
-            raise ValueError(FailureCode.M_CX_01.value)
+            raise ValueError(FailureCode.M_CX_08.value)
         if not self.trace_ref:
             raise ValueError(FailureCode.M_CX_12.value)
         if self.rank != Rank.CANDIDATE:
@@ -494,6 +499,13 @@ def _make_conflict_certificate(
     )
 
 
+def _claim_has_blocker(claim: ConflictClaim) -> bool:
+    certificate = claim.certificate
+    return should_block_transition(certificate) or any(
+        item.severity == "blocker" for item in certificate.residual_entries
+    )
+
+
 def resolve_closure_conflicts(
     *,
     claims: Tuple[ConflictClaim, ...],
@@ -538,11 +550,7 @@ def resolve_closure_conflicts(
         )
     path = (*path, "jam_failed")
 
-    has_blocker_conflict = any(
-        should_block_transition(claim.certificate)
-        or any(item.severity == "blocker" for item in claim.certificate.residual_entries)
-        for claim in claims
-    )
+    has_blocker_conflict = any(_claim_has_blocker(claim) for claim in claims)
     if has_blocker_conflict:
         return _make_conflict_certificate(
             status="blocked",
