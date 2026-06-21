@@ -485,7 +485,7 @@ def _make_conflict_certificate(
     claims: Tuple[ConflictClaim, ...],
     residual_entries: Tuple[Residual, ...],
 ) -> ConflictCertificate:
-    residual_codes = frozenset(f"{r.family}:{r.message}" for r in residual_entries)
+    residual_keys = frozenset(f"{r.family}:{r.message}" for r in residual_entries)
     return ConflictCertificate(
         status=status,
         resolution_path=resolution_path,
@@ -495,7 +495,7 @@ def _make_conflict_certificate(
         blocked_transition=(
             status == "blocked" or any(item.severity == "blocker" for item in residual_entries)
         ),
-        residuals=residual_codes,
+        residuals=residual_keys,
     )
 
 
@@ -516,8 +516,8 @@ def resolve_closure_conflicts(
 
     path: Tuple[str, ...] = ("collect_candidate_certificates",)
 
-    domain_count = len({claim.domain_scope for claim in claims})
-    if domain_count == len(claims):
+    unique_domain_count = len({claim.domain_scope for claim in claims})
+    if unique_domain_count == len(claims):
         return _make_conflict_certificate(
             status="separated",
             resolution_path=(*path, "domain_separation"),

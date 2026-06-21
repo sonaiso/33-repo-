@@ -11,8 +11,8 @@ import pytest
 from taaqqul_slot_geometry.constitution.failure_taxonomy import FailureCode
 from taaqqul_slot_geometry.core.closure_kernel import (
     ConflictClaim,
+    Residual,
     Trace,
-    close_l6_past_mujarrad_event,
     make_closure_certificate,
     resolve_closure_conflicts,
 )
@@ -39,12 +39,27 @@ def _closed_cert(layer: str, trace_id: str) -> object:
     )
 
 
-def test_conflict_engine_prefers_domain_separation_before_blocking():
-    blocked = close_l6_past_mujarrad_event(
-        pattern="فَعَلَ",
-        has_fa_il_slot=False,
-        trace=_trace("t-block", "L6_PastMujarradEvent"),
+def _blocked_cert(layer: str, trace_id: str) -> object:
+    return make_closure_certificate(
+        layer=layer,
+        identity_preserved=True,
+        boundary_declared=True,
+        trace=_trace(trace_id, layer),
+        residual_entries=(
+            Residual(
+                family="path",
+                severity="blocker",
+                message="synthetic_blocker_for_conflict_test",
+                remediation_hint="clear blocker before transition",
+            ),
+        ),
+        next_permissions=("L2_Syllable",) if layer != "L12_Irab" else (),
+        requires_next_permission=layer != "L12_Irab",
     )
+
+
+def test_conflict_engine_prefers_domain_separation_before_blocking():
+    blocked = _blocked_cert("L1_Atom", "t-block")
     closed = _closed_cert("L1_Atom", "t-ok")
     result = resolve_closure_conflicts(
         claims=(
@@ -57,11 +72,7 @@ def test_conflict_engine_prefers_domain_separation_before_blocking():
 
 
 def test_blocker_residual_prevents_transition():
-    blocked = close_l6_past_mujarrad_event(
-        pattern="فَعَلَ",
-        has_fa_il_slot=False,
-        trace=_trace("t-block", "L6_PastMujarradEvent"),
-    )
+    blocked = _blocked_cert("L1_Atom", "t-block")
     closed = _closed_cert("L1_Atom", "t-ok")
     result = resolve_closure_conflicts(
         claims=(
