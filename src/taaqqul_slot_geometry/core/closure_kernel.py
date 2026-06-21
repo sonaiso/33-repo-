@@ -148,6 +148,10 @@ class ClosureCertificate:
         }
         if invalid_permissions:
             raise ValueError(FailureCode.M_CX_04.value)
+        if not isinstance(self.residuals, frozenset) or any(
+            not isinstance(item, str) for item in self.residuals
+        ):
+            raise ValueError(FailureCode.M_CX_08.value)
 
 
 @dataclass(frozen=True)
@@ -296,6 +300,10 @@ class ConflictClaim:
             raise ValueError(FailureCode.M_CX_12.value)
         if self.rank != Rank.CANDIDATE:
             raise ValueError(FailureCode.M_CX_09.value)
+        if not isinstance(self.residuals, frozenset) or any(
+            not isinstance(item, str) for item in self.residuals
+        ):
+            raise ValueError(FailureCode.M_CX_08.value)
 
 
 @dataclass(frozen=True)
@@ -321,6 +329,10 @@ class ConflictCertificate:
             raise ValueError(FailureCode.M_CX_12.value)
         if self.rank != Rank.CANDIDATE:
             raise ValueError(FailureCode.M_CX_09.value)
+        if not isinstance(self.residuals, frozenset) or any(
+            not isinstance(item, str) for item in self.residuals
+        ):
+            raise ValueError(FailureCode.M_CX_08.value)
 
 
 @dataclass(frozen=True)
