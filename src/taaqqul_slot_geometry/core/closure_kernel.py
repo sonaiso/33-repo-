@@ -45,6 +45,11 @@ _ALLOWED_LAYERS: Tuple[str, ...] = (
 _ALLOWED_MOTION_STATES = frozenset({"فتحة", "ضمة", "كسرة", "سكون"})
 _ALLOWED_CONFLICT_STATUSES = frozenset({"separated", "coexistent", "blocked", "suspended", "provisional"})
 _ALLOWED_EVENT_PATTERNS = frozenset({"فَعَلَ", "فَعِلَ", "فَعُلَ"})
+CONFLICT_MSG_BLOCKER_RESIDUAL = "blocker_residual_conflict"
+CONFLICT_MSG_NASKH_NO_CHRONOLOGY = "naskh_like_without_chronology_evidence"
+CONFLICT_MSG_TARJIH_AFTER_JAM_FAILURE = "tarjih_applied_after_jam_failure"
+CONFLICT_MSG_TARJIH_BLOCKED = "tarjih_blocked_until_jam_fails"
+CONFLICT_MSG_UNRESOLVED_SUSPENDED = "unresolved_conflict_suspended"
 _ALLOWED_AUGMENTED_PATTERNS = frozenset({
     "أفعل",
     "فعّل",
@@ -57,7 +62,7 @@ _ALLOWED_AUGMENTED_PATTERNS = frozenset({
 })
 
 
-def _validate_residual_codes(residuals: FrozenSet[str]) -> None:
+def _validate_residual_structure(residuals: FrozenSet[str]) -> None:
     if not isinstance(residuals, frozenset) or any(not isinstance(item, str) for item in residuals):
         raise ValueError(FailureCode.M_CX_08.value)
 
@@ -153,7 +158,7 @@ class ClosureCertificate:
         }
         if invalid_permissions:
             raise ValueError(FailureCode.M_CX_04.value)
-        _validate_residual_codes(self.residuals)
+        _validate_residual_structure(self.residuals)
 
 
 @dataclass(frozen=True)
@@ -302,7 +307,7 @@ class ConflictClaim:
             raise ValueError(FailureCode.M_CX_12.value)
         if self.rank != Rank.CANDIDATE:
             raise ValueError(FailureCode.M_CX_09.value)
-        _validate_residual_codes(self.residuals)
+        _validate_residual_structure(self.residuals)
 
 
 @dataclass(frozen=True)
@@ -328,7 +333,7 @@ class ConflictCertificate:
             raise ValueError(FailureCode.M_CX_12.value)
         if self.rank != Rank.CANDIDATE:
             raise ValueError(FailureCode.M_CX_09.value)
-        _validate_residual_codes(self.residuals)
+        _validate_residual_structure(self.residuals)
 
 
 @dataclass(frozen=True)
@@ -493,7 +498,7 @@ def _make_conflict_certificate(
     claims: Tuple[ConflictClaim, ...],
     residual_entries: Tuple[Residual, ...],
 ) -> ConflictCertificate:
-    residual_signatures = frozenset(f"{r.family}:{r.message}" for r in residual_entries)
+    residual_identifiers = frozenset(f"{r.family}:{r.message}" for r in residual_entries)
     return ConflictCertificate(
         status=status,
         resolution_path=resolution_path,
@@ -503,7 +508,7 @@ def _make_conflict_certificate(
         blocked_transition=(
             status == "blocked" or any(item.severity == "blocker" for item in residual_entries)
         ),
-        residuals=residual_signatures,
+        residuals=residual_identifiers,
     )
 
 
@@ -545,7 +550,7 @@ def resolve_closure_conflicts(
                     Residual(
                         family="scope",
                         severity="blocker",
-                        message="tarjih_blocked_until_jam_fails",
+                        message=CONFLICT_MSG_TARJIH_BLOCKED,
                         remediation_hint="apply jam/coexistence first; tarjih is licensed only after jam failure",
                     ),
                 ),
@@ -568,7 +573,7 @@ def resolve_closure_conflicts(
                 Residual(
                     family="path",
                     severity="blocker",
-                    message="blocker_residual_conflict",
+                    message=CONFLICT_MSG_BLOCKER_RESIDUAL,
                     remediation_hint="clear blocker residuals in candidate certificates before transition",
                 ),
             ),
@@ -584,7 +589,7 @@ def resolve_closure_conflicts(
                 Residual(
                     family="evidence",
                     severity="warning",
-                    message="naskh_like_without_chronology_evidence",
+                    message=CONFLICT_MSG_NASKH_NO_CHRONOLOGY,
                     remediation_hint="model chronology evidence before opening naskh-like conflict handling",
                 ),
             ),
@@ -599,7 +604,7 @@ def resolve_closure_conflicts(
                 Residual(
                     family="scope",
                     severity="note",
-                    message="tarjih_applied_after_jam_failure",
+                    message=CONFLICT_MSG_TARJIH_AFTER_JAM_FAILURE,
                     remediation_hint="record tarjih as provisional conflict certificate only",
                 ),
             ),
@@ -613,7 +618,7 @@ def resolve_closure_conflicts(
             Residual(
                 family="path",
                 severity="warning",
-                message="unresolved_conflict_suspended",
+                message=CONFLICT_MSG_UNRESOLVED_SUSPENDED,
                 remediation_hint="keep conflict suspended until a licensed resolver is provided",
             ),
         ),
