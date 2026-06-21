@@ -26,6 +26,10 @@ def _trace(trace_id: str, layer: str = "L1_Atom", evidence: tuple[str, ...] = ("
     return Trace(trace_id=trace_id, source_layer=layer, evidence=evidence)
 
 
+def _next_permissions(layer: str) -> tuple[str, ...]:
+    return ("L2_Syllable",) if layer != "L12_Irab" else ()
+
+
 def _closed_cert(layer: str, trace_id: str) -> object:
     return make_closure_certificate(
         layer=layer,
@@ -33,7 +37,7 @@ def _closed_cert(layer: str, trace_id: str) -> object:
         boundary_declared=True,
         trace=_trace(trace_id, layer),
         residual_entries=(),
-        next_permissions=("L2_Syllable",) if layer != "L12_Irab" else (),
+        next_permissions=_next_permissions(layer),
         requires_next_permission=layer != "L12_Irab",
     )
 
@@ -52,7 +56,7 @@ def _blocked_cert(layer: str, trace_id: str) -> object:
                 remediation_hint="clear blocker before transition",
             ),
         ),
-        next_permissions=("L2_Syllable",) if layer != "L12_Irab" else (),
+        next_permissions=_next_permissions(layer),
         requires_next_permission=layer != "L12_Irab",
     )
 

@@ -47,7 +47,7 @@ _ALLOWED_CONFLICT_STATUSES = frozenset({"separated", "coexistent", "blocked", "s
 _ALLOWED_EVENT_PATTERNS = frozenset({"فَعَلَ", "فَعِلَ", "فَعُلَ"})
 CONFLICT_MSG_BLOCKER_RESIDUAL = "blocker_residual_conflict"
 CONFLICT_MSG_NASKH_NO_CHRONOLOGY = "naskh_like_without_chronology_evidence"
-CONFLICT_MSG_TARJIH_AFTER_JAM_FAILURE = "tarjih_applied_after_jam_failure"
+CONFLICT_MSG_TARJIH_PROVISIONAL = "provisional_tarjih_after_jam_failure"
 CONFLICT_MSG_TARJIH_BLOCKED = "tarjih_blocked_until_jam_fails"
 CONFLICT_MSG_UNRESOLVED_SUSPENDED = "unresolved_conflict_suspended"
 _ALLOWED_AUGMENTED_PATTERNS = frozenset({
@@ -604,7 +604,7 @@ def resolve_closure_conflicts(
                 Residual(
                     family="scope",
                     severity="note",
-                    message=CONFLICT_MSG_TARJIH_AFTER_JAM_FAILURE,
+                    message=CONFLICT_MSG_TARJIH_PROVISIONAL,
                     remediation_hint="record tarjih as provisional conflict certificate only",
                 ),
             ),
