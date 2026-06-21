@@ -272,6 +272,64 @@ class ProvisionalCertificate:
             raise ValueError(FailureCode.M_CX_09.value)
 
 
+@dataclass(frozen=True)
+class CoverageCaseRow:
+    case_id: str
+    layer: str
+    gate_name: str
+    expected_status: CertificateStatus
+    observed_status: CertificateStatus | None = None
+    note: str | None = None
+    trace_ref: str = "docs/00_MAQOOL_CONSTITUTION.md §5 Rule 1"
+    rank: Rank = Rank.CANDIDATE
+    residuals: FrozenSet[str] = field(default_factory=frozenset)
+
+    def __post_init__(self) -> None:
+        if not self.case_id:
+            raise ValueError(FailureCode.M_CX_08.value)
+        if self.layer not in _ALLOWED_LAYERS:
+            raise ValueError(FailureCode.M_CX_13.value)
+        if not self.gate_name:
+            raise ValueError(FailureCode.M_CX_08.value)
+        if self.expected_status not in {"closed", "blocked", "provisional"}:
+            raise ValueError(FailureCode.M_CX_08.value)
+        if self.observed_status is not None and self.observed_status not in {
+            "closed",
+            "blocked",
+            "provisional",
+        }:
+            raise ValueError(FailureCode.M_CX_08.value)
+        if not self.trace_ref:
+            raise ValueError(FailureCode.M_CX_12.value)
+        if self.rank != Rank.CANDIDATE:
+            raise ValueError(FailureCode.M_CX_09.value)
+
+
+@dataclass(frozen=True)
+class CoverageMatrix:
+    rows: Tuple[CoverageCaseRow, ...] = ()
+    claimed_exhaustive: bool = False
+    trace_ref: str = "docs/00_MAQOOL_CONSTITUTION.md §5 Rule 1"
+    rank: Rank = Rank.CANDIDATE
+    residuals: FrozenSet[str] = field(default_factory=frozenset)
+
+    def __post_init__(self) -> None:
+        if self.claimed_exhaustive:
+            raise ValueError(FailureCode.M_CX_08.value)
+        if not self.trace_ref:
+            raise ValueError(FailureCode.M_CX_12.value)
+        if self.rank != Rank.CANDIDATE:
+            raise ValueError(FailureCode.M_CX_09.value)
+
+    def register_case_row(self, row: CoverageCaseRow) -> "CoverageMatrix":
+        if any(existing.case_id == row.case_id for existing in self.rows):
+            raise ValueError(FailureCode.M_CX_04.value)
+        return CoverageMatrix(
+            rows=(*self.rows, row),
+            claimed_exhaustive=False,
+        )
+
+
 def _certificate_status(
     *,
     identity_preserved: bool,
@@ -305,10 +363,11 @@ def make_closure_certificate(
     trace: Trace,
     residual_entries: Tuple[Residual, ...] = (),
     next_permissions: Tuple[str, ...] = (),
+    requires_next_permission: bool = True,
 ) -> ClosureCertificate:
     trace_recorded = bool(trace.trace_id)
     residuals_audited = True
-    next_layer_permission = bool(next_permissions)
+    next_layer_permission = bool(next_permissions) if requires_next_permission else True
     status = _certificate_status(
         identity_preserved=identity_preserved,
         boundary_declared=boundary_declared,
@@ -366,6 +425,43 @@ def issue_provisional_certificate(
         evidence_rank_label=evidence_rank_label,
         residuals=residual_codes,
     )
+
+
+def _require_lower_closure(
+    *,
+    lower_certificate: ClosureCertificate | None,
+    expected_layers: FrozenSet[str],
+    missing_message: str,
+    missing_hint: str,
+) -> Tuple[Residual, ...]:
+    if lower_certificate is None:
+        return (
+            Residual(
+                family="path",
+                severity="blocker",
+                message=missing_message,
+                remediation_hint=missing_hint,
+            ),
+        )
+    if lower_certificate.layer not in expected_layers:
+        return (
+            Residual(
+                family="path",
+                severity="blocker",
+                message="required_lower_layer_mismatch",
+                remediation_hint="provide the direct lower closure certificate for this gate",
+            ),
+        )
+    if should_block_transition(lower_certificate):
+        return (
+            Residual(
+                family="path",
+                severity="blocker",
+                message="required_lower_closure_blocked",
+                remediation_hint="resolve blocker residuals in required lower closure first",
+            ),
+        )
+    return ()
 
 
 def weak_letter_gate(
@@ -578,7 +674,195 @@ def close_l7_augmented(
     )
 
 
+def close_l8_imperfect_event(
+    *,
+    has_event_origin: bool,
+    lower_certificate: ClosureCertificate | None,
+    trace: Trace,
+) -> ClosureCertificate:
+    residual_entries: Tuple[Residual, ...] = _require_lower_closure(
+        lower_certificate=lower_certificate,
+        expected_layers=frozenset({"L6_PastMujarradEvent", "L7_Augmented"}),
+        missing_message="imperfect_without_lower_closure",
+        missing_hint="close L6 or L7 and clear blocker residuals first",
+    )
+    if not has_event_origin:
+        residual_entries += (
+            Residual(
+                family="path",
+                severity="blocker",
+                message="imperfect_without_event_origin",
+                remediation_hint="declare event origin before imperfect closure",
+            ),
+        )
+    return make_closure_certificate(
+        layer="L8_Imperfect",
+        identity_preserved=True,
+        boundary_declared=True,
+        trace=trace,
+        residual_entries=residual_entries,
+        next_permissions=("L9_Imperative", "L10_Derivation"),
+    )
+
+
+def close_l9_imperative_event(
+    *,
+    has_addressee_slot: bool,
+    has_force_slot: bool,
+    lower_certificate: ClosureCertificate | None,
+    trace: Trace,
+) -> ClosureCertificate:
+    residual_entries: Tuple[Residual, ...] = _require_lower_closure(
+        lower_certificate=lower_certificate,
+        expected_layers=frozenset({"L8_Imperfect"}),
+        missing_message="imperative_without_lower_closure",
+        missing_hint="close L8 and clear blocker residuals before imperative closure",
+    )
+    if not has_addressee_slot:
+        residual_entries += (
+            Residual(
+                family="relation",
+                severity="blocker",
+                message="imperative_without_addressee_slot",
+                remediation_hint="declare imperative addressee relation before closure",
+            ),
+        )
+    if not has_force_slot:
+        residual_entries += (
+            Residual(
+                family="relation",
+                severity="blocker",
+                message="imperative_without_force_slot",
+                remediation_hint="declare force/jussive slot before imperative closure",
+            ),
+        )
+    return make_closure_certificate(
+        layer="L9_Imperative",
+        identity_preserved=True,
+        boundary_declared=True,
+        trace=trace,
+        residual_entries=residual_entries,
+        next_permissions=("L10_Derivation",),
+    )
+
+
+def close_l10_derivation_family(
+    *,
+    has_mujarrad_origin: bool,
+    has_event_origin: bool,
+    lower_certificate: ClosureCertificate | None,
+    trace: Trace,
+) -> ClosureCertificate:
+    residual_entries: Tuple[Residual, ...] = _require_lower_closure(
+        lower_certificate=lower_certificate,
+        expected_layers=frozenset({"L9_Imperative", "L8_Imperfect", "L7_Augmented"}),
+        missing_message="derivation_without_lower_closure",
+        missing_hint="close L7/L8/L9 and clear blocker residuals before derivation closure",
+    )
+    if not has_mujarrad_origin:
+        residual_entries += (
+            Residual(
+                family="path",
+                severity="blocker",
+                message="derivation_without_mujarrad_origin",
+                remediation_hint="link derivation to a licensed mujarrad origin",
+            ),
+        )
+    if not has_event_origin:
+        residual_entries += (
+            Residual(
+                family="path",
+                severity="blocker",
+                message="derivation_without_event_origin",
+                remediation_hint="link derivation to an event-origin closure",
+            ),
+        )
+    return make_closure_certificate(
+        layer="L10_Derivation",
+        identity_preserved=True,
+        boundary_declared=True,
+        trace=trace,
+        residual_entries=residual_entries,
+        next_permissions=("L11_MabniTool",),
+    )
+
+
+def close_l11_mabni_tool_reference(
+    *,
+    forced_into_root_weight_path: bool,
+    lower_certificate: ClosureCertificate | None,
+    trace: Trace,
+) -> ClosureCertificate:
+    residual_entries: Tuple[Residual, ...] = _require_lower_closure(
+        lower_certificate=lower_certificate,
+        expected_layers=frozenset({"L10_Derivation"}),
+        missing_message="mabni_tool_without_lower_closure",
+        missing_hint="close L10 and clear blocker residuals before mabni/tool closure",
+    )
+    if forced_into_root_weight_path:
+        residual_entries += (
+            Residual(
+                family="scope",
+                severity="blocker",
+                message="mabni_tool_forced_into_root_weight_path",
+                remediation_hint="keep mabni/tool/reference outside root-weight derivational path",
+            ),
+        )
+    return make_closure_certificate(
+        layer="L11_MabniTool",
+        identity_preserved=True,
+        boundary_declared=True,
+        trace=trace,
+        residual_entries=residual_entries,
+        next_permissions=("L12_Irab",),
+    )
+
+
+def close_l12_i3rab_relation(
+    *,
+    has_syntactic_relation: bool,
+    has_governing_factor: bool,
+    lower_certificate: ClosureCertificate | None,
+    trace: Trace,
+) -> ClosureCertificate:
+    residual_entries: Tuple[Residual, ...] = _require_lower_closure(
+        lower_certificate=lower_certificate,
+        expected_layers=frozenset({"L11_MabniTool"}),
+        missing_message="i3rab_without_lower_closure",
+        missing_hint="close L11 and clear blocker residuals before i'rab closure",
+    )
+    if not has_syntactic_relation:
+        residual_entries += (
+            Residual(
+                family="relation",
+                severity="blocker",
+                message="i3rab_without_syntactic_relation",
+                remediation_hint="declare syntactic relation before i'rab closure",
+            ),
+        )
+    if not has_governing_factor:
+        residual_entries += (
+            Residual(
+                family="relation",
+                severity="blocker",
+                message="i3rab_without_governing_factor",
+                remediation_hint="declare governing factor (عامل) before i'rab closure",
+            ),
+        )
+    return make_closure_certificate(
+        layer="L12_Irab",
+        identity_preserved=True,
+        boundary_declared=True,
+        trace=trace,
+        residual_entries=residual_entries,
+        next_permissions=(),
+        requires_next_permission=False,
+    )
+
+
 __all__ = [
+    "CoverageCaseRow",
+    "CoverageMatrix",
     "ClosureCertificate",
     "DerivationCandidate",
     "Failure",
@@ -591,6 +875,11 @@ __all__ = [
     "close_l3_root_stem",
     "close_l6_past_mujarrad_event",
     "close_l7_augmented",
+    "close_l8_imperfect_event",
+    "close_l9_imperative_event",
+    "close_l10_derivation_family",
+    "close_l11_mabni_tool_reference",
+    "close_l12_i3rab_relation",
     "gemination_gate",
     "hamza_gate",
     "hamzat_wasl_gate",
