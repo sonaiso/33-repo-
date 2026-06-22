@@ -173,4 +173,3 @@ DAL-A1 may define only:
 - `DalAloneClosureSurface`
 
 `DalAloneClosureSurface` is a candidate surface, not `DalAloneClosed`.
-
