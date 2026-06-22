@@ -50,10 +50,10 @@
 
 | المرحلة | الحالة | عدد PRs المنجزة | الباقي |
 |---------|--------|----------------|--------|
-| Phase 0 (L0) | ✅ مكتمل | 8 PRs | 0 |
-| Phase 1 (L1) | ✅ مفتوح | 1 PR (PR-9) | 4 PRs |
-| Phase 2 (L2) | 🔒 مقفل | 0 | 5 PRs |
-| Phase 3 (L3) | 🔒 مقفل | 0 | 6 PRs |
+| Phase 0 (L0) | ✅ مكتمل | مغلق رسميًا | 0 |
+| Phase 1 (L1) | ✅ مفتوح | سلسلة إنجازات حتى PR #43 (مع hotfix معماري) | 1 حزمة إغلاق |
+| Phase 2 (L2) | 🔒 مقفل | 0 | محجوب حتى إعلان إغلاق L1 |
+| Phase 3 (L3) | 🔒 مقفل | 0 | محجوب حتى إعلان إغلاق L2 |
 
 ---
 
@@ -107,22 +107,34 @@
 - الدستور (§6 L1 Boundary)
 - `docs/02_L1_META_LANGUAGE_BOUNDARY.md`
 
-### المخرجات المطلوبة (5 PRs)
+### المخرجات المنجزة حتى PR #43
 
 | PR | الهدف | المخرج | الاختبار |
 |----|-------|--------|---------|
-| PR-9 | إعلان إغلاق L0 + فتح L1 | وثيقة إغلاق + تحديث الحارس | `test_l0_closure_declaration.py` |
-| PR-10 | التعريفات الرسمية | `L1/definition.py` — تعريف كل كيان L0 رسميًا | `test_l1_definition.py` |
-| PR-11 | المسلّمات | `L1/postulate.py` — P1-P5 ككيانات مجمّدة | `test_l1_postulate.py` |
-| PR-12 | الأفكار العامة | `L1/common_notion.py` — CN1-CN4 ككيانات | `test_l1_common_notion.py` |
-| PR-13 | جسر L0→L1 + إغلاق | `L1/meta_bridge.py` — TransitionGate مع ترخيص | `test_l1_bridge.py` |
+| PR-9 → PR-12 | فتح L1 + تعريفات/مسلّمات/أفكار عامة | `L1/definition.py`, `L1/postulate.py`, `L1/common_notion.py` | `tests/L1/test_l1_definition.py`, `tests/L1/test_l1_postulate.py`, `tests/L1/test_l1_common_notion.py` |
+| PR-33 | Proof Objects contract-only | `L1/proof_objects.py` | `tests/L1/test_proof_objects.py` |
+| PR-34 | Domain IDs + Gate/Bridge specs | `L1/domain_ids.py`, `L1/domain_bridge_gate.py` | `tests/L1/test_domain_ids.py`, `tests/L1/test_gate_bridge_specs.py` |
+| PR-35 | DAL atomic layer contracts | `L1/dal_atomic.py` | `tests/L1/test_dal_atomic_contracts.py` |
+| PR-36 | LAFZI form contract layer | `L1/lafzi_form.py` | `tests/L1/test_lafzi_form_contracts.py`, `tests/test_lafzi_form_contract.py` |
+| PR-37 | DAL→LAFZI declarative bridge spec | `L1/dal_to_lafzi_bridge.py` | `tests/L1/test_dal_to_lafzi_bridge_specs.py` |
+| PR-38 | Runtime embargo + failure-alignment guardrails | `docs/12`, `docs/13`, `data/failure_alignment.csv` | `tests/test_runtime_embargo_constitution.py`, `tests/test_failure_alignment_matrix.py` |
+| PR-41 → PR-43 | Closure/Conflict kernel contracts + hotfix | `core/closure_kernel.py`, `L1/signifier_domain.py` | `tests/core/test_closure_kernel.py`, `tests/core/test_conflict_engine.py`, `tests/L1/test_signifier_domain_contracts.py` |
+
+### المخرج المتبقي قبل إغلاق L1
+
+- **L1 Closure Pack**:
+  1. تشغيل `pytest tests/`
+  2. تشغيل `pytest tests/test_kpi_indicators.py -v`
+  3. تشغيل `python -m ci.constitutional_guard --source-dir src`
+  4. توثيق إعلان الإغلاق في `docs/L1_CLOSURE_DECLARATION.md`
+  5. تحديث الوثائق المرجعية لتوافق حالة PR #43
 
 ### شرط الإغلاق
-- [ ] جميع اختبارات L1 تمر
-- [ ] TransitionGate(L0→L1) يعمل
-- [ ] Identity(L0) ⊆ Identity(L1) محفوظ
+- [ ] جميع اختبارات المشروع تمر
+- [ ] مؤشرات KPI تمر
 - [ ] الحارس الدستوري يمر
-- [ ] مراجعة نهائية وإعلان إغلاق
+- [ ] توثيق إغلاق L1 في `docs/L1_CLOSURE_DECLARATION.md`
+- [ ] بقاء L2/L3 مقفلتين حتى اعتماد إعلان الإغلاق
 
 ---
 
@@ -236,9 +248,9 @@
   المدخل: 13 كيان L0                                              │
   المخرج: تعريفات + مسلّمات + أفكار عامة + جسر                   │
   الدور: بناء معايير المعقولية المرجعية                            │
-  الحالة: ✅ مفتوح — الخطوة التالية: PR-10                         │
+  الحالة: ✅ مفتوح — تم تنفيذ سلسلة PR-33..PR-43 وبقيت حزمة الإغلاق │
      │                                                            │
-     ▼ (إغلاق رسمي PR-14)                                        │
+     ▼ (إغلاق رسمي عبر L1 Closure Declaration)                   │
 [Phase 2: L2]                                                     │
   المدخل: تعريفات L1                                              │
   المخرج: محرك قياس + محرك برهان + إغلاق                         │
@@ -328,14 +340,13 @@ license = BranchLicense(
 
 ## الخطوة التالية الفورية
 
-**PR-10: التعريفات الرسمية (Formal Definitions)**
+**Prepare L1 closure declaration and roadmap reconciliation**
 
 المطلوب:
-1. إنشاء `L1/definition.py` — تعريف رسمي لكل كيان L0
-2. كل تعريف يحمل `trace_ref` + `rank` + `residuals`
-3. كل تعريف يشير إلى كيان L0 المقابل
-4. اختبار `test_l1_definition.py`
-5. التحقق من حفظ الهوية: Identity(L0) ⊆ Identity(L1)
+1. إضافة `docs/L1_CLOSURE_DECLARATION.md`
+2. تثبيت شرط عدم فتح L2 دون وثيقة إغلاق L1
+3. تشغيل الاختبارات الكاملة + KPI + constitutional guard
+4. إبقاء نطاق العمل داخل L1 (لا qiyas / لا ifadah / لا hukm / لا reality/tanzil)
 
 ---
 
