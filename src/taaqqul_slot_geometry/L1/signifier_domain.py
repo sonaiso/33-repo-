@@ -7,7 +7,7 @@ Authority: docs/15_PROJECT_ROADMAP.md Phase 1 (L1 open)
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import FrozenSet, Literal, Tuple
+from typing import FrozenSet, Literal, Tuple, cast
 
 from taaqqul_slot_geometry.constitution.failure_taxonomy import FailureCode
 
@@ -132,13 +132,15 @@ def _validate_common(trace_ref: str, rank: str, trace: Tuple[str, ...]) -> None:
 
 
 def previous_signifier_domain(domain: SignifierDomain) -> SignifierDomain | None:
+    """Return the immediate previous domain in the canonical Euclidean order."""
     idx = SIGNIFIER_DOMAIN_ORDER.index(domain)
     if idx == 0:
         return None
-    return SIGNIFIER_DOMAIN_ORDER[idx - 1]
+    return cast(SignifierDomain, SIGNIFIER_DOMAIN_ORDER[idx - 1])
 
 
 def next_signifier_domains(domain: SignifierDomain) -> Tuple[SignifierDomain, ...]:
+    """Return licensed next domains from the transition registry for a domain."""
     return SIGNIFIER_DOMAIN_TRANSITIONS.get(domain, tuple())
 
 
@@ -218,6 +220,7 @@ class DomainCertificate:
 
 
 def domain_relation(domain: SignifierDomain, trace: Tuple[str, ...]) -> DomainRelation:
+    """Construct previous/next and previous→next relation contracts for one domain."""
     previous_domain = previous_signifier_domain(domain)
     next_domains = next_signifier_domains(domain)
     relation_to_previous = (
@@ -255,6 +258,7 @@ def license_domain(
     boundary_declared: bool = True,
     origin_status: DomainLicenseStatus = "closed",
 ) -> DomainCertificate:
+    """Issue a domain certificate after origin/sabab/mani and closure-state checks."""
     relation = domain_relation(domain=domain, trace=trace)
     status: DomainLicenseStatus = "closed"
     status_reason: DomainBlockReason = "none"

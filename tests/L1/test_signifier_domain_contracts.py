@@ -20,6 +20,7 @@ from taaqqul_slot_geometry.L1.signifier_domain import (
     SIGNIFIER_DOMAIN_TRANSITIONS,
     SignifierDomain,
     WaqfWaslDomainCertificate,
+    domain_relation,
     license_domain,
     next_signifier_domains,
     previous_signifier_domain,
@@ -56,6 +57,7 @@ def test_signifier_domain_transition_registry_is_complete():
 def test_previous_and_next_domain_links():
     assert previous_signifier_domain("weight") == "minimal_mujarrad"
     assert next_signifier_domains("weight") == ("jamid_anchor", "event_path")
+    assert next_signifier_domains("irab_ready") == tuple()
 
 
 def test_motion_domain_certificate_contract():
@@ -243,13 +245,7 @@ def test_domain_certificate_rejects_blocked_with_next_permissions():
             sabab="licensed-motion",
             mani_residuals=tuple(),
             boundary_declared=True,
-            relation=license_domain(
-                domain="motion",
-                origin_certificate="origin:letter",
-                sabab="licensed-motion",
-                mani_checks=tuple(),
-                trace=("x",),
-            ).relation,
+            relation=domain_relation(domain="motion", trace=("x",)),
             trace=("x",),
             status="blocked",
             status_reason="blocked_by_mani",
