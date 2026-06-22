@@ -15,6 +15,10 @@
 >
 > L2 remains locked until this declaration is finalized with passing validation.
 
+Status semantics:
+- **PREPARED**: closure artifact exists, reconciliation is documented, and closure checks are listed but not yet signed off.
+- **FORMALLY CLOSED**: all required validation checks are green and L1 closure is explicitly approved.
+
 ---
 
 ## PR Reconciliation Snapshot
