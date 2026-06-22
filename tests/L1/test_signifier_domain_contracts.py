@@ -56,6 +56,18 @@ def test_signifier_domain_transition_registry_is_complete():
     assert set(SIGNIFIER_DOMAIN_TRANSITIONS) == set(SIGNIFIER_DOMAIN_ORDER)
 
 
+def test_previous_domains_are_derived_from_transition_registry():
+    for domain in SIGNIFIER_DOMAIN_ORDER:
+        expected_previous = tuple(
+            candidate_domain
+            for candidate_domain, next_domains in SIGNIFIER_DOMAIN_TRANSITIONS.items()
+            if domain in next_domains
+        )
+        if domain in INDEPENDENT_ENTRY_DOMAINS:
+            expected_previous = tuple()
+        assert previous_signifier_domains(domain) == expected_previous
+
+
 def test_previous_and_next_domain_links():
     assert previous_signifier_domain("weight") == "minimal_mujarrad"
     assert previous_signifier_domain("syllable") == "phonetic_atom"

@@ -200,6 +200,22 @@ def test_blocked_singleton_claim_remains_in_final_conflict_certificate():
     assert "L3_RootStem" in result.candidate_layers
 
 
+def test_coexistent_conflict_keeps_singleton_claims_in_certificate():
+    c1 = _closed_cert("L1_Atom", "trace-a")
+    c2 = _closed_cert("L2_Syllable", "trace-b")
+    c3 = _closed_cert("L3_RootStem", "trace-singleton")
+    result = resolve_closure_conflicts(
+        claims=(
+            ConflictClaim(certificate=c1, domain_scope="cluster-a", coexistence_permitted=True),
+            ConflictClaim(certificate=c2, domain_scope="cluster-a", coexistence_permitted=True),
+            ConflictClaim(certificate=c3, domain_scope="cluster-b"),
+        )
+    )
+    assert result.status == "coexistent"
+    assert result.candidate_trace_ids == ("trace-a", "trace-b", "trace-singleton")
+    assert result.candidate_layers == ("L1_Atom", "L2_Syllable", "L3_RootStem")
+
+
 def test_conflict_engine_rejects_empty_claim_set():
     with pytest.raises(ValueError, match=FailureCode.M_CX_08.value):
         resolve_closure_conflicts(claims=())

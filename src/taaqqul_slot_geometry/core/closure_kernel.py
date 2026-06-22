@@ -548,6 +548,7 @@ def resolve_closure_conflicts(
     if not claims:
         raise ValueError(FailureCode.M_CX_08.value)
 
+    all_claims = claims
     path = ["collect_candidate_certificates"]
     has_blocked_claims = any(_claim_has_blocker(claim) for claim in claims)
 
@@ -561,7 +562,7 @@ def resolve_closure_conflicts(
         return _make_conflict_certificate(
             status="separated",
             resolution_path=(*path, "domain_separation"),
-            claims=claims,
+            claims=all_claims,
             residual_entries=(),
             has_blocked_claims=has_blocked_claims,
         )
@@ -574,7 +575,7 @@ def resolve_closure_conflicts(
             return _make_conflict_certificate(
                 status="suspended",
                 resolution_path=(*path, "jam_available", "tarjih_blocked"),
-                claims=claims,
+                claims=all_claims,
                 residual_entries=(
                     Residual(
                         family="scope",
@@ -588,7 +589,7 @@ def resolve_closure_conflicts(
         return _make_conflict_certificate(
             status="coexistent",
             resolution_path=(*path, "jam"),
-            claims=claims,
+            claims=all_claims,
             residual_entries=(),
             has_blocked_claims=has_blocked_claims,
         )
@@ -598,7 +599,7 @@ def resolve_closure_conflicts(
         return _make_conflict_certificate(
             status="blocked",
             resolution_path=(*path, "blocker_residual_conflict"),
-            claims=claims,
+            claims=all_claims,
             residual_entries=(
                 Residual(
                     family="path",
@@ -615,7 +616,7 @@ def resolve_closure_conflicts(
         return _make_conflict_certificate(
             status="suspended",
             resolution_path=(*path, "naskh_like_gate"),
-            claims=claims,
+            claims=all_claims,
             residual_entries=(
                 Residual(
                     family="evidence",
@@ -631,7 +632,7 @@ def resolve_closure_conflicts(
         return _make_conflict_certificate(
             status="provisional",
             resolution_path=(*path, "tarjih_after_jam_failure"),
-            claims=claims,
+            claims=all_claims,
             residual_entries=(
                 Residual(
                     family="scope",
@@ -646,7 +647,7 @@ def resolve_closure_conflicts(
     return _make_conflict_certificate(
         status="suspended",
         resolution_path=(*path, "suspend_unresolved"),
-        claims=claims,
+        claims=all_claims,
         residual_entries=(
             Residual(
                 family="path",

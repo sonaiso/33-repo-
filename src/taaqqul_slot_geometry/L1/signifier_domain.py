@@ -138,8 +138,8 @@ def previous_signifier_domains(domain: SignifierDomain) -> Tuple[SignifierDomain
         return tuple()
     predecessors = tuple(
         candidate_domain
-        for candidate_domain in SIGNIFIER_DOMAIN_ORDER
-        if domain in SIGNIFIER_DOMAIN_TRANSITIONS.get(candidate_domain, tuple())
+        for candidate_domain, next_domains in SIGNIFIER_DOMAIN_TRANSITIONS.items()
+        if domain in next_domains
     )
     return predecessors
 
