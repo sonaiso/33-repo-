@@ -50,8 +50,6 @@ def _validate_common(
         raise ValueError(FailureCode.M_01_16.value)
     if domain_id != DomainID.D1_DAL_ONLY:
         raise ValueError(FailureCode.M_00_22.value)
-    if not set(DAL_A1_FORBIDDEN_OUTPUTS).issubset(set(forbidden_outputs)):
-        raise ValueError(FailureCode.M_00_22.value)
     if set(DAL_A2_FORBIDDEN_OUTPUTS) != set(forbidden_outputs):
         raise ValueError(FailureCode.M_00_22.value)
     if not evidence_ref and not proof_trace_ref:

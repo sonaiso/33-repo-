@@ -179,10 +179,10 @@ def test_dal_a2_keeps_a3_outputs_forbidden_not_completed():
 
 def test_sound_letter_grapheme_separation_rejects_collapsed_refs():
     """trace_ref: docs/58_DAL_ALONE_ATOMIC_CLOSURE_LAW.md DalAloneClosed condition 1."""
-    payload = _separation_gate_payload()
-    payload["atomic_sound_unit_ref"] = "sound-1"
+    collapsed_payload = _separation_gate_payload()
+    collapsed_payload["atomic_sound_unit_ref"] = "sound-1"
     with pytest.raises(ValueError, match=FailureCode.M_00_22.value):
-        SoundLetterGraphemeSeparationGate(**payload)
+        SoundLetterGraphemeSeparationGate(**collapsed_payload)
 
 
 def test_dal_a2_allowed_surface_names_are_separation_only():
