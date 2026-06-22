@@ -51,7 +51,7 @@
 | المرحلة | الحالة | عدد PRs المنجزة | الباقي |
 |---------|--------|----------------|--------|
 | Phase 0 (L0) | ✅ مكتمل | مغلق رسميًا | 0 |
-| Phase 1 (L1) | ✅ مفتوح | سلسلة إنجازات حتى PR #43 (مع hotfix معماري) | 1 حزمة إغلاق |
+| Phase 1 (L1) | ✅ مكتمل | سلسلة إنجازات حتى PR #43 + إعلان الإغلاق | 0 |
 | Phase 2 (L2) | 🔒 مقفل | 0 | محجوب حتى إعلان إغلاق L1 |
 | Phase 3 (L3) | 🔒 مقفل | 0 | محجوب حتى إعلان إغلاق L2 |
 
@@ -93,7 +93,7 @@
 
 ---
 
-## Phase 1 — طبقة الوصف الرسمي (L1) ✅ مفتوح
+## Phase 1 — طبقة الوصف الرسمي (L1) ✅ مكتمل
 
 ### الهدف
 تحويل كيانات L0 إلى تعريفات رسمية ومسلّمات وأفكار عامة تُشكّل **معايير المعقولية** —
@@ -120,21 +120,21 @@
 | PR-38 | Runtime embargo + failure-alignment guardrails | `docs/12`, `docs/13`, `data/failure_alignment.csv` | `tests/test_runtime_embargo_constitution.py`, `tests/test_failure_alignment_matrix.py` |
 | PR-41 → PR-43 | Closure/Conflict kernel contracts + hotfix | `core/closure_kernel.py`, `L1/signifier_domain.py` | `tests/core/test_closure_kernel.py`, `tests/core/test_conflict_engine.py`, `tests/L1/test_signifier_domain_contracts.py` |
 
-### المخرج المتبقي قبل إغلاق L1
+### مخرجات حزمة الإغلاق (مكتملة)
 
 - **L1 Closure Pack**:
-  1. تشغيل `pytest tests/`
-  2. تشغيل `pytest tests/test_kpi_indicators.py -v`
-  3. تشغيل `python -m ci.constitutional_guard --source-dir src`
-  4. توثيق إعلان الإغلاق في `docs/L1_CLOSURE_DECLARATION.md`
-  5. تحديث الوثائق المرجعية لتوافق حالة PR #43
+  1. [x] تشغيل `pytest tests/`
+  2. [x] تشغيل `pytest tests/test_kpi_indicators.py -v`
+  3. [x] تشغيل `python -m ci.constitutional_guard --source-dir src`
+  4. [x] توثيق إعلان الإغلاق في `docs/L1_CLOSURE_DECLARATION.md`
+  5. [x] تحديث الوثائق المرجعية لتوافق حالة PR #43
 
 ### شرط الإغلاق
-- [ ] جميع اختبارات المشروع تمر
-- [ ] مؤشرات KPI تمر
-- [ ] الحارس الدستوري يمر
-- [ ] توثيق إغلاق L1 في `docs/L1_CLOSURE_DECLARATION.md`
-- [ ] بقاء L2/L3 مقفلتين حتى اعتماد إعلان الإغلاق
+- [x] جميع اختبارات المشروع تمر
+- [x] مؤشرات KPI تمر
+- [x] الحارس الدستوري يمر
+- [x] توثيق إغلاق L1 في `docs/L1_CLOSURE_DECLARATION.md`
+- [x] بقاء L2/L3 مقفلتين حتى اعتماد إعلان الإغلاق
 
 ---
 
@@ -214,7 +214,7 @@
 ```
 المجموع الكلي: 24 PR مُرقّم ومُوجّه
 ├── Phase 0 (L0): 8 PRs  ✅ مكتمل
-├── Phase 1 (L1): 5 PRs  ✅ مفتوح (1 مُنجز، 4 باقية)
+├── Phase 1 (L1): 5 PRs  ✅ مكتمل
 ├── Phase 2 (L2): 5 PRs  🔒 مقفل
 └── Phase 3 (L3): 6 PRs  🔒 مقفل
 ```
@@ -248,7 +248,7 @@
   المدخل: 13 كيان L0                                              │
   المخرج: تعريفات + مسلّمات + أفكار عامة + جسر                   │
   الدور: بناء معايير المعقولية المرجعية                            │
-  الحالة: ✅ مفتوح — تم تنفيذ سلسلة PR-33..PR-43 وبقيت حزمة الإغلاق │
+  الحالة: ✅ مكتمل — تم تنفيذ سلسلة PR-33..PR-43 مع اعتماد حزمة الإغلاق │
      │                                                            │
      ▼ (إغلاق رسمي عبر L1 Closure Declaration)                   │
 [Phase 2: L2]                                                     │
