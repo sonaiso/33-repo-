@@ -205,3 +205,39 @@ DAL-A2 prepares DAL-A3 but does not perform:
 
 `DalA2SeparationSurface` is a candidate separation surface, not a closure
 verdict and not a bridge to `LafziMadlul`.
+
+## DAL-A3 Scope
+
+DAL-A3 is limited to candidate inventory and matrix contracts prepared from
+DAL-A2 separation surfaces:
+
+- `ArabicSoundInventoryCandidate`
+- `MakhrajCandidate`
+- `SifahCandidate`
+- `QadihSoundDifferenceCandidate`
+- `MakhrajSifahMatrixCandidate`
+- `DalA3SoundInventorySurface`
+
+DAL-A3 is candidate-only:
+
+- no `DalAloneClosed`
+- no `LafziMadlulGate`
+- no `WordKind`
+- no meaning
+- no root
+- no pattern
+- no weight licensing
+- no ifadah
+- no hukm
+- no reality
+
+DAL-A3 may expose candidate references for:
+
+- Arabic sound inventory coverage
+- makhraj visibility
+- sifah visibility
+- qādih sound-difference visibility
+
+DAL-A3 does not produce final Arabic sound closure, final makhraj/sifah
+verdicts, or any bridge to `LafziMadlul`. `DalA3SoundInventorySurface` is a
+candidate sound inventory surface, not `DalAloneClosed`.
