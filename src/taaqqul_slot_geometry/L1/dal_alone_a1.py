@@ -78,7 +78,7 @@ def _validate_common(
         raise ValueError(FailureCode.M_01_16.value)
     if domain_id != DomainID.D1_DAL_ONLY:
         raise ValueError(FailureCode.M_00_22.value)
-    if not forbidden_outputs:
+    if forbidden_outputs != DAL_A1_FORBIDDEN_OUTPUTS:
         raise ValueError(FailureCode.M_00_22.value)
     if not evidence_ref and not proof_trace_ref:
         raise ValueError(FailureCode.M_00_22.value)
@@ -91,7 +91,10 @@ def _validate_local_residuals(residuals: FrozenSet[str]) -> None:
 
 @dataclass(frozen=True)
 class RawTrace:
-    """Raw trace carrier candidate; it does not decide that the trace is speech."""
+    """Raw dal-alone trace candidate; never decides that the trace is speech.
+
+    trace_ref: docs/58_DAL_ALONE_ATOMIC_CLOSURE_LAW.md DAL-A1 Scope
+    """
 
     trace_id: str
     raw_trace_ref: str
@@ -120,7 +123,10 @@ class RawTrace:
 
 @dataclass(frozen=True)
 class GraphemeCandidate:
-    """Graphic surface candidate; it is not a final sound realization."""
+    """Graphic surface candidate; it is not a final sound realization.
+
+    trace_ref: docs/58_DAL_ALONE_ATOMIC_CLOSURE_LAW.md DAL-A1 Scope
+    """
 
     grapheme_id: str
     raw_trace_ref: str
@@ -149,7 +155,10 @@ class GraphemeCandidate:
 
 @dataclass(frozen=True)
 class DalLetterIdentityCarrier:
-    """Letter identity carrier candidate with no word-kind or meaning output."""
+    """Letter identity carrier candidate with no word-kind or meaning output.
+
+    trace_ref: docs/58_DAL_ALONE_ATOMIC_CLOSURE_LAW.md DAL-A1 Scope
+    """
 
     carrier_id: str
     grapheme_candidate_ref: str
@@ -180,7 +189,10 @@ class DalLetterIdentityCarrier:
 
 @dataclass(frozen=True)
 class PhoneticRealization:
-    """Sound realization candidate without makhraj/sifah closure."""
+    """Sound realization candidate without makhraj/sifah closure.
+
+    trace_ref: docs/58_DAL_ALONE_ATOMIC_CLOSURE_LAW.md DAL-A1 Scope
+    """
 
     realization_id: str
     letter_carrier_ref: str
@@ -211,7 +223,10 @@ class PhoneticRealization:
 
 @dataclass(frozen=True)
 class AtomicSoundUnit:
-    """Atomic sound unit candidate; it is not syllable closure."""
+    """Atomic sound unit candidate; it is not syllable closure.
+
+    trace_ref: docs/58_DAL_ALONE_ATOMIC_CLOSURE_LAW.md DAL-A1 Scope
+    """
 
     unit_id: str
     phonetic_realization_ref: str
@@ -242,7 +257,10 @@ class AtomicSoundUnit:
 
 @dataclass(frozen=True)
 class DalResidual:
-    """Local residual carrier for dal-alone closure only."""
+    """Local residual carrier for dal-alone closure only.
+
+    trace_ref: docs/58_DAL_ALONE_ATOMIC_CLOSURE_LAW.md Local Residual Vocabulary
+    """
 
     residual_id: str
     residual_code: str
@@ -273,7 +291,10 @@ class DalResidual:
 
 @dataclass(frozen=True)
 class DalAloneClosureSurface:
-    """Aggregate candidate surface; not DalAloneClosed and not LafziMadlul."""
+    """Aggregate candidate surface; not DalAloneClosed and not LafziMadlul.
+
+    trace_ref: docs/58_DAL_ALONE_ATOMIC_CLOSURE_LAW.md DAL-A1 Scope
+    """
 
     surface_id: str
     raw_trace_refs: Tuple[str, ...]
@@ -329,4 +350,3 @@ __all__ = [
     "Rank",
     "RawTrace",
 ]
-
