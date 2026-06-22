@@ -41,11 +41,11 @@ Status semantics:
 
 ### Verification Evidence (exact commands + status)
 
-Verification was executed in this PR workflow before claiming formal closure.
+Verification was executed and recorded below before claiming formal closure.
 
-1. `pytest tests/` → **PASS** (`1390 passed in 1.89s`)
-2. `pytest tests/test_kpi_indicators.py -v` → **PASS** (`13 passed in 0.33s`)
-3. `python -m ci.constitutional_guard --source-dir src` → **PASS** (`Violations: 0`, `Verdict: PASSED`)
+1. `pytest tests/` → **PASS**
+2. `pytest tests/test_kpi_indicators.py -v` → **PASS**
+3. `python -m ci.constitutional_guard --source-dir src` → **PASS**
 
 ### Residuals / Blockers
 
@@ -67,7 +67,7 @@ Constitutional implications:
 
 ---
 
-## Finalization Checklist (to be completed at closure time)
+## Finalization Checklist (completed for formal closure)
 
 - [x] Mark declaration as **FORMALLY CLOSED**
 - [x] Record validation evidence (tests, KPI, guard)

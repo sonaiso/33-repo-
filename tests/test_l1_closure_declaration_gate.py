@@ -14,7 +14,7 @@ REPO_ROOT = Path(__file__).parent.parent
 L1_CLOSURE_DOC = REPO_ROOT / "docs" / "L1_CLOSURE_DECLARATION.md"
 L2_DIR = REPO_ROOT / "src" / "taaqqul_slot_geometry" / "L2"
 L1_STATUS_FORMAL_MARKER = "Current status: FORMALLY CLOSED"
-L1_STATUS_CANDIDATE_MARKER = "L1_CLOSURE_CANDIDATE"
+L1_STATUS_CANDIDATE_MARKER = "Current status: L1_CLOSURE_CANDIDATE"
 REQUIRED_VERIFICATION_MARKERS = (
     "`pytest tests/` → **PASS**",
     "`pytest tests/test_kpi_indicators.py -v` → **PASS**",
@@ -46,7 +46,7 @@ def test_l1_declaration_has_valid_status_marker():
             assert marker in content
     else:
         assert "Residuals / Blockers" in content
-        assert "L1_CLOSURE_CANDIDATE" in content
+        assert L1_STATUS_CANDIDATE_MARKER.casefold() in casefold_content
         assert any(
             marker not in content for marker in REQUIRED_VERIFICATION_MARKERS
         ), "Candidate status must have at least one missing verification marker"
