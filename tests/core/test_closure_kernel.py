@@ -19,6 +19,8 @@ from taaqqul_slot_geometry.core.closure_kernel import (
     close_l11_mabni_tool_reference,
     close_l12_i3rab_relation,
     close_l3_root_stem,
+    close_l4_minimal_mujarrad,
+    close_l5_jamid_anchor,
     close_l6_past_mujarrad_event,
     close_l7_augmented,
     close_l8_imperfect_event,
@@ -33,6 +35,23 @@ from taaqqul_slot_geometry.core.closure_kernel import (
 
 def _trace(layer: str = "L1_Atom") -> Trace:
     return Trace(trace_id="t-1", source_layer=layer, evidence=("e1",))
+
+
+def _l3() -> ClosureCertificate:
+    return close_l3_root_stem(
+        radicals=("ق", "ت", "ل"),
+        positions=("فاء", "عين", "لام"),
+        trace=_trace("L3_RootStem"),
+    )
+
+
+def _l4_event() -> ClosureCertificate:
+    return close_l4_minimal_mujarrad(
+        path="event",
+        pattern="فَعَلَ",
+        lower_certificate=_l3(),
+        trace=_trace("L4_MinimalMujarrad"),
+    )
 
 
 def test_trace_rejects_unknown_layer():
@@ -79,16 +98,28 @@ def test_l6_past_mujarrad_requires_fa_il_slot():
     cert = close_l6_past_mujarrad_event(
         pattern="فَعَلَ",
         has_fa_il_slot=False,
+        lower_certificate=_l4_event(),
         trace=_trace("L6_PastMujarradEvent"),
     )
     assert cert.status == "blocked"
     assert any("fa_il" in item.message for item in cert.residual_entries)
 
 
-def test_l7_augmented_requires_prior_minimal_closure():
+def test_l6_past_mujarrad_blocks_without_l4_certificate():
+    cert = close_l6_past_mujarrad_event(
+        pattern="فَعَلَ",
+        has_fa_il_slot=True,
+        lower_certificate=None,
+        trace=_trace("L6_PastMujarradEvent"),
+    )
+    assert cert.status == "blocked"
+    assert any(item.message == "past_event_without_minimal_mujarrad_closure" for item in cert.residual_entries)
+
+
+def test_l7_augmented_requires_prior_minimal_closure_certificate():
     cert = close_l7_augmented(
         augmentation_pattern="أفعل",
-        minimal_mujarrad_closed=False,
+        lower_certificate=None,
         trace=_trace("L7_Augmented"),
     )
     assert cert.status == "blocked"
@@ -118,6 +149,7 @@ def test_provisional_certificate_drops_next_steps_when_blocker_exists():
     cert_blocked = close_l6_past_mujarrad_event(
         pattern="فَعَلَ",
         has_fa_il_slot=False,
+        lower_certificate=_l4_event(),
         trace=_trace("L6_PastMujarradEvent"),
     )
     provisional = issue_provisional_certificate((cert_ok, cert_blocked))
@@ -129,6 +161,7 @@ def test_l8_imperfect_blocked_without_event_origin():
     l6 = close_l6_past_mujarrad_event(
         pattern="فَعَلَ",
         has_fa_il_slot=True,
+        lower_certificate=_l4_event(),
         trace=_trace("L6_PastMujarradEvent"),
     )
     cert = close_l8_imperfect_event(
@@ -144,6 +177,7 @@ def test_l9_imperative_blocked_without_addressee_or_force_slot():
     l6 = close_l6_past_mujarrad_event(
         pattern="فَعَلَ",
         has_fa_il_slot=True,
+        lower_certificate=_l4_event(),
         trace=_trace("L6_PastMujarradEvent"),
     )
     l8 = close_l8_imperfect_event(
@@ -163,9 +197,10 @@ def test_l9_imperative_blocked_without_addressee_or_force_slot():
 
 
 def test_l10_derivation_blocked_without_mujarrad_or_event_origin():
+    l4 = _l4_event()
     l7 = close_l7_augmented(
         augmentation_pattern="أفعل",
-        minimal_mujarrad_closed=True,
+        lower_certificate=l4,
         trace=_trace("L7_Augmented"),
     )
     cert = close_l10_derivation_family(
@@ -180,9 +215,10 @@ def test_l10_derivation_blocked_without_mujarrad_or_event_origin():
 
 
 def test_l11_mabni_tool_blocked_when_forced_into_root_weight_path():
+    l4 = _l4_event()
     l7 = close_l7_augmented(
         augmentation_pattern="أفعل",
-        minimal_mujarrad_closed=True,
+        lower_certificate=l4,
         trace=_trace("L7_Augmented"),
     )
     l10 = close_l10_derivation_family(
@@ -193,6 +229,7 @@ def test_l11_mabni_tool_blocked_when_forced_into_root_weight_path():
     )
     cert = close_l11_mabni_tool_reference(
         forced_into_root_weight_path=True,
+        functional_identity_licensed=True,
         lower_certificate=l10,
         trace=_trace("L11_MabniTool"),
     )
@@ -201,9 +238,10 @@ def test_l11_mabni_tool_blocked_when_forced_into_root_weight_path():
 
 
 def test_l12_i3rab_blocked_without_syntactic_relation_or_factor():
+    l4 = _l4_event()
     l7 = close_l7_augmented(
         augmentation_pattern="أفعل",
-        minimal_mujarrad_closed=True,
+        lower_certificate=l4,
         trace=_trace("L7_Augmented"),
     )
     l10 = close_l10_derivation_family(
@@ -214,13 +252,14 @@ def test_l12_i3rab_blocked_without_syntactic_relation_or_factor():
     )
     l11 = close_l11_mabni_tool_reference(
         forced_into_root_weight_path=False,
+        functional_identity_licensed=True,
         lower_certificate=l10,
         trace=_trace("L11_MabniTool"),
     )
     cert = close_l12_i3rab_relation(
         has_syntactic_relation=False,
         has_governing_factor=False,
-        lower_certificate=l11,
+        carrier_certificate=l11,
         trace=_trace("L12_Irab"),
     )
     assert cert.status == "blocked"
@@ -232,6 +271,7 @@ def test_blocker_residual_in_lower_closure_prevents_next_transition():
     l6_blocked = close_l6_past_mujarrad_event(
         pattern="فَعَلَ",
         has_fa_il_slot=False,
+        lower_certificate=_l4_event(),
         trace=_trace("L6_PastMujarradEvent"),
     )
     cert = close_l8_imperfect_event(
@@ -270,6 +310,7 @@ def test_provisional_certificate_records_allowed_and_blocked_transitions():
     cert_blocked = close_l6_past_mujarrad_event(
         pattern="فَعَلَ",
         has_fa_il_slot=False,
+        lower_certificate=_l4_event(),
         trace=_trace("L6_PastMujarradEvent"),
     )
     provisional = issue_provisional_certificate((cert_ok, cert_warn, cert_blocked))
@@ -291,3 +332,61 @@ def test_coverage_matrix_registers_rows_without_full_coverage_claim():
     assert len(updated.rows) == 1
     assert updated.rows[0].case_id == "C-001"
     assert updated.claimed_exhaustive is False
+
+
+def test_l7_augmented_blocks_when_lower_certificate_is_blocked():
+    l6_blocked = close_l6_past_mujarrad_event(
+        pattern="فَعَلَ",
+        has_fa_il_slot=False,
+        lower_certificate=_l4_event(),
+        trace=_trace("L6_PastMujarradEvent"),
+    )
+    cert = close_l7_augmented(
+        augmentation_pattern="أفعل",
+        lower_certificate=l6_blocked,
+        trace=_trace("L7_Augmented"),
+    )
+    assert cert.status == "blocked"
+    assert any(item.message == "required_lower_closure_blocked" for item in cert.residual_entries)
+
+
+def test_l11_mabni_tool_can_close_without_l10_when_functional_identity_is_licensed():
+    cert = close_l11_mabni_tool_reference(
+        forced_into_root_weight_path=False,
+        functional_identity_licensed=True,
+        lower_certificate=None,
+        trace=_trace("L11_MabniTool"),
+    )
+    assert cert.status == "closed"
+
+
+def test_l12_i3rab_accepts_non_l11_carrier_certificate():
+    l4 = _l4_event()
+    l6 = close_l6_past_mujarrad_event(
+        pattern="فَعَلَ",
+        has_fa_il_slot=True,
+        lower_certificate=l4,
+        trace=_trace("L6_PastMujarradEvent"),
+    )
+    cert = close_l12_i3rab_relation(
+        has_syntactic_relation=True,
+        has_governing_factor=True,
+        carrier_certificate=l6,
+        trace=_trace("L12_Irab"),
+    )
+    assert cert.status == "closed"
+
+
+def test_l5_jamid_anchor_blocks_outside_closed_set():
+    cert = close_l5_jamid_anchor(
+        anchor_type="quad",
+        lower_certificate=close_l4_minimal_mujarrad(
+            path="jamid",
+            pattern=None,
+            lower_certificate=_l3(),
+            trace=_trace("L4_MinimalMujarrad"),
+        ),
+        trace=_trace("L5_Jamid"),
+    )
+    assert cert.status == "blocked"
+    assert any(item.message == "jamid_anchor_outside_closed_set" for item in cert.residual_entries)

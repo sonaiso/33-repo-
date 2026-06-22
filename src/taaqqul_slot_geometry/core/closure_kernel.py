@@ -60,6 +60,22 @@ _ALLOWED_AUGMENTED_PATTERNS = frozenset({
     "تفاعل",
     "استفعل",
 })
+_ALLOWED_JAMID_ANCHORS = frozenset({"binary", "ternary"})
+_ALLOWED_MABNI_TOOL_BASE_LAYERS = frozenset({
+    "L1_Atom",
+    "L2_Syllable",
+    "L3_RootStem",
+    "L4_MinimalMujarrad",
+    "L5_Jamid",
+    "L10_Derivation",
+})
+_ALLOWED_I3RAB_CARRIER_LAYERS = frozenset({
+    "L5_Jamid",
+    "L6_PastMujarradEvent",
+    "L8_Imperfect",
+    "L10_Derivation",
+    "L11_MabniTool",
+})
 
 
 def _validate_residual_structure(residuals: FrozenSet[str]) -> None:
@@ -317,6 +333,7 @@ class ConflictCertificate:
     candidate_layers: Tuple[str, ...]
     candidate_trace_ids: Tuple[str, ...]
     residual_entries: Tuple[Residual, ...]
+    has_blocked_claims: bool
     blocked_transition: bool
     trace_ref: str = "docs/00_MAQOOL_CONSTITUTION.md §5 Rule 1"
     rank: Rank = Rank.CANDIDATE
@@ -497,6 +514,7 @@ def _make_conflict_certificate(
     resolution_path: Tuple[str, ...],
     claims: Tuple[ConflictClaim, ...],
     residual_entries: Tuple[Residual, ...],
+    has_blocked_claims: bool,
 ) -> ConflictCertificate:
     residual_identifiers = frozenset(f"{r.family}:{r.message}" for r in residual_entries)
     return ConflictCertificate(
@@ -505,8 +523,11 @@ def _make_conflict_certificate(
         candidate_layers=tuple(claim.certificate.layer for claim in claims),
         candidate_trace_ids=tuple(claim.certificate.trace.trace_id for claim in claims),
         residual_entries=residual_entries,
+        has_blocked_claims=has_blocked_claims,
         blocked_transition=(
-            status == "blocked" or any(item.severity == "blocker" for item in residual_entries)
+            has_blocked_claims
+            or status == "blocked"
+            or any(item.severity == "blocker" for item in residual_entries)
         ),
         residuals=residual_identifiers,
     )
@@ -528,24 +549,32 @@ def resolve_closure_conflicts(
         raise ValueError(FailureCode.M_CX_08.value)
 
     path = ["collect_candidate_certificates"]
+    has_blocked_claims = any(_claim_has_blocker(claim) for claim in claims)
 
-    unique_domain_count = len({claim.domain_scope for claim in claims})
-    if unique_domain_count == len(claims):
+    domain_clusters = {
+        domain: tuple(claim for claim in claims if claim.domain_scope == domain)
+        for domain in {claim.domain_scope for claim in claims}
+    }
+    path.append("domain_clusters_computed")
+    multi_claim_clusters = tuple(cluster for cluster in domain_clusters.values() if len(cluster) > 1)
+    if not multi_claim_clusters:
         return _make_conflict_certificate(
             status="separated",
             resolution_path=(*path, "domain_separation"),
             claims=claims,
             residual_entries=(),
+            has_blocked_claims=has_blocked_claims,
         )
-    path.append("domain_separation_failed")
+    path.append("domain_conflict_clusters_detected")
+    clustered_claims = tuple(claim for cluster in multi_claim_clusters for claim in cluster)
 
-    jam_possible = all(claim.coexistence_permitted for claim in claims)
+    jam_possible = all(claim.coexistence_permitted for claim in clustered_claims)
     if jam_possible:
         if attempt_tarjih:
             return _make_conflict_certificate(
                 status="suspended",
                 resolution_path=(*path, "jam_available", "tarjih_blocked"),
-                claims=claims,
+                claims=clustered_claims,
                 residual_entries=(
                     Residual(
                         family="scope",
@@ -554,21 +583,22 @@ def resolve_closure_conflicts(
                         remediation_hint="apply jam/coexistence first; tarjih is licensed only after jam failure",
                     ),
                 ),
+                has_blocked_claims=has_blocked_claims,
             )
         return _make_conflict_certificate(
             status="coexistent",
             resolution_path=(*path, "jam"),
-            claims=claims,
+            claims=clustered_claims,
             residual_entries=(),
+            has_blocked_claims=has_blocked_claims,
         )
     path.append("jam_failed")
 
-    has_blocker_conflict = any(_claim_has_blocker(claim) for claim in claims)
-    if has_blocker_conflict:
+    if has_blocked_claims:
         return _make_conflict_certificate(
             status="blocked",
             resolution_path=(*path, "blocker_residual_conflict"),
-            claims=claims,
+            claims=clustered_claims,
             residual_entries=(
                 Residual(
                     family="path",
@@ -577,14 +607,15 @@ def resolve_closure_conflicts(
                     remediation_hint="clear blocker residuals in candidate certificates before transition",
                 ),
             ),
+            has_blocked_claims=has_blocked_claims,
         )
 
-    naskh_like_claims = tuple(claim for claim in claims if claim.naskh_like_claim)
+    naskh_like_claims = tuple(claim for claim in clustered_claims if claim.naskh_like_claim)
     if naskh_like_claims and any(not claim.chronology_evidence for claim in naskh_like_claims):
         return _make_conflict_certificate(
             status="suspended",
             resolution_path=(*path, "naskh_like_gate"),
-            claims=claims,
+            claims=clustered_claims,
             residual_entries=(
                 Residual(
                     family="evidence",
@@ -593,13 +624,14 @@ def resolve_closure_conflicts(
                     remediation_hint="model chronology evidence before opening naskh-like conflict handling",
                 ),
             ),
+            has_blocked_claims=has_blocked_claims,
         )
 
     if attempt_tarjih:
         return _make_conflict_certificate(
             status="provisional",
             resolution_path=(*path, "tarjih_after_jam_failure"),
-            claims=claims,
+            claims=clustered_claims,
             residual_entries=(
                 Residual(
                     family="scope",
@@ -608,12 +640,13 @@ def resolve_closure_conflicts(
                     remediation_hint="record tarjih as provisional conflict certificate only",
                 ),
             ),
+            has_blocked_claims=has_blocked_claims,
         )
 
     return _make_conflict_certificate(
         status="suspended",
         resolution_path=(*path, "suspend_unresolved"),
-        claims=claims,
+        claims=clustered_claims,
         residual_entries=(
             Residual(
                 family="path",
@@ -622,6 +655,7 @@ def resolve_closure_conflicts(
                 remediation_hint="keep conflict suspended until a licensed resolver is provided",
             ),
         ),
+        has_blocked_claims=has_blocked_claims,
     )
 
 
@@ -802,13 +836,91 @@ def close_l3_root_stem(
     )
 
 
+def close_l4_minimal_mujarrad(
+    *,
+    path: Literal["event", "jamid"],
+    pattern: str | None,
+    lower_certificate: ClosureCertificate | None,
+    trace: Trace,
+) -> ClosureCertificate:
+    residual_entries: Tuple[Residual, ...] = _require_lower_closure(
+        lower_certificate=lower_certificate,
+        expected_layers=frozenset({"L3_RootStem"}),
+        missing_message="minimal_mujarrad_without_root_stem_closure",
+        missing_hint="close L3 and clear blocker residuals before minimal mujarrad closure",
+    )
+    if path == "event" and pattern not in _ALLOWED_EVENT_PATTERNS:
+        residual_entries += (
+            Residual(
+                family="path",
+                severity="blocker",
+                message="minimal_mujarrad_event_pattern_outside_set",
+                remediation_hint="use one of فَعَلَ / فَعِلَ / فَعُلَ for event path",
+            ),
+        )
+    if path == "jamid" and pattern is not None:
+        residual_entries += (
+            Residual(
+                family="path",
+                severity="warning",
+                message="jamid_path_ignores_event_pattern",
+                remediation_hint="omit pattern for jamid path",
+            ),
+        )
+    return make_closure_certificate(
+        layer="L4_MinimalMujarrad",
+        identity_preserved=True,
+        boundary_declared=True,
+        trace=trace,
+        residual_entries=residual_entries,
+        next_permissions=("L5_Jamid", "L6_PastMujarradEvent", "L7_Augmented"),
+    )
+
+
+def close_l5_jamid_anchor(
+    *,
+    anchor_type: str,
+    lower_certificate: ClosureCertificate | None,
+    trace: Trace,
+) -> ClosureCertificate:
+    residual_entries: Tuple[Residual, ...] = _require_lower_closure(
+        lower_certificate=lower_certificate,
+        expected_layers=frozenset({"L4_MinimalMujarrad"}),
+        missing_message="jamid_without_minimal_mujarrad_closure",
+        missing_hint="close L4 and clear blocker residuals before jamid anchoring",
+    )
+    if anchor_type not in _ALLOWED_JAMID_ANCHORS:
+        residual_entries += (
+            Residual(
+                family="path",
+                severity="blocker",
+                message="jamid_anchor_outside_closed_set",
+                remediation_hint="use binary or ternary jamid anchor only",
+            ),
+        )
+    return make_closure_certificate(
+        layer="L5_Jamid",
+        identity_preserved=True,
+        boundary_declared=True,
+        trace=trace,
+        residual_entries=residual_entries,
+        next_permissions=("L11_MabniTool", "L12_Irab"),
+    )
+
+
 def close_l6_past_mujarrad_event(
     *,
     pattern: str,
     has_fa_il_slot: bool,
+    lower_certificate: ClosureCertificate | None,
     trace: Trace,
 ) -> ClosureCertificate:
-    residual_entries: Tuple[Residual, ...] = ()
+    residual_entries: Tuple[Residual, ...] = _require_lower_closure(
+        lower_certificate=lower_certificate,
+        expected_layers=frozenset({"L4_MinimalMujarrad"}),
+        missing_message="past_event_without_minimal_mujarrad_closure",
+        missing_hint="close L4 and clear blocker residuals before past-event closure",
+    )
     if pattern not in _ALLOWED_EVENT_PATTERNS:
         residual_entries += (
             Residual(
@@ -840,19 +952,15 @@ def close_l6_past_mujarrad_event(
 def close_l7_augmented(
     *,
     augmentation_pattern: str,
-    minimal_mujarrad_closed: bool,
+    lower_certificate: ClosureCertificate | None,
     trace: Trace,
 ) -> ClosureCertificate:
-    residual_entries: Tuple[Residual, ...] = ()
-    if not minimal_mujarrad_closed:
-        residual_entries += (
-            Residual(
-                family="path",
-                severity="blocker",
-                message="augmentation_before_mujarrad",
-                remediation_hint="close L4/L6 before opening augmented path",
-            )
-        ,)
+    residual_entries: Tuple[Residual, ...] = _require_lower_closure(
+        lower_certificate=lower_certificate,
+        expected_layers=frozenset({"L4_MinimalMujarrad", "L6_PastMujarradEvent"}),
+        missing_message="augmentation_before_mujarrad",
+        missing_hint="close L4/L6 and clear blocker residuals before opening augmented path",
+    )
     if augmentation_pattern not in _ALLOWED_AUGMENTED_PATTERNS:
         residual_entries += (
             Residual(
@@ -988,15 +1096,27 @@ def close_l10_derivation_family(
 def close_l11_mabni_tool_reference(
     *,
     forced_into_root_weight_path: bool,
+    functional_identity_licensed: bool,
     lower_certificate: ClosureCertificate | None,
     trace: Trace,
 ) -> ClosureCertificate:
-    residual_entries: Tuple[Residual, ...] = _require_lower_closure(
-        lower_certificate=lower_certificate,
-        expected_layers=frozenset({"L10_Derivation"}),
-        missing_message="mabni_tool_without_lower_closure",
-        missing_hint="close L10 and clear blocker residuals before mabni/tool closure",
-    )
+    residual_entries: Tuple[Residual, ...] = ()
+    if lower_certificate is not None:
+        residual_entries += _require_lower_closure(
+            lower_certificate=lower_certificate,
+            expected_layers=_ALLOWED_MABNI_TOOL_BASE_LAYERS,
+            missing_message="mabni_tool_without_lower_closure",
+            missing_hint="provide a licensed lower closure certificate for mabni/tool path",
+        )
+    elif not functional_identity_licensed:
+        residual_entries += (
+            Residual(
+                family="path",
+                severity="blocker",
+                message="mabni_tool_without_functional_license",
+                remediation_hint="license functional identity when opening standalone mabni/tool path",
+            ),
+        )
     if forced_into_root_weight_path:
         residual_entries += (
             Residual(
@@ -1020,14 +1140,14 @@ def close_l12_i3rab_relation(
     *,
     has_syntactic_relation: bool,
     has_governing_factor: bool,
-    lower_certificate: ClosureCertificate | None,
+    carrier_certificate: ClosureCertificate | None,
     trace: Trace,
 ) -> ClosureCertificate:
     residual_entries: Tuple[Residual, ...] = _require_lower_closure(
-        lower_certificate=lower_certificate,
-        expected_layers=frozenset({"L11_MabniTool"}),
+        lower_certificate=carrier_certificate,
+        expected_layers=_ALLOWED_I3RAB_CARRIER_LAYERS,
         missing_message="i3rab_without_lower_closure",
-        missing_hint="close L11 and clear blocker residuals before i'rab closure",
+        missing_hint="provide a licensed carrier closure and clear blocker residuals before i'rab closure",
     )
     if not has_syntactic_relation:
         residual_entries += (
@@ -1074,6 +1194,8 @@ __all__ = [
     "RootCandidate",
     "Trace",
     "close_l3_root_stem",
+    "close_l4_minimal_mujarrad",
+    "close_l5_jamid_anchor",
     "close_l6_past_mujarrad_event",
     "close_l7_augmented",
     "close_l8_imperfect_event",

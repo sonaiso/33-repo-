@@ -71,7 +71,8 @@ def test_conflict_engine_prefers_domain_separation_before_blocking():
         )
     )
     assert result.status == "separated"
-    assert result.blocked_transition is False
+    assert result.has_blocked_claims is True
+    assert result.blocked_transition is True
 
 
 def test_blocker_residual_prevents_transition():
@@ -84,6 +85,7 @@ def test_blocker_residual_prevents_transition():
         )
     )
     assert result.status == "blocked"
+    assert result.has_blocked_claims is True
     assert result.blocked_transition is True
     assert any(item.message == CONFLICT_MSG_BLOCKER_RESIDUAL for item in result.residual_entries)
 
@@ -98,6 +100,7 @@ def test_unresolved_conflict_returns_suspended_certificate():
         )
     )
     assert result.status == "suspended"
+    assert result.has_blocked_claims is False
     assert any(
         item.message == CONFLICT_MSG_UNRESOLVED_SUSPENDED for item in result.residual_entries
     )
@@ -114,6 +117,7 @@ def test_tarjih_is_blocked_unless_jam_fails():
         attempt_tarjih=True,
     )
     assert result.status == "suspended"
+    assert result.blocked_transition is True
     assert any(
         item.message == CONFLICT_MSG_TARJIH_BLOCKED for item in result.residual_entries
     )
@@ -145,6 +149,36 @@ def test_conflict_certificates_preserve_trace_ids():
         )
     )
     assert result.candidate_trace_ids == ("trace-a", "trace-b")
+
+
+def test_jam_with_blocked_claim_keeps_transition_blocked():
+    blocked = _blocked_cert("L1_Atom", "t-block")
+    closed = _closed_cert("L2_Syllable", "t-ok")
+    result = resolve_closure_conflicts(
+        claims=(
+            ConflictClaim(certificate=blocked, domain_scope="same-domain", coexistence_permitted=True),
+            ConflictClaim(certificate=closed, domain_scope="same-domain", coexistence_permitted=True),
+        )
+    )
+    assert result.status == "coexistent"
+    assert result.has_blocked_claims is True
+    assert result.blocked_transition is True
+
+
+def test_mixed_domain_claims_are_clustered_not_all_or_nothing_separated():
+    c1 = _closed_cert("L1_Atom", "trace-a")
+    c2 = _closed_cert("L2_Syllable", "trace-b")
+    c3 = _closed_cert("L3_RootStem", "trace-c")
+    result = resolve_closure_conflicts(
+        claims=(
+            ConflictClaim(certificate=c1, domain_scope="cluster-a"),
+            ConflictClaim(certificate=c2, domain_scope="cluster-a"),
+            ConflictClaim(certificate=c3, domain_scope="cluster-b"),
+        )
+    )
+    assert result.status == "suspended"
+    assert "domain_clusters_computed" in result.resolution_path
+    assert "domain_conflict_clusters_detected" in result.resolution_path
 
 
 def test_conflict_engine_rejects_empty_claim_set():
