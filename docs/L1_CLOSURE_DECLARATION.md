@@ -18,6 +18,8 @@
 Status semantics:
 - **L1_CLOSURE_CANDIDATE**: closure artifact exists, but one or more required checks are unavailable/skipped/pending/failing.
 - **FORMALLY CLOSED**: all required validation checks are green and L1 closure is explicitly approved.
+- Use **L1_CLOSURE_CANDIDATE** when checks are pending/failing; use **FORMALLY CLOSED** only when all required checks pass and are recorded.
+- The exact downgrade marker is **L1_CLOSURE_CANDIDATE**.
 
 ---
 
@@ -39,6 +41,8 @@ Status semantics:
 
 ### Verification Evidence (exact commands + status)
 
+Verification was executed in this PR workflow before claiming formal closure.
+
 1. `pytest tests/` → **PASS** (`1390 passed in 1.89s`)
 2. `pytest tests/test_kpi_indicators.py -v` → **PASS** (`13 passed in 0.33s`)
 3. `python -m ci.constitutional_guard --source-dir src` → **PASS** (`Violations: 0`, `Verdict: PASSED`)
@@ -59,7 +63,7 @@ Constitutional implications:
 1. No qiyas before L1 closure.
 2. No opening of L2 while L1 closure is pending.
 3. No L3 constructs are licensed from within L1 closure work.
-4. Formal closure is a test outcome, not a writing-only declaration.
+4. Formal closure is a verification outcome, not merely a documentation update.
 
 ---
 

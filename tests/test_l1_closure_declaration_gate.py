@@ -13,8 +13,13 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).parent.parent
 L1_CLOSURE_DOC = REPO_ROOT / "docs" / "L1_CLOSURE_DECLARATION.md"
 L2_DIR = REPO_ROOT / "src" / "taaqqul_slot_geometry" / "L2"
-L1_STATUS_FORMAL_MARKER = "current status: formally closed"
-L1_STATUS_CANDIDATE_MARKER = "l1_closure_candidate"
+L1_STATUS_FORMAL_MARKER = "Current status: FORMALLY CLOSED"
+L1_STATUS_CANDIDATE_MARKER = "L1_CLOSURE_CANDIDATE"
+REQUIRED_VERIFICATION_MARKERS = (
+    "`pytest tests/` → **PASS**",
+    "`pytest tests/test_kpi_indicators.py -v` → **PASS**",
+    "`python -m ci.constitutional_guard --source-dir src` → **PASS**",
+)
 
 
 def test_l1_closure_declaration_exists():
@@ -24,12 +29,12 @@ def test_l1_closure_declaration_exists():
     )
 
 
-def test_l1_declaration_uses_test_outcome_status():
+def test_l1_declaration_has_valid_status_marker():
     """trace_ref: docs/L1_CLOSURE_DECLARATION.md Closure Gate to L2."""
     content = L1_CLOSURE_DOC.read_text(encoding="utf-8")
-    lowered = content.lower()
-    has_formal = L1_STATUS_FORMAL_MARKER in lowered
-    has_candidate = L1_STATUS_CANDIDATE_MARKER in lowered
+    casefold_content = content.casefold()
+    has_formal = L1_STATUS_FORMAL_MARKER.casefold() in casefold_content
+    has_candidate = L1_STATUS_CANDIDATE_MARKER.casefold() in casefold_content
 
     assert has_formal or has_candidate, (
         "L1 declaration must expose either FORMALLY CLOSED or "
@@ -37,18 +42,17 @@ def test_l1_declaration_uses_test_outcome_status():
     )
 
     if has_formal:
-        assert "`pytest tests/` → **PASS**" in content
-        assert "`pytest tests/test_kpi_indicators.py -v` → **PASS**" in content
-        assert (
-            "`python -m ci.constitutional_guard --source-dir src` → **PASS**"
-            in content
-        )
+        for marker in REQUIRED_VERIFICATION_MARKERS:
+            assert marker in content
     else:
         assert "Residuals / Blockers" in content
         assert "L1_CLOSURE_CANDIDATE" in content
+        assert any(
+            marker not in content for marker in REQUIRED_VERIFICATION_MARKERS
+        ), "Candidate status must have at least one missing verification marker"
 
 
-def test_l2_remains_locked_even_after_l1_declaration():
+def test_l2_remains_locked_until_explicit_l2_opening_authorization():
     """trace_ref: docs/03_L2_LOGICAL_BOUNDARY.md BL-L2-01."""
     content = L1_CLOSURE_DOC.read_text(encoding="utf-8").lower()
     assert "l2 remains locked" in content

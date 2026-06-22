@@ -24,7 +24,7 @@ def test_l0_closed_and_l1_open_authority_exists():
     assert "is now authorized to begin" in content
 
 
-def test_l1_boundary_document_declares_closed_state():
+def test_l1_boundary_document_declares_formally_closed_status():
     """trace_ref: docs/02_L1_META_LANGUAGE_BOUNDARY.md §Status + docs/L1_CLOSURE_DECLARATION.md."""
     content = L1_BOUNDARY_DOC.read_text(encoding="utf-8")
     assert "**FORMALLY CLOSED**" in content
@@ -43,12 +43,12 @@ def test_b_boundaries_are_internal_to_l1_only():
     assert "L0 → L1 → L2 → L3" in content
 
 
-def test_readme_matches_closed_l1_status():
+def test_readme_matches_formally_closed_l1_status():
     """trace_ref: README.md Layer status table + next-step note."""
     content = README.read_text(encoding="utf-8")
     assert "L1" in content
     assert "✅ Formally Closed" in content
-    assert "PR-14" in content
+    assert "docs/L1_CLOSURE_DECLARATION.md" in content
     assert "B0–B9" in content
 
 
