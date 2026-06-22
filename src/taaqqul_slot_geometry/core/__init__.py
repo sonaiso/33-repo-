@@ -97,6 +97,9 @@ from taaqqul_slot_geometry.core.dal_atomic_pipeline import (
     open_role_eligibility_operations,
 )
 from taaqqul_slot_geometry.core.closure_kernel import (
+    ConflictCertificate,
+    ConflictClaim,
+    ConflictStatus,
     CoverageCaseRow,
     CoverageMatrix,
     ClosureCertificate,
@@ -122,6 +125,7 @@ from taaqqul_slot_geometry.core.closure_kernel import (
     issue_provisional_certificate,
     madd_gate,
     make_closure_certificate,
+    resolve_closure_conflicts,
     should_block_transition,
     weak_letter_gate,
 )
@@ -215,6 +219,9 @@ __all__ = [
     "build_dal_atomic_artifacts",
     "open_role_eligibility_operations",
     # Closure Kernel (Minimal Mujarrad)
+    "ConflictCertificate",
+    "ConflictClaim",
+    "ConflictStatus",
     "CoverageCaseRow",
     "CoverageMatrix",
     "ClosureCertificate",
@@ -240,6 +247,7 @@ __all__ = [
     "issue_provisional_certificate",
     "madd_gate",
     "make_closure_certificate",
+    "resolve_closure_conflicts",
     "should_block_transition",
     "weak_letter_gate",
 ]
