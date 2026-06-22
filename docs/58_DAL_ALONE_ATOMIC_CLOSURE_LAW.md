@@ -173,3 +173,35 @@ DAL-A1 may define only:
 - `DalAloneClosureSurface`
 
 `DalAloneClosureSurface` is a candidate surface, not `DalAloneClosed`.
+
+## DAL-A2 Scope
+
+DAL-A2 is limited to raw trace / grapheme / letter / sound separation gates:
+
+- `RawTraceSeparationGate`
+- `UnicodeNormalizationGate`
+- `SoundLetterGraphemeSeparationGate`
+- `DalA2SeparationSurface`
+
+DAL-A2 is separation-only:
+
+- no `DalAloneClosed`
+- no `LafziMadlulGate`
+- no `WordKind`
+- no meaning
+- no root
+- no pattern
+- no weight licensing
+- no ifadah
+- no hukm
+- no reality
+
+DAL-A2 prepares DAL-A3 but does not perform:
+
+- `ArabicSoundInventory`
+- `Makhraj`
+- `Sifah`
+- `QadihSoundDifference`
+
+`DalA2SeparationSurface` is a candidate separation surface, not a closure
+verdict and not a bridge to `LafziMadlul`.
