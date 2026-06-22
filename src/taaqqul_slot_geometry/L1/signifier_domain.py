@@ -198,11 +198,10 @@ class DomainRelation:
             raise ValueError(FailureCode.M_00_22.value)
         if len(self.relation_to_next) != len(self.next_domains):
             raise ValueError(FailureCode.M_CX_01.value)
-        expected_previous_to_next_count = (
-            len(self.next_domains)
-            if not self.previous_domains
-            else len(self.previous_domains) * len(self.next_domains)
-        )
+        if not self.previous_domains:
+            expected_previous_to_next_count = len(self.next_domains)
+        else:
+            expected_previous_to_next_count = len(self.previous_domains) * len(self.next_domains)
         if len(self.relation_previous_to_next) != expected_previous_to_next_count:
             raise ValueError(FailureCode.M_CX_01.value)
         _validate_common(self.trace_ref, self.rank, self.trace)
@@ -257,13 +256,14 @@ def domain_relation(domain: SignifierDomain, trace: Tuple[str, ...]) -> DomainRe
             f"opens_after_{previous_domain}_closure" for previous_domain in previous_domains
         )
     relation_to_next = tuple(f"licenses_{next_domain}_inspection" for next_domain in next_domains)
-    relation_previous_to_next = tuple(
-        f"{previous_domain}_to_{next_domain}_via_{domain}"
-        for previous_domain in previous_domains
-        for next_domain in next_domains
-    )
     if not previous_domains:
         relation_previous_to_next = tuple(f"trace_to_{next_domain}_via_{domain}" for next_domain in next_domains)
+    else:
+        relation_previous_to_next = tuple(
+            f"{previous_domain}_to_{next_domain}_via_{domain}"
+            for previous_domain in previous_domains
+            for next_domain in next_domains
+        )
     return DomainRelation(
         domain=domain,
         previous_domains=previous_domains,
