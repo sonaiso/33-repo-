@@ -60,10 +60,6 @@ MotionState = Literal[
     "MADD",
     "SHADDA",
     "TANWIN",
-    "BUILD_MOTION",
-    "IRAB_MOTION",
-    "WEIGHT_MOTION",
-    "WASL_WAQF_MOTION",
 ]
 MotionFunction = Literal[
     "opening",
