@@ -250,12 +250,12 @@ def domain_relation(domain: SignifierDomain, trace: Tuple[str, ...]) -> DomainRe
     """Construct previous/next and previous→next relation contracts for one domain."""
     previous_domains = previous_signifier_domains(domain)
     next_domains = next_signifier_domains(domain)
-    relation_to_previous = tuple(
-        "entry_point_for_signifier_domains"
-        if not previous_domains
-        else f"opens_after_{previous_domain}_closure"
-        for previous_domain in (previous_domains if previous_domains else ("entry",))
-    )
+    if not previous_domains:
+        relation_to_previous = ("entry_point_for_signifier_domains",)
+    else:
+        relation_to_previous = tuple(
+            f"opens_after_{previous_domain}_closure" for previous_domain in previous_domains
+        )
     relation_to_next = tuple(f"licenses_{next_domain}_inspection" for next_domain in next_domains)
     relation_previous_to_next = tuple(
         f"{previous_domain}_to_{next_domain}_via_{domain}"

@@ -58,6 +58,7 @@ def test_signifier_domain_transition_registry_is_complete():
 
 def test_previous_and_next_domain_links():
     assert previous_signifier_domain("weight") == "minimal_mujarrad"
+    assert previous_signifier_domain("syllable") == "phonetic_atom"
     assert previous_signifier_domains("root_stem") == ("syllable", "waqf_wasl")
     assert previous_signifier_domain("root_stem") is None
     assert next_signifier_domains("weight") == ("jamid_anchor", "event_path")
