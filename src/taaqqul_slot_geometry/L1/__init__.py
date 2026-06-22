@@ -98,6 +98,19 @@ from taaqqul_slot_geometry.L1.proof_objects import (
     ProofTrace,
     Rank,
 )
+from taaqqul_slot_geometry.L1.signifier_domain import (
+    AdditiveFunction,
+    AdditiveLetterDomainCertificate,
+    ClosureType,
+    ConnectionEffect,
+    MotionDomainCertificate,
+    MotionFunction,
+    MotionState,
+    PauseEffect,
+    SIGNIFIER_DOMAIN_ORDER,
+    SignifierDomain,
+    WaqfWaslDomainCertificate,
+)
 
 __all__ = [
     "ALL_POSTULATES_AND_AXIOMS",
@@ -144,6 +157,17 @@ __all__ = [
     "MRKProof",
     "DomainProof",
     "IdentityProof",
+    "SignifierDomain",
+    "SIGNIFIER_DOMAIN_ORDER",
+    "MotionState",
+    "MotionFunction",
+    "AdditiveFunction",
+    "PauseEffect",
+    "ConnectionEffect",
+    "ClosureType",
+    "MotionDomainCertificate",
+    "AdditiveLetterDomainCertificate",
+    "WaqfWaslDomainCertificate",
     "GateProof",
     "BridgeProof",
     "EvidenceProof",
