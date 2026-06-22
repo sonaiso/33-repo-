@@ -179,6 +179,25 @@ def test_mixed_domain_claims_are_clustered_not_all_or_nothing_separated():
     assert result.status == "suspended"
     assert "domain_clusters_computed" in result.resolution_path
     assert "domain_conflict_clusters_detected" in result.resolution_path
+    assert result.candidate_trace_ids == ("trace-a", "trace-b", "trace-c")
+    assert result.candidate_layers == ("L1_Atom", "L2_Syllable", "L3_RootStem")
+
+
+def test_blocked_singleton_claim_remains_in_final_conflict_certificate():
+    c1 = _closed_cert("L1_Atom", "trace-a")
+    c2 = _closed_cert("L2_Syllable", "trace-b")
+    c3 = _blocked_cert("L3_RootStem", "trace-blocked-singleton")
+    result = resolve_closure_conflicts(
+        claims=(
+            ConflictClaim(certificate=c1, domain_scope="cluster-a"),
+            ConflictClaim(certificate=c2, domain_scope="cluster-a"),
+            ConflictClaim(certificate=c3, domain_scope="cluster-b"),
+        )
+    )
+    assert result.status == "blocked"
+    assert result.has_blocked_claims is True
+    assert "trace-blocked-singleton" in result.candidate_trace_ids
+    assert "L3_RootStem" in result.candidate_layers
 
 
 def test_conflict_engine_rejects_empty_claim_set():

@@ -14,6 +14,7 @@ from taaqqul_slot_geometry.constitution.failure_taxonomy import FailureCode
 from taaqqul_slot_geometry.L1.signifier_domain import (
     AdditiveLetterDomainCertificate,
     DomainCertificate,
+    INDEPENDENT_ENTRY_DOMAINS,
     ManiCheck,
     MotionDomainCertificate,
     SIGNIFIER_DOMAIN_ORDER,
@@ -23,6 +24,7 @@ from taaqqul_slot_geometry.L1.signifier_domain import (
     domain_relation,
     license_domain,
     next_signifier_domains,
+    previous_signifier_domains,
     previous_signifier_domain,
 )
 
@@ -56,8 +58,15 @@ def test_signifier_domain_transition_registry_is_complete():
 
 def test_previous_and_next_domain_links():
     assert previous_signifier_domain("weight") == "minimal_mujarrad"
+    assert previous_signifier_domains("root_stem") == ("syllable", "waqf_wasl")
+    assert previous_signifier_domain("root_stem") is None
     assert next_signifier_domains("weight") == ("jamid_anchor", "event_path")
     assert next_signifier_domains("irab_ready") == tuple()
+
+
+def test_mabni_tool_is_formally_independent_entry_domain():
+    assert "mabni_tool" in INDEPENDENT_ENTRY_DOMAINS
+    assert previous_signifier_domains("mabni_tool") == tuple()
 
 
 def test_motion_domain_certificate_contract():
@@ -172,11 +181,37 @@ def test_license_domain_blocks_when_origin_missing():
     assert cert.allowed_next_domains == tuple()
 
 
+def test_license_domain_blocks_when_origin_is_whitespace_only():
+    cert = license_domain(
+        domain="motion",
+        origin_certificate="   ",
+        sabab="carrier-licensed",
+        mani_checks=tuple(),
+        trace=("x",),
+    )
+    assert cert.status == "blocked"
+    assert cert.status_reason == "blocked_origin_missing"
+    assert cert.allowed_next_domains == tuple()
+
+
 def test_license_domain_blocks_when_sabab_missing():
     cert = license_domain(
         domain="motion",
         origin_certificate="origin:letter",
         sabab="",
+        mani_checks=tuple(),
+        trace=("x",),
+    )
+    assert cert.status == "blocked"
+    assert cert.status_reason == "blocked_domain_without_sabab"
+    assert cert.allowed_next_domains == tuple()
+
+
+def test_license_domain_blocks_when_sabab_is_whitespace_only():
+    cert = license_domain(
+        domain="motion",
+        origin_certificate="origin:letter",
+        sabab="   ",
         mani_checks=tuple(),
         trace=("x",),
     )
@@ -229,7 +264,7 @@ def test_license_domain_closed_links_previous_and_next_relations():
     )
     assert isinstance(cert, DomainCertificate)
     assert cert.status == "closed"
-    assert cert.relation.previous_domain == "minimal_mujarrad"
+    assert cert.relation.previous_domains == ("minimal_mujarrad",)
     assert cert.relation.next_domains == ("jamid_anchor", "event_path")
     assert cert.relation.relation_previous_to_next == (
         "minimal_mujarrad_to_jamid_anchor_via_weight",
@@ -248,6 +283,51 @@ def test_domain_certificate_rejects_blocked_with_next_permissions():
             relation=domain_relation(domain="motion", trace=("x",)),
             trace=("x",),
             status="blocked",
+            status_reason="blocked_by_mani",
+            allowed_next_domains=("phonetic_atom",),
+        )
+
+
+def test_domain_certificate_rejects_closed_with_blank_origin_or_sabab():
+    with pytest.raises(ValueError, match=FailureCode.M_00_22.value):
+        DomainCertificate(
+            domain="motion",
+            origin_certificate="   ",
+            sabab="licensed-motion",
+            mani_residuals=tuple(),
+            boundary_declared=True,
+            relation=domain_relation(domain="motion", trace=("x",)),
+            trace=("x",),
+            status="closed",
+            status_reason="none",
+            allowed_next_domains=("phonetic_atom",),
+        )
+    with pytest.raises(ValueError, match=FailureCode.M_00_22.value):
+        DomainCertificate(
+            domain="motion",
+            origin_certificate="origin:letter",
+            sabab="   ",
+            mani_residuals=tuple(),
+            boundary_declared=True,
+            relation=domain_relation(domain="motion", trace=("x",)),
+            trace=("x",),
+            status="provisional",
+            status_reason="none",
+            allowed_next_domains=("phonetic_atom",),
+        )
+
+
+def test_domain_certificate_requires_none_status_reason_when_non_blocked():
+    with pytest.raises(ValueError, match=FailureCode.M_CX_04.value):
+        DomainCertificate(
+            domain="motion",
+            origin_certificate="origin:letter",
+            sabab="licensed-motion",
+            mani_residuals=tuple(),
+            boundary_declared=True,
+            relation=domain_relation(domain="motion", trace=("x",)),
+            trace=("x",),
+            status="closed",
             status_reason="blocked_by_mani",
             allowed_next_domains=("phonetic_atom",),
         )

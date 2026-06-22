@@ -574,7 +574,7 @@ def resolve_closure_conflicts(
             return _make_conflict_certificate(
                 status="suspended",
                 resolution_path=(*path, "jam_available", "tarjih_blocked"),
-                claims=clustered_claims,
+                claims=claims,
                 residual_entries=(
                     Residual(
                         family="scope",
@@ -588,7 +588,7 @@ def resolve_closure_conflicts(
         return _make_conflict_certificate(
             status="coexistent",
             resolution_path=(*path, "jam"),
-            claims=clustered_claims,
+            claims=claims,
             residual_entries=(),
             has_blocked_claims=has_blocked_claims,
         )
@@ -598,7 +598,7 @@ def resolve_closure_conflicts(
         return _make_conflict_certificate(
             status="blocked",
             resolution_path=(*path, "blocker_residual_conflict"),
-            claims=clustered_claims,
+            claims=claims,
             residual_entries=(
                 Residual(
                     family="path",
@@ -615,7 +615,7 @@ def resolve_closure_conflicts(
         return _make_conflict_certificate(
             status="suspended",
             resolution_path=(*path, "naskh_like_gate"),
-            claims=clustered_claims,
+            claims=claims,
             residual_entries=(
                 Residual(
                     family="evidence",
@@ -631,7 +631,7 @@ def resolve_closure_conflicts(
         return _make_conflict_certificate(
             status="provisional",
             resolution_path=(*path, "tarjih_after_jam_failure"),
-            claims=clustered_claims,
+            claims=claims,
             residual_entries=(
                 Residual(
                     family="scope",
@@ -646,7 +646,7 @@ def resolve_closure_conflicts(
     return _make_conflict_certificate(
         status="suspended",
         resolution_path=(*path, "suspend_unresolved"),
-        claims=clustered_claims,
+        claims=claims,
         residual_entries=(
             Residual(
                 family="path",

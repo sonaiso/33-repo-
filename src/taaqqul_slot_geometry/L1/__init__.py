@@ -107,6 +107,7 @@ from taaqqul_slot_geometry.L1.signifier_domain import (
     DomainCertificate,
     DomainLicenseStatus,
     DomainRelation,
+    INDEPENDENT_ENTRY_DOMAINS,
     ManiCheck,
     MotionDomainCertificate,
     MotionFunction,
@@ -119,6 +120,7 @@ from taaqqul_slot_geometry.L1.signifier_domain import (
     domain_relation,
     license_domain,
     next_signifier_domains,
+    previous_signifier_domains,
     previous_signifier_domain,
 )
 
@@ -176,6 +178,7 @@ __all__ = [
     "DomainCertificate",
     "DomainLicenseStatus",
     "DomainRelation",
+    "INDEPENDENT_ENTRY_DOMAINS",
     "ManiCheck",
     "PauseEffect",
     "ConnectionEffect",
@@ -185,6 +188,7 @@ __all__ = [
     "WaqfWaslDomainCertificate",
     "SIGNIFIER_DOMAIN_TRANSITIONS",
     "previous_signifier_domain",
+    "previous_signifier_domains",
     "next_signifier_domains",
     "domain_relation",
     "license_domain",

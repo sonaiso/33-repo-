@@ -118,6 +118,7 @@ SIGNIFIER_DOMAIN_TRANSITIONS: dict[SignifierDomain, Tuple[SignifierDomain, ...]]
     "loanword": ("irab_ready",),
     "irab_ready": tuple(),
 }
+INDEPENDENT_ENTRY_DOMAINS: Tuple[SignifierDomain, ...] = ("trace", "mabni_tool")
 
 _TRACE_REF = "docs/00_MAQOOL_CONSTITUTION.md §5 Rule 2"
 
@@ -131,12 +132,24 @@ def _validate_common(trace_ref: str, rank: str, trace: Tuple[str, ...]) -> None:
         raise ValueError(FailureCode.M_00_22.value)
 
 
+def previous_signifier_domains(domain: SignifierDomain) -> Tuple[SignifierDomain, ...]:
+    """Return predecessor domains derived from the transition registry."""
+    if domain in INDEPENDENT_ENTRY_DOMAINS:
+        return tuple()
+    predecessors = tuple(
+        candidate_domain
+        for candidate_domain in SIGNIFIER_DOMAIN_ORDER
+        if domain in SIGNIFIER_DOMAIN_TRANSITIONS.get(candidate_domain, tuple())
+    )
+    return predecessors
+
+
 def previous_signifier_domain(domain: SignifierDomain) -> SignifierDomain | None:
-    """Return the immediate previous domain in the canonical Euclidean order."""
-    idx = SIGNIFIER_DOMAIN_ORDER.index(domain)
-    if idx == 0:
+    """Return single predecessor only when graph predecessor is unambiguous."""
+    predecessors = previous_signifier_domains(domain)
+    if len(predecessors) != 1:
         return None
-    return cast(SignifierDomain, SIGNIFIER_DOMAIN_ORDER[idx - 1])
+    return cast(SignifierDomain, predecessors[0])
 
 
 def next_signifier_domains(domain: SignifierDomain) -> Tuple[SignifierDomain, ...]:
@@ -162,9 +175,9 @@ class ManiCheck:
 @dataclass(frozen=True)
 class DomainRelation:
     domain: SignifierDomain
-    previous_domain: SignifierDomain | None
+    previous_domains: Tuple[SignifierDomain, ...]
     next_domains: Tuple[SignifierDomain, ...]
-    relation_to_previous: str
+    relation_to_previous: Tuple[str, ...]
     relation_to_next: Tuple[str, ...]
     relation_previous_to_next: Tuple[str, ...]
     trace: Tuple[str, ...]
@@ -173,9 +186,9 @@ class DomainRelation:
     residuals: FrozenSet[str] = field(default_factory=frozenset)
 
     def __post_init__(self) -> None:
-        expected_previous = previous_signifier_domain(self.domain)
+        expected_previous = previous_signifier_domains(self.domain)
         expected_next = next_signifier_domains(self.domain)
-        if self.previous_domain != expected_previous:
+        if self.previous_domains != expected_previous:
             raise ValueError(FailureCode.M_CX_04.value)
         if self.next_domains != expected_next:
             raise ValueError(FailureCode.M_CX_04.value)
@@ -185,7 +198,12 @@ class DomainRelation:
             raise ValueError(FailureCode.M_00_22.value)
         if len(self.relation_to_next) != len(self.next_domains):
             raise ValueError(FailureCode.M_CX_01.value)
-        if len(self.relation_previous_to_next) != len(self.next_domains):
+        expected_previous_to_next_count = (
+            len(self.next_domains)
+            if not self.previous_domains
+            else len(self.previous_domains) * len(self.next_domains)
+        )
+        if len(self.relation_previous_to_next) != expected_previous_to_next_count:
             raise ValueError(FailureCode.M_CX_01.value)
         _validate_common(self.trace_ref, self.rank, self.trace)
 
@@ -212,34 +230,43 @@ class DomainCertificate:
             raise ValueError(FailureCode.M_CX_01.value)
         if not self.boundary_declared:
             raise ValueError(FailureCode.M_00_22.value)
+        if self.status != "blocked":
+            if not self.origin_certificate.strip():
+                raise ValueError(FailureCode.M_00_22.value)
+            if not self.sabab.strip():
+                raise ValueError(FailureCode.M_00_22.value)
         if self.status == "blocked" and self.allowed_next_domains:
             raise ValueError(FailureCode.M_CX_04.value)
         if self.status != "blocked" and self.allowed_next_domains != self.relation.next_domains:
+            raise ValueError(FailureCode.M_CX_04.value)
+        if self.status == "blocked" and self.status_reason == "none":
+            raise ValueError(FailureCode.M_CX_04.value)
+        if self.status != "blocked" and self.status_reason != "none":
             raise ValueError(FailureCode.M_CX_04.value)
         _validate_common(self.trace_ref, self.rank, self.trace)
 
 
 def domain_relation(domain: SignifierDomain, trace: Tuple[str, ...]) -> DomainRelation:
     """Construct previous/next and previous→next relation contracts for one domain."""
-    previous_domain = previous_signifier_domain(domain)
+    previous_domains = previous_signifier_domains(domain)
     next_domains = next_signifier_domains(domain)
-    relation_to_previous = (
+    relation_to_previous = tuple(
         "entry_point_for_signifier_domains"
-        if previous_domain is None
+        if not previous_domains
         else f"opens_after_{previous_domain}_closure"
+        for previous_domain in (previous_domains if previous_domains else ("entry",))
     )
     relation_to_next = tuple(f"licenses_{next_domain}_inspection" for next_domain in next_domains)
     relation_previous_to_next = tuple(
-        (
-            f"{previous_domain}_to_{next_domain}_via_{domain}"
-            if previous_domain is not None
-            else f"trace_to_{next_domain}_via_{domain}"
-        )
+        f"{previous_domain}_to_{next_domain}_via_{domain}"
+        for previous_domain in previous_domains
         for next_domain in next_domains
     )
+    if not previous_domains:
+        relation_previous_to_next = tuple(f"trace_to_{next_domain}_via_{domain}" for next_domain in next_domains)
     return DomainRelation(
         domain=domain,
-        previous_domain=previous_domain,
+        previous_domains=previous_domains,
         next_domains=next_domains,
         relation_to_previous=relation_to_previous,
         relation_to_next=relation_to_next,
@@ -262,7 +289,7 @@ def license_domain(
     relation = domain_relation(domain=domain, trace=trace)
     status: DomainLicenseStatus = "closed"
     status_reason: DomainBlockReason = "none"
-    if not origin_certificate:
+    if not origin_certificate.strip():
         status = "blocked"
         status_reason = "blocked_origin_missing"
     elif not sabab.strip():
@@ -382,10 +409,12 @@ __all__ = [
     "PauseEffect",
     "SIGNIFIER_DOMAIN_ORDER",
     "SIGNIFIER_DOMAIN_TRANSITIONS",
+    "INDEPENDENT_ENTRY_DOMAINS",
     "SignifierDomain",
     "WaqfWaslDomainCertificate",
     "domain_relation",
     "license_domain",
     "next_signifier_domains",
+    "previous_signifier_domains",
     "previous_signifier_domain",
 ]
