@@ -44,18 +44,27 @@
 
 ---
 
-## Phase 1 — L1 Closure ✅ OPEN
+## Phase 1 — L1 Closure ✅ COMPLETE
 
 **Unblocked by**: L0 formal closure (`docs/L0_CLOSURE_DECLARATION.md`).
 
 **Goal**: Build formal definitions, postulates, and common notions that serve as **reasonableness criteria** — the reference standards against which GPT answers are measured.
 
-### Deliverables (not yet implemented)
-- [ ] `src/taaqqul_slot_geometry/L1/definition.py`
-- [ ] `src/taaqqul_slot_geometry/L1/postulate.py`
-- [ ] `src/taaqqul_slot_geometry/L1/common_notion.py`
-- [ ] `src/taaqqul_slot_geometry/L1/meta_bridge.py`
-- [ ] All L1 tests passing
+### Deliverables (reconciled to implemented PR chain)
+- [x] `src/taaqqul_slot_geometry/L1/definition.py` (PR-10..PR-12 baseline)
+- [x] `src/taaqqul_slot_geometry/L1/postulate.py` (PR-10..PR-12 baseline)
+- [x] `src/taaqqul_slot_geometry/L1/common_notion.py` (PR-10..PR-12 baseline)
+- [x] `src/taaqqul_slot_geometry/L1/proof_objects.py` (PR-33)
+- [x] `src/taaqqul_slot_geometry/L1/domain_ids.py` + `domain_bridge_gate.py` (PR-34)
+- [x] `src/taaqqul_slot_geometry/L1/dal_atomic.py` (PR-35)
+- [x] `src/taaqqul_slot_geometry/L1/lafzi_form.py` (PR-36)
+- [x] `src/taaqqul_slot_geometry/L1/dal_to_lafzi_bridge.py` (PR-37)
+- [x] Runtime embargo + failure-alignment guardrails (PR-38)
+- [x] Closure/conflict kernel contracts + hotfix through PR-43
+- [x] `docs/L1_CLOSURE_DECLARATION.md` with required verification evidence
+- [x] All L1 and repository tests passing at closure time
+
+> Note: Early PR-chain placeholders in this file were superseded by the realized L1 expansion (PR-33..PR-43); this section reflects the implemented sequence.
 
 ---
 

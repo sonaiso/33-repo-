@@ -4,7 +4,7 @@
 Derived from `docs/00_MAQOOL_CONSTITUTION.md §6` (L1 layer definition).
 
 ## Status
-**OPEN** — L0 is formally closed, and L1 work is authorized (PR-10 → PR-13).
+**FORMALLY CLOSED** — L1 scope was authorized after L0 closure and completed through the reconciled PR chain ending at PR #43 plus closure declaration.
 
 ## Structural Clarification
 L1 is a single constitutional layer with **internal boundaries B0–B9**.

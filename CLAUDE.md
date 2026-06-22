@@ -56,7 +56,7 @@ measurable KPIs enforced through `pytest tests/test_kpi_indicators.py`.
 L0 (Object Language)  →  L1 (Formal Description)  →  L2 (Logical)  →  L3 (Real-world)
 ```
 
-**Current phase: L0 Closed (PR-9 complete), L1 Open (PR-10→PR-13 in progress), L2/L3 Locked**
+**Current phase: L0 Closed, L1 Formally Closed (see docs/L1_CLOSURE_DECLARATION.md), L2/L3 Locked until explicit L2 opening PR**
 
 See `docs/15_PROJECT_ROADMAP.md` for the full roadmap.
 
