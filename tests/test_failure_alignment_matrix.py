@@ -1,4 +1,4 @@
-"""Failure-alignment audit-only matrix checks for PR #38."""
+"""Failure-alignment audit-only matrix checks for PR #55."""
 from __future__ import annotations
 
 import csv
@@ -21,9 +21,47 @@ REQUIRED_COLUMNS = {
     "legacy_label",
     "primary_canonical_code",
     "secondary_canonical_codes",
+    "canonical_family",
+    "domain_scope",
+    "proof_obligation",
+    "residual_policy",
+    "forbidden_runtime_use",
     "is_executable_row",
     "executable_mapping",
     "notes",
+}
+
+CANONICAL_FAMILIES = {
+    "TRACE",
+    "RANK",
+    "IDENTITY",
+    "LAYER_LEAP",
+    "MEANING_LEAK",
+    "IFADAH_LEAK",
+    "RELATION_PREREQUISITE",
+    "HUKM_PREREQUISITE",
+    "TANZIL_PREREQUISITE",
+    "L0_SPECIFIC",
+    "L1_SPECIFIC",
+    "L2_SPECIFIC",
+    "L3_SPECIFIC",
+    "SCHEMA",
+    "BRIDGE",
+    "PURITY",
+    "BRANCH_GOVERNANCE",
+    "REFERENCE_ALGEBRA",
+    "EVIDENCE",
+    "MANAT",
+}
+
+TRACE_CODES = {"M_01_14", "M_00_11", "M_CX_12", "M_02_11", "M_03_07"}
+RANK_CODES = {"M_01_16", "M_CX_09", "M_00_10", "M_00_12", "M_01_15", "M_02_12", "M_03_08"}
+
+REQUIRED_FAMILY_BY_CODE = {
+    "M_02_19": "MEANING_LEAK",
+    "M_WW_07": "MEANING_LEAK",
+    "M_WW_08": "IFADAH_LEAK",
+    "M_WW_03": "RELATION_PREREQUISITE",
 }
 
 
@@ -40,6 +78,11 @@ def alignment_rows() -> list[dict[str, str]]:
         missing = REQUIRED_COLUMNS - set(reader.fieldnames)
         assert not missing, f"failure_alignment.csv missing columns: {sorted(missing)}"
         return list(reader)
+
+
+@pytest.fixture(scope="module")
+def rows_by_code(alignment_rows: list[dict[str, str]]) -> dict[str, dict[str, str]]:
+    return {(row["primary_canonical_code"] or "").strip(): row for row in alignment_rows}
 
 
 def test_failure_alignment_document_declares_audit_only_status():
@@ -85,33 +128,79 @@ def test_alignment_primary_codes_are_unique(alignment_rows: list[dict[str, str]]
         seen.add(primary)
 
 
-def test_executable_rows_require_non_none_mapping(alignment_rows: list[dict[str, str]]):
-    """trace_ref: docs/13_FAILURE_ALIGNMENT_CONSTITUTION.md Alignment Constraints."""
+def test_every_row_has_canonical_family_in_closed_set(alignment_rows: list[dict[str, str]]):
+    """trace_ref: docs/13_FAILURE_ALIGNMENT_CONSTITUTION.md Canonical Family Set."""
     for row in alignment_rows:
-        is_executable = _parse_bool_string(row["is_executable_row"])
-        mapping = (row["executable_mapping"] or "").strip().upper()
-        if is_executable:
-            assert mapping not in {"", "NONE"}, (
-                f"row {row['row_id']} is executable and cannot map to NONE"
-            )
-
-
-def test_all_rows_stay_non_executable_while_embargoed(
-    alignment_rows: list[dict[str, str]],
-):
-    """trace_ref: docs/12_RUNTIME_EMBARGO_CONSTITUTION.md Embargo Rule (PR #38)."""
-    for row in alignment_rows:
-        assert not _parse_bool_string(row["is_executable_row"]), (
-            f"row {row['row_id']} cannot become executable before runtime embargo lift"
+        family = (row["canonical_family"] or "").strip()
+        assert family, f"row {row['row_id']} is missing canonical_family"
+        assert family in CANONICAL_FAMILIES, (
+            f"row {row['row_id']} uses non-closed canonical_family: {family}"
         )
 
 
-def test_audit_rows_remain_non_executable(alignment_rows: list[dict[str, str]]):
-    """trace_ref: docs/13_FAILURE_ALIGNMENT_CONSTITUTION.md Audit-Only Law (PR #38)."""
+def test_every_row_has_domain_scope(alignment_rows: list[dict[str, str]]):
+    """trace_ref: docs/13_FAILURE_ALIGNMENT_CONSTITUTION.md Alignment Constraints."""
+    for row in alignment_rows:
+        domain_scope = (row["domain_scope"] or "").strip()
+        assert domain_scope, f"row {row['row_id']} is missing domain_scope"
+
+
+def test_every_row_has_proof_obligation_or_audit_only_local(
+    alignment_rows: list[dict[str, str]],
+):
+    """trace_ref: docs/13_FAILURE_ALIGNMENT_CONSTITUTION.md Alignment Constraints."""
+    for row in alignment_rows:
+        obligation = (row["proof_obligation"] or "").strip()
+        assert obligation, f"row {row['row_id']} is missing proof_obligation"
+        assert obligation == "AUDIT_ONLY_LOCAL" or obligation.startswith("PROOF_"), (
+            f"row {row['row_id']} has unsupported proof_obligation: {obligation}"
+        )
+
+
+def test_forbidden_runtime_use_is_true_while_embargoed(alignment_rows: list[dict[str, str]]):
+    """trace_ref: docs/12_RUNTIME_EMBARGO_CONSTITUTION.md Embargo Rule."""
+    for row in alignment_rows:
+        assert _parse_bool_string(row["forbidden_runtime_use"]), (
+            f"row {row['row_id']} must set forbidden_runtime_use=true while embargoed"
+        )
+
+
+def test_all_rows_stay_non_executable_and_audit_only(alignment_rows: list[dict[str, str]]):
+    """trace_ref: docs/13_FAILURE_ALIGNMENT_CONSTITUTION.md Audit-Only Law."""
     for row in alignment_rows:
         is_executable = _parse_bool_string(row["is_executable_row"])
         mapping = (row["executable_mapping"] or "").strip().upper()
-        if not is_executable:
-            assert mapping == AUDIT_ONLY_MARKER, (
-                f"row {row['row_id']} must stay AUDIT_ONLY while runtime is embargoed"
-            )
+        assert not is_executable, (
+            f"row {row['row_id']} cannot become executable before runtime embargo lift"
+        )
+        assert mapping == AUDIT_ONLY_MARKER, (
+            f"row {row['row_id']} must stay AUDIT_ONLY while runtime is embargoed"
+        )
+
+
+@pytest.mark.parametrize("code,expected_family", REQUIRED_FAMILY_BY_CODE.items())
+def test_required_code_family_assignments(
+    rows_by_code: dict[str, dict[str, str]],
+    code: str,
+    expected_family: str,
+):
+    """trace_ref: docs/13_FAILURE_ALIGNMENT_CONSTITUTION.md Canonical Family Set."""
+    assert code in rows_by_code, f"missing required canonical code in matrix: {code}"
+    family = (rows_by_code[code]["canonical_family"] or "").strip()
+    assert family == expected_family
+
+
+def test_trace_related_codes_map_to_trace(rows_by_code: dict[str, dict[str, str]]):
+    """trace_ref: docs/13_FAILURE_ALIGNMENT_CONSTITUTION.md Canonical Family Set."""
+    for code in TRACE_CODES:
+        assert code in rows_by_code, f"missing trace-related canonical code: {code}"
+        family = (rows_by_code[code]["canonical_family"] or "").strip()
+        assert family == "TRACE", f"{code} must map to TRACE"
+
+
+def test_rank_related_codes_map_to_rank(rows_by_code: dict[str, dict[str, str]]):
+    """trace_ref: docs/13_FAILURE_ALIGNMENT_CONSTITUTION.md Canonical Family Set."""
+    for code in RANK_CODES:
+        assert code in rows_by_code, f"missing rank-related canonical code: {code}"
+        family = (rows_by_code[code]["canonical_family"] or "").strip()
+        assert family == "RANK", f"{code} must map to RANK"

@@ -109,15 +109,14 @@ After each PR, verify:
 
 If any invariant fails, stop and report `BLOCKED`.
 
-## Current Roadmap After PR #53
+## Current Roadmap After PR #54
 
 Source of truth: `docs/15_PROJECT_ROADMAP.md`.
 
 Next required sequence:
 
-1. Harden Euclidean Domain Boundary guardrails.
-2. Expand FailureAlignment canonical families — audit-only.
-3. Add rejected runtime anti-pattern guards.
-4. Add computed coverage schema — schema only, no runtime.
-5. Add ProofObject failure-policy alignment — no kernel.
-6. Only after explicit Runtime Embargo lift may any minimal kernel be proposed.
+1. Expand FailureAlignment canonical families — audit-only.
+2. Add rejected runtime anti-pattern guards.
+3. Add computed coverage schema — schema only, no runtime.
+4. Add ProofObject failure-policy alignment — no kernel.
+5. Only after explicit Runtime Embargo lift may any minimal kernel be proposed.
