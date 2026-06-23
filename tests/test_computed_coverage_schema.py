@@ -128,6 +128,7 @@ def _validate_payload(schema: dict[str, Any], payload: dict[str, Any]) -> None:
 
 
 def _minimal_valid_case() -> dict[str, Any]:
+    """Use EXPECTED_ACCEPTED_CANDIDATE as baseline because it has no conditional fields."""
     return {
         "case_id": "case-001",
         "input_text": "example input",
@@ -234,6 +235,15 @@ def test_expected_proof_required_requires_expected_failure_family():
     _assert_invalid(case)
 
 
+def test_expected_failure_family_requires_non_empty_string_when_required():
+    """trace_ref: docs/09_COMPUTED_COVERAGE_CONSTITUTION.md Coverage Computation Law."""
+    case = _minimal_valid_case() | {
+        "expected_verdict": "EXPECTED_BLOCKED",
+        "expected_failure_family": "",
+    }
+    _assert_invalid(case)
+
+
 def test_expected_residual_requires_expected_residual_policy():
     """trace_ref: docs/09_COMPUTED_COVERAGE_CONSTITUTION.md Coverage Computation Law."""
     case = _minimal_valid_case() | {"expected_verdict": "EXPECTED_RESIDUAL"}
@@ -254,6 +264,8 @@ def test_high_domains_are_allowed_as_labels_only_without_runtime_artifacts():
     schema = _load_schema()
     case = _minimal_valid_case() | {"input_domain": "D6_HUKM"}
     _validate_payload(schema, case)
+    assert "labels only" in schema["description"]
+    assert "docs/12_RUNTIME_EMBARGO_CONSTITUTION.md" in schema["description"]
 
     assert not (REPO_ROOT / "coverage_matrix_v0.1.yaml").exists()
     assert not (REPO_ROOT / "binding_kernel.py").exists()

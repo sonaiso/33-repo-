@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "Computed Coverage Case Schema",
-  "description": "trace_ref: docs/09_COMPUTED_COVERAGE_CONSTITUTION.md Coverage Computation Law. D3-D7 domain values are expected-case labels only and do not open runtime domains.",
+  "description": "trace_ref: docs/09_COMPUTED_COVERAGE_CONSTITUTION.md Coverage Computation Law. Runtime embargo reference: docs/12_RUNTIME_EMBARGO_CONSTITUTION.md. D3-D7 domain values are expected-case labels only and do not open runtime domains.",
   "type": "object",
   "additionalProperties": false,
   "required": [
