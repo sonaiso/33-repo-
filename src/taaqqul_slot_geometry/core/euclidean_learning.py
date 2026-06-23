@@ -16,6 +16,10 @@ from taaqqul_slot_geometry.core.transition_registry import (
 )
 
 
+EUCLIDEAN_LEARNING_RUNTIME_STATUS = "AUDIT_SANDBOX_ONLY"
+EUCLIDEAN_LEARNING_DECISION_SCOPE = "EUCLIDEAN_LEARNING_AUDIT_ONLY"
+
+
 class ExecutionRank(str, Enum):
     """Execution rank for Euclidean gate outcomes."""
 
@@ -24,7 +28,7 @@ class ExecutionRank(str, Enum):
     HYPOTHESIS = "HYPOTHESIS"
     DEFERRED = "DEFERRED"
     LICENSED = "LICENSED"
-    CERTIFIED = "CERTIFIED"
+    CERTIFIED_RESERVED = "CERTIFIED_RESERVED"
     BLOCKED = "BLOCKED"
 
 
@@ -34,7 +38,7 @@ _RANK_ORDER: tuple[ExecutionRank, ...] = (
     ExecutionRank.HYPOTHESIS,
     ExecutionRank.DEFERRED,
     ExecutionRank.LICENSED,
-    ExecutionRank.CERTIFIED,
+    ExecutionRank.CERTIFIED_RESERVED,
     ExecutionRank.BLOCKED,
 )
 
@@ -202,6 +206,9 @@ class EuclideanGateDecision:
     reason: str
     transition_residuals: tuple[Residual, ...]
     handoff: Optional[str]
+    authoritative: bool = False
+    decision_scope: str = EUCLIDEAN_LEARNING_DECISION_SCOPE
+    runtime_status: str = EUCLIDEAN_LEARNING_RUNTIME_STATUS
     trace_ref: str = "docs/15_PROJECT_ROADMAP.md §Euclidean Learning Track"
     rank: str = "CANDIDATE"
     residuals: frozenset[str] = field(default_factory=frozenset)
@@ -209,6 +216,18 @@ class EuclideanGateDecision:
     def __post_init__(self) -> None:
         if not self.reason:
             raise ValueError(f"{FailureCode.M_CX_02.value}: reason cannot be empty")
+        if self.authoritative:
+            raise ValueError(
+                f"{FailureCode.M_CX_02.value}: euclidean decision cannot be authoritative"
+            )
+        if self.decision_scope != EUCLIDEAN_LEARNING_DECISION_SCOPE:
+            raise ValueError(
+                f"{FailureCode.M_CX_02.value}: invalid euclidean decision scope"
+            )
+        if self.runtime_status != EUCLIDEAN_LEARNING_RUNTIME_STATUS:
+            raise ValueError(
+                f"{FailureCode.M_CX_02.value}: invalid euclidean runtime status"
+            )
         if not self.trace_ref:
             raise ValueError(FailureCode.M_00_11.value)
         if self.rank != "CANDIDATE":
@@ -227,6 +246,9 @@ class EuclideanFailureRecord:
     closest_valid_stage: str
     required_handoff: Optional[str]
     repair_suggestion: Optional[str]
+    authoritative: bool = False
+    decision_scope: str = EUCLIDEAN_LEARNING_DECISION_SCOPE
+    runtime_status: str = EUCLIDEAN_LEARNING_RUNTIME_STATUS
     trace_ref: str = "docs/15_PROJECT_ROADMAP.md §Euclidean Learning Track"
     rank: str = "CANDIDATE"
     residuals: frozenset[str] = field(default_factory=frozenset)
@@ -239,6 +261,18 @@ class EuclideanFailureRecord:
         if not self.closest_valid_stage:
             raise ValueError(
                 f"{FailureCode.M_CX_02.value}: closest_valid_stage cannot be empty"
+            )
+        if self.authoritative:
+            raise ValueError(
+                f"{FailureCode.M_CX_02.value}: euclidean failure record cannot be authoritative"
+            )
+        if self.decision_scope != EUCLIDEAN_LEARNING_DECISION_SCOPE:
+            raise ValueError(
+                f"{FailureCode.M_CX_02.value}: invalid euclidean decision scope"
+            )
+        if self.runtime_status != EUCLIDEAN_LEARNING_RUNTIME_STATUS:
+            raise ValueError(
+                f"{FailureCode.M_CX_02.value}: invalid euclidean runtime status"
             )
         if not self.trace_ref:
             raise ValueError(FailureCode.M_00_11.value)
@@ -265,13 +299,16 @@ class LearningMemory:
 
 @dataclass(frozen=True)
 class RankedBranchPrediction:
-    """Constitutional prediction over licensed next branches."""
+    """Audit-only suggestion over constitutionally licensed next branches."""
 
     branch: str
     decision_rank: ExecutionRank
     transition_residuals: tuple[Residual, ...]
     reason: str
     handoff: Optional[str]
+    authoritative: bool = False
+    decision_scope: str = EUCLIDEAN_LEARNING_DECISION_SCOPE
+    runtime_status: str = EUCLIDEAN_LEARNING_RUNTIME_STATUS
     trace_ref: str = "docs/15_PROJECT_ROADMAP.md §Euclidean Learning Track"
     rank: str = "CANDIDATE"
     residuals: frozenset[str] = field(default_factory=frozenset)
@@ -281,6 +318,18 @@ class RankedBranchPrediction:
             raise ValueError(f"{FailureCode.M_CX_02.value}: branch cannot be empty")
         if not self.reason:
             raise ValueError(f"{FailureCode.M_CX_02.value}: reason cannot be empty")
+        if self.authoritative:
+            raise ValueError(
+                f"{FailureCode.M_CX_02.value}: euclidean prediction cannot be authoritative"
+            )
+        if self.decision_scope != EUCLIDEAN_LEARNING_DECISION_SCOPE:
+            raise ValueError(
+                f"{FailureCode.M_CX_02.value}: invalid euclidean decision scope"
+            )
+        if self.runtime_status != EUCLIDEAN_LEARNING_RUNTIME_STATUS:
+            raise ValueError(
+                f"{FailureCode.M_CX_02.value}: invalid euclidean runtime status"
+            )
         if not self.trace_ref:
             raise ValueError(FailureCode.M_00_11.value)
         if self.rank != "CANDIDATE":
@@ -288,31 +337,32 @@ class RankedBranchPrediction:
 
 
 class Layer(str, Enum):
-    """Staged Euclidean learning layers for energy guard checks."""
+    """Staged audit labels for Euclidean learning energy guard checks."""
 
     T8_PHONIC_SIGNIFIER = "T8_PHONIC_SIGNIFIER"
     T9_RAW_MEANING = "T9_RAW_MEANING"
     T10_CONVENTIONAL = "T10_CONVENTIONAL"
-    T11_RELATION = "T11_RELATION"
-    T12_IFADAH = "T12_IFADAH"
-    T13_HUKM = "T13_HUKM"
+    T11_RELATION_AUDIT = "T11_RELATION_AUDIT"
+    T12_IFADAH_AUDIT = "T12_IFADAH_AUDIT"
+    T13_HUKM_AUDIT = "T13_HUKM_AUDIT"
 
 
 LAYER_MAX_RANK: dict[Layer, ExecutionRank] = {
     Layer.T8_PHONIC_SIGNIFIER: ExecutionRank.LICENSED,
     Layer.T9_RAW_MEANING: ExecutionRank.CANDIDATE,
     Layer.T10_CONVENTIONAL: ExecutionRank.HYPOTHESIS,
-    Layer.T11_RELATION: ExecutionRank.LICENSED,
-    Layer.T12_IFADAH: ExecutionRank.LICENSED,
-    Layer.T13_HUKM: ExecutionRank.CERTIFIED,
+    Layer.T11_RELATION_AUDIT: ExecutionRank.LICENSED,
+    Layer.T12_IFADAH_AUDIT: ExecutionRank.LICENSED,
+    Layer.T13_HUKM_AUDIT: ExecutionRank.LICENSED,
 }
 
 
 FORBIDDEN_OVERREACH: dict[Layer, frozenset[str]] = {
     Layer.T9_RAW_MEANING: frozenset({"RelationClosed", "IfadahClosed", "Hukm"}),
     Layer.T10_CONVENTIONAL: frozenset({"IfadahClosed", "Hukm"}),
-    Layer.T11_RELATION: frozenset({"CertifiedHukm"}),
-    Layer.T12_IFADAH: frozenset({"RealityCertifiedHukm"}),
+    Layer.T11_RELATION_AUDIT: frozenset({"CertifiedHukm"}),
+    Layer.T12_IFADAH_AUDIT: frozenset({"RealityCertifiedHukm"}),
+    Layer.T13_HUKM_AUDIT: frozenset({"AuthoritativeHukm", "TanzilVerdict"}),
 }
 
 
@@ -334,7 +384,7 @@ def contract_from_registry(
     requirement = minimal_complete_requirement or MinimalCompleteRequirement(
         required_fields=MinimalCompleteRequirement.CONTRACT_FIELD_NAMES,
         forbidden_overreach=frozenset(),
-        max_rank=ExecutionRank.CERTIFIED,
+        max_rank=ExecutionRank.LICENSED,
     )
     # Source contract stores a frozenset (orderless), so canonical lexical order is safe
     # and keeps adapter output deterministic for replay/testing.
@@ -602,7 +652,7 @@ def predict_branch(
     memory: LearningMemory,
     origin: str,
 ) -> tuple[RankedBranchPrediction, ...]:
-    """Predict constitutionally licensed next branches for a given origin."""
+    """Suggest constitutionally licensed next branches for a given origin."""
     branch_predictions: list[RankedBranchPrediction] = []
 
     for contract in memory.contracts:
@@ -703,7 +753,9 @@ def euclidean_learning_step(
 
 
 __all__ = [
-    "ExecutionRank",
+"EUCLIDEAN_LEARNING_RUNTIME_STATUS",
+"EUCLIDEAN_LEARNING_DECISION_SCOPE",
+"ExecutionRank",
     "ResidualKind",
     "Residual",
     "Evidence",
