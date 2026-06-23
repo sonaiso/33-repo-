@@ -350,7 +350,7 @@ from taaqqul_slot_geometry.constitution import BranchLicense
 
 license = BranchLicense(
     roadmap_ref="docs/15_PROJECT_ROADMAP.md §مسار التعلم الإقليدي",
-    parent_ref="Phase 1 — L1 Closure (closed)",
+    parent_ref="Phase 1 — L1 Closure (FORMALLY CLOSED)",
     trunk_complete=True,
     motive="تنفيذ تعلم إقليدي قائم على العقود والبوابات بدل حفظ النتائج السطحية",
     description="core/euclidean_learning.py + tests/core/test_euclidean_learning.py",

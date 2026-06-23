@@ -60,7 +60,7 @@ def _contract(
         transition_id="EUCL_LEARN_01",
         origin="origin:entity",
         branch="branch:relation",
-        preserved_identity="entity persists",
+        preserved_identity=("entity", "persists"),
         common_illah="assignability",
         effective_description="subject + predicate",
         qadih_difference="no blocking semantic mismatch",
@@ -82,7 +82,6 @@ def _contract(
 
 
 def test_contract_from_registry_preserves_origin_branch() -> None:
-    assert FailureCode.M_CX_02.value
     registry_contract = RegistryTransitionContract(
         contract_id="R1",
         origin_ref="origin:entity",
@@ -113,6 +112,7 @@ def test_contract_from_registry_preserves_origin_branch() -> None:
     assert contract.base_contract is registry_contract
     assert contract.origin == "origin:entity"
     assert contract.branch == "branch:relation"
+    assert contract.preserved_identity == ("entity",)
 
 
 def test_has_blocking_residual_detects_blocking() -> None:
@@ -158,6 +158,7 @@ def test_learn_failure_appends_failure_record() -> None:
     assert len(memory.failures) == 1
     assert failure.active_preventer == "MissingRightHost"
     assert failure.repair_suggestion == "Remove preventer: MissingRightHost"
+    assert failure.blocking_residual_codes == ()
 
 
 def test_predict_branch_returns_ranked_predictions() -> None:
@@ -208,3 +209,7 @@ def test_euclidean_learning_step_writes_contract_when_passes() -> None:
     assert decision.allowed is True
     assert len(memory.contracts) == 1
     assert len(memory.failures) == 0
+
+
+def test_failure_code_taxonomy_is_available() -> None:
+    assert FailureCode.M_CX_02.value == "leap_between_layers_forbidden"
