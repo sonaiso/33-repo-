@@ -11,6 +11,7 @@ from enum import Enum
 from typing import ClassVar, Optional
 
 from taaqqul_slot_geometry.constitution.failure_taxonomy import FailureCode
+from taaqqul_slot_geometry.L1.domain_ids import DomainID
 from taaqqul_slot_geometry.core.transition_registry import (
     EuclideanTransitionContract as RegistryTransitionContract,
 )
@@ -18,6 +19,7 @@ from taaqqul_slot_geometry.core.transition_registry import (
 
 EUCLIDEAN_LEARNING_RUNTIME_STATUS = "AUDIT_SANDBOX_ONLY"
 EUCLIDEAN_LEARNING_DECISION_SCOPE = "EUCLIDEAN_LEARNING_AUDIT_ONLY"
+EUCLIDEAN_LAYER_DOMAIN_MAP_IS_AUDIT_ONLY = True
 
 
 class ExecutionRank(str, Enum):
@@ -363,6 +365,17 @@ FORBIDDEN_OVERREACH: dict[Layer, frozenset[str]] = {
     Layer.T11_RELATION_AUDIT: frozenset({"CertifiedHukm"}),
     Layer.T12_IFADAH_AUDIT: frozenset({"RealityCertifiedHukm"}),
     Layer.T13_HUKM_AUDIT: frozenset({"RuntimeAuthorityEscalation", "RuntimeVerdictEscalation"}),
+}
+
+# Layer currently defines the full Euclidean audit label set (T8→T13 only).
+# This map is declarative boundary metadata and cannot open runtime domains.
+EUCLIDEAN_LAYER_DOMAIN_AUDIT_MAP: dict[Layer, DomainID | None] = {
+    Layer.T8_PHONIC_SIGNIFIER: DomainID.D1_DAL_ONLY,
+    Layer.T9_RAW_MEANING: None,
+    Layer.T10_CONVENTIONAL: DomainID.D3_LEXICAL_MADLUL,
+    Layer.T11_RELATION_AUDIT: DomainID.D4_RELATION,
+    Layer.T12_IFADAH_AUDIT: DomainID.D5_IFADAH,
+    Layer.T13_HUKM_AUDIT: DomainID.D6_HUKM,
 }
 
 
@@ -755,6 +768,7 @@ def euclidean_learning_step(
 __all__ = [
     "EUCLIDEAN_LEARNING_RUNTIME_STATUS",
     "EUCLIDEAN_LEARNING_DECISION_SCOPE",
+    "EUCLIDEAN_LAYER_DOMAIN_MAP_IS_AUDIT_ONLY",
     "ExecutionRank",
     "ResidualKind",
     "Residual",
@@ -768,6 +782,7 @@ __all__ = [
     "Layer",
     "LAYER_MAX_RANK",
     "FORBIDDEN_OVERREACH",
+    "EUCLIDEAN_LAYER_DOMAIN_AUDIT_MAP",
     "contract_from_registry",
     "has_blocking_residual",
     "minimal_complete_is_satisfied",
