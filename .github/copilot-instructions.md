@@ -58,6 +58,7 @@ Do not allow:
 
 - `DAL_ONLY` to produce root, weight, word, tool, meaning, isnad, ifadah, hukm, or tanzil.
 - `LAFZI_FORM` to produce lexical meaning, usage, isnad, ifadah, hukm, or tanzil.
+- The overlap in banned outputs is intentional: both are pre-runtime contract layers under embargo.
 - Euclidean Learning audit labels to open runtime domains.
 - FailureAlignment to replace `FailureCode`.
 
