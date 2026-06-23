@@ -362,7 +362,7 @@ FORBIDDEN_OVERREACH: dict[Layer, frozenset[str]] = {
     Layer.T10_CONVENTIONAL: frozenset({"IfadahClosed", "Hukm"}),
     Layer.T11_RELATION_AUDIT: frozenset({"CertifiedHukm"}),
     Layer.T12_IFADAH_AUDIT: frozenset({"RealityCertifiedHukm"}),
-    Layer.T13_HUKM_AUDIT: frozenset({"AuthoritativeHukm", "TanzilVerdict"}),
+    Layer.T13_HUKM_AUDIT: frozenset({"RuntimeAuthorityEscalation", "RuntimeVerdictEscalation"}),
 }
 
 
@@ -753,9 +753,9 @@ def euclidean_learning_step(
 
 
 __all__ = [
-"EUCLIDEAN_LEARNING_RUNTIME_STATUS",
-"EUCLIDEAN_LEARNING_DECISION_SCOPE",
-"ExecutionRank",
+    "EUCLIDEAN_LEARNING_RUNTIME_STATUS",
+    "EUCLIDEAN_LEARNING_DECISION_SCOPE",
+    "ExecutionRank",
     "ResidualKind",
     "Residual",
     "Evidence",

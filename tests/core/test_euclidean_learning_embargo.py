@@ -94,7 +94,7 @@ def test_hukm_audit_label_does_not_authorize_hukm_runtime_output() -> None:
 
     decision = energy_guard(
         Layer.T13_HUKM_AUDIT,
-        frozenset({"AuthoritativeHukm"}),
+        frozenset({"RuntimeAuthorityEscalation"}),
         ExecutionRank.LICENSED,
     )
     assert decision.allowed is False
@@ -157,4 +157,4 @@ def test_runtime_embargo_document_remains_active() -> None:
 
 
 def test_forbidden_overreach_map_blocks_hukm_authority_outputs() -> None:
-    assert "AuthoritativeHukm" in FORBIDDEN_OVERREACH[Layer.T13_HUKM_AUDIT]
+    assert "RuntimeAuthorityEscalation" in FORBIDDEN_OVERREACH[Layer.T13_HUKM_AUDIT]
