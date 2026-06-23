@@ -2,7 +2,9 @@
 
 from __future__ import annotations
 
+import io
 import re
+import tokenize
 from pathlib import Path
 
 import pytest
@@ -42,19 +44,19 @@ REQUIRED_DOC_PHRASES = [
     "No coverage runtime.",
 ]
 
-FORBIDDEN_REGEXES = [
-    r"\bBindingDecisionEngine\b",
-    r"\bRank\.CERTIFICATE\b",
-    r"\bRank\.REJECTED\b",
-    r"\bdomain_proved\s*:\s*(?:true|True)\b",
-    r"\bunit_proved\s*:\s*(?:true|True)\b",
-    r"\bidentity_preserved\s*:\s*(?:true|True)\b",
-    r"\btrace_preserved\s*:\s*(?:true|True)\b",
-    r"\bgate_passed\s*:\s*(?:true|True)\b",
-    r"\bis_preserved\s*:\s*bool\s*=\s*(?:true|True)\b",
-    r"\btransform\(operation:\s*str\):\s*pass\b",
-    r"\bevidence\s+list\s+as\s+proof\b",
-    r"\bMRK\s+boolean\s+defaults\b",
+FORBIDDEN_PATTERNS = [
+    re.compile(r"\bBindingDecisionEngine\b"),
+    re.compile(r"\bRank\.CERTIFICATE\b"),
+    re.compile(r"\bRank\.REJECTED\b"),
+    re.compile(r"\bdomain_proved\s*:\s*true\b", re.IGNORECASE),
+    re.compile(r"\bunit_proved\s*:\s*true\b", re.IGNORECASE),
+    re.compile(r"\bidentity_preserved\s*:\s*true\b", re.IGNORECASE),
+    re.compile(r"\btrace_preserved\s*:\s*true\b", re.IGNORECASE),
+    re.compile(r"\bgate_passed\s*:\s*true\b", re.IGNORECASE),
+    re.compile(r"\bis_preserved\s*:\s*bool\s*=\s*true\b", re.IGNORECASE),
+    re.compile(r"\btransform\(operation:\s*str\):\s*pass\b"),
+    re.compile(r"\bevidence\s+list\s+as\s+proof\b"),
+    re.compile(r"\bMRK\s+boolean\s+defaults\b"),
 ]
 
 ALLOWED_SUFFIXES = {".py", ".toml", ".yaml", ".yml"}
@@ -79,6 +81,27 @@ def forbidden_runtime_files() -> list[Path]:
     for name in FORBIDDEN_FILE_NAMES:
         paths.extend(path for path in REPO_ROOT.rglob(name) if path.is_file())
     return sorted(set(paths))
+
+
+def scanned_text(path: Path) -> str:
+    """Return scan text for a path, stripping Python comments and string literals."""
+    text = path.read_text(encoding="utf-8")
+    if path.suffix != ".py":
+        return text
+
+    tokens: list[str] = []
+    try:
+        for token in tokenize.generate_tokens(io.StringIO(text).readline):
+            if token.type in {tokenize.COMMENT, tokenize.STRING}:
+                continue
+            if token.type in {tokenize.NL, tokenize.NEWLINE}:
+                tokens.append("\n")
+                continue
+            tokens.append(token.string)
+    except tokenize.TokenError:
+        return text
+
+    return "".join(tokens)
 
 
 @pytest.fixture(scope="module")
@@ -119,16 +142,46 @@ def test_source_and_config_files_block_rejected_runtime_anti_patterns(
     """trace_ref: docs/12_RUNTIME_EMBARGO_CONSTITUTION.md Embargo Rule."""
     violations: list[str] = []
     for path in scanned_targets:
-        text = path.read_text(encoding="utf-8")
+        text = scanned_text(path)
         file_violations: list[str] = []
-        for regex in FORBIDDEN_REGEXES:
-            for match in re.finditer(regex, text):
+        for pattern in FORBIDDEN_PATTERNS:
+            for match in pattern.finditer(text):
                 line_number = text.count("\n", 0, match.start()) + 1
                 matched_text = match.group(0)
                 file_violations.append(
-                    f"regex '{regex}' matched '{matched_text}' at line {line_number}"
+                    f"pattern '{pattern.pattern}' matched '{matched_text}' at line {line_number}"
                 )
         if file_violations:
             violations.append(f"{path}: " + ", ".join(file_violations))
 
     assert not violations, "\n" + "\n".join(violations)
+
+
+def test_boolean_antipattern_regexes_are_case_insensitive():
+    samples = [
+        "domain_proved: TRUE",
+        "unit_proved: TrUe",
+        "identity_preserved: true",
+        "trace_preserved: True",
+        "gate_passed: tRuE",
+        "is_preserved: bool = TRUE",
+    ]
+    for sample in samples:
+        assert any(pattern.search(sample) for pattern in FORBIDDEN_PATTERNS)
+
+
+def test_python_comments_and_strings_are_ignored_for_antipattern_scan(tmp_path: Path):
+    path = tmp_path / "example.py"
+    path.write_text(
+        (
+            "# domain_proved: TRUE\n"
+            "\"\"\"Rank.CERTIFICATE appears only in doc text.\"\"\"\n"
+            "msg = \"identity_preserved: true\"\n"
+            "safe_value = 1\n"
+        ),
+        encoding="utf-8",
+    )
+    stripped = scanned_text(path)
+    assert "domain_proved" not in stripped
+    assert "Rank.CERTIFICATE" not in stripped
+    assert "identity_preserved" not in stripped
