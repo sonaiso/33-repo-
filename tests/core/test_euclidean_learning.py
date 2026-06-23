@@ -5,6 +5,8 @@ Origin: docs/15_PROJECT_ROADMAP.md §Euclidean Learning Track
 """
 from taaqqul_slot_geometry.constitution.failure_taxonomy import FailureCode
 from taaqqul_slot_geometry.core.euclidean_learning import (
+    EUCLIDEAN_LEARNING_DECISION_SCOPE,
+    EUCLIDEAN_LEARNING_RUNTIME_STATUS,
     ExecutionRank,
     Evidence,
     EuclideanTransitionContract,
@@ -44,7 +46,7 @@ def _requirement() -> MinimalCompleteRequirement:
             "evidence",
         ),
         forbidden_overreach=frozenset(),
-        max_rank=ExecutionRank.CERTIFIED,
+        max_rank=ExecutionRank.LICENSED,
     )
 
 
@@ -133,6 +135,9 @@ def test_evaluate_transition_licenses_valid_contract() -> None:
     assert decision.allowed is True
     assert decision.decision_rank == ExecutionRank.LICENSED
     assert decision.reason == "Transition licensed"
+    assert decision.authoritative is False
+    assert decision.decision_scope == EUCLIDEAN_LEARNING_DECISION_SCOPE
+    assert decision.runtime_status == EUCLIDEAN_LEARNING_RUNTIME_STATUS
 
 
 def test_evaluate_transition_blocks_active_preventer() -> None:
@@ -170,6 +175,7 @@ def test_predict_branch_returns_ranked_predictions() -> None:
     assert len(predictions) == 2
     assert predictions[0].decision_rank == ExecutionRank.LICENSED
     assert predictions[0].handoff == "T11"
+    assert predictions[0].authoritative is False
 
 
 def test_energy_guard_blocks_layer_overreach() -> None:
@@ -202,7 +208,7 @@ def test_euclidean_learning_step_writes_contract_when_passes() -> None:
     memory, decision = euclidean_learning_step(
         LearningMemory(),
         "example",
-        Layer.T11_RELATION,
+        Layer.T11_RELATION_AUDIT,
         _contract(),
         frozenset({"RelationCandidate"}),
     )

@@ -22,5 +22,18 @@ Runtime prerequisites before embargo lift:
 - Runtime predicates and runtime translators are forbidden in this phase.
 - L1 output rank remains `CANDIDATE` only.
 
+## Euclidean Learning Exception Boundary
+- `core/euclidean_learning.py` is permitted only as an isolated audit sandbox under active embargo.
+- Euclidean learning outputs are audit-only and are never authoritative system decisions.
+- Euclidean learning does not replace `binding_kernel.py` and cannot implement `decision_engine.py`.
+- Euclidean learning labels do not open runtime domains:
+  - `T11_RELATION_AUDIT` does not open `D4_RELATION`.
+  - `T12_IFADAH_AUDIT` does not open `D5_IFADAH`.
+  - `T13_HUKM_AUDIT` does not open `D6_HUKM`.
+- Euclidean learning cannot produce rank above `CANDIDATE` for constitutional entities and cannot elevate execution authority to certified runtime control.
+- Euclidean learning cannot write persistent runtime memory and cannot become `coverage_matrix_v0.1.yaml`.
+- `predict_branch` returns audit suggestions, not system decisions.
+- Failure learning records are learning artifacts and do not replace `FailureCode`.
+
 ## Constitutional Sequence
 Domain → Contract → BridgeSpec → ProofObject → FailureAlignment → Kernel.

@@ -350,12 +350,12 @@ from taaqqul_slot_geometry.constitution import BranchLicense
 
 license = BranchLicense(
     roadmap_ref="docs/15_PROJECT_ROADMAP.md §مسار التعلم الإقليدي",
-    parent_ref="Phase 1 — L1 Closure (FORMALLY CLOSED)",
+    parent_ref="Phase 1 — L1 active track under runtime embargo (L1 closure not bypassed)",
     trunk_complete=True,
     motive="تنفيذ تعلم إقليدي قائم على العقود والبوابات بدل حفظ النتائج السطحية",
     description="core/euclidean_learning.py + tests/core/test_euclidean_learning.py",
-    qualifying_difference="العقد التنفيذي يضيف قرار البوابة/سجل الفشل/التنبؤ الدستوري مع توافق خلفي مع transition_registry",
-    condition="عدم فتح حكم L3 أو runtime decision engine خارج النطاق المرخّص",
+    qualifying_difference="العقد التنفيذي يضيف سجل تدقيق للتعلم مع توافق خلفي مع transition_registry دون صلاحية قرار نظامي",
+    condition="عدم فتح حكم L3 أو runtime decision engine خارج Sandbox التعلم الإقليدي",
     cause="تمكين مقارنة L2 لاحقًا بعقود انتقال متعلمة ومفحوصة",
     barrier_absent=True,
     barrier_check_description="لا قفز طبقي، لا I/O، لا كسر لقواعد trace_ref/rank/residuals",
@@ -379,6 +379,10 @@ license = BranchLicense(
 
 - لا فتح `L3` verdict logic داخل المسار.
 - لا إدخال runtime decision engine خارج الترخيص.
+- مسار Euclidean Learning لا يعني إغلاق L1 ولا يفتح L2/L3.
+- مخرجات Euclidean Learning هي `audit-only` وليست قرارات نظامية authoritative.
+- المسار لا يفتح `RELATION`/`IFADAH`/`HUKM` runtime domains، حتى لو ظهرت labels داخل sandbox.
+- لا ترقية إلى `CERTIFIED` داخل مسار التعلم الإقليدي قبل رفع Runtime Embargo.
 - كل تغيير يمر عبر: `pytest tests/` + `pytest tests/test_kpi_indicators.py -v` + `python -m ci.constitutional_guard --source-dir src`.
 
 ---
