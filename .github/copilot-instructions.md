@@ -46,7 +46,7 @@ Do not introduce:
   - `identity_preserved: true`
   - `trace_preserved: true`
   - `gate_passed: true`
-  - `is_preserved: bool = True`
+  - `is_preserved: true`
 - evidence list as proof
 - identity preservation defaulting to true
 - runtime predicates
