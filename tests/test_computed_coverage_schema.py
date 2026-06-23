@@ -27,6 +27,31 @@ def _load_schema() -> dict[str, Any]:
     return json.loads(SCHEMA_PATH.read_text(encoding="utf-8"))
 
 
+def _validate_rule(key: str, value: Any, rule: dict[str, Any]) -> None:
+    expected_type = rule.get("type")
+    if expected_type == "string":
+        if not isinstance(value, str):
+            raise ValueError(f"{key} must be string")
+        if "minLength" in rule and len(value) < rule["minLength"]:
+            raise ValueError(f"{key} must satisfy minLength")
+    elif expected_type == "array":
+        if not isinstance(value, list):
+            raise ValueError(f"{key} must be array")
+        if "minItems" in rule and len(value) < rule["minItems"]:
+            raise ValueError(f"{key} must satisfy minItems")
+        item_rule = rule.get("items", {})
+        for item in value:
+            if item_rule.get("type") == "string" and not isinstance(item, str):
+                raise ValueError(f"{key} array items must be strings")
+            if "minLength" in item_rule and len(item) < item_rule["minLength"]:
+                raise ValueError(f"{key} array items must satisfy minLength")
+
+    if "enum" in rule and value not in rule["enum"]:
+        raise ValueError(f"{key} must be one of enum values")
+    if "const" in rule and value != rule["const"]:
+        raise ValueError(f"{key} must match const value")
+
+
 def _fallback_validate(schema: dict[str, Any], payload: dict[str, Any]) -> None:
     """Fallback validator for required/enum/type/additionalProperties/not-anyOf checks."""
     if not isinstance(payload, dict):
@@ -42,30 +67,6 @@ def _fallback_validate(schema: dict[str, Any], payload: dict[str, Any]) -> None:
         extra = sorted(set(payload) - set(properties))
         if extra:
             raise ValueError(f"Unexpected properties: {extra}")
-
-    def _validate_rule(key: str, value: Any, rule: dict[str, Any]) -> None:
-        expected_type = rule.get("type")
-        if expected_type == "string":
-            if not isinstance(value, str):
-                raise ValueError(f"{key} must be string")
-            if "minLength" in rule and len(value) < rule["minLength"]:
-                raise ValueError(f"{key} must satisfy minLength")
-        elif expected_type == "array":
-            if not isinstance(value, list):
-                raise ValueError(f"{key} must be array")
-            if "minItems" in rule and len(value) < rule["minItems"]:
-                raise ValueError(f"{key} must satisfy minItems")
-            item_rule = rule.get("items", {})
-            for item in value:
-                if item_rule.get("type") == "string" and not isinstance(item, str):
-                    raise ValueError(f"{key} array items must be strings")
-                if "minLength" in item_rule and len(item) < item_rule["minLength"]:
-                    raise ValueError(f"{key} array items must satisfy minLength")
-
-        if "enum" in rule and value not in rule["enum"]:
-            raise ValueError(f"{key} must be one of enum values")
-        if "const" in rule and value != rule["const"]:
-            raise ValueError(f"{key} must match const value")
 
     for key, value in payload.items():
         rule = properties.get(key, {})
@@ -101,8 +102,10 @@ def _fallback_validate(schema: dict[str, Any], payload: dict[str, Any]) -> None:
                 continue
             if "const" in rule and payload[field] != rule["const"]:
                 matches = False
+                break
             if "enum" in rule and payload[field] not in rule["enum"]:
                 matches = False
+                break
         if not matches:
             continue
 
