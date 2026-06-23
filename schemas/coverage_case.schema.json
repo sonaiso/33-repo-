@@ -1,0 +1,170 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Computed Coverage Case Schema",
+  "description": "trace_ref: docs/09_COMPUTED_COVERAGE_CONSTITUTION.md Coverage Computation Law",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "case_id",
+    "input_text",
+    "input_domain",
+    "input_contract_ref",
+    "expected_verdict",
+    "required_contracts",
+    "trace_ref"
+  ],
+  "properties": {
+    "case_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "input_text": {
+      "type": "string",
+      "minLength": 1
+    },
+    "input_domain": {
+      "type": "string",
+      "description": "D1_DAL_ONLY and D2_LAFZI_FORM remain pre-runtime contract layers under embargo (docs/12_RUNTIME_EMBARGO_CONSTITUTION.md).",
+      "enum": [
+        "D1_DAL_ONLY",
+        "D2_LAFZI_FORM",
+        "D3_LEXICAL_MADLUL",
+        "D4_RELATION",
+        "D5_IFADAH",
+        "D6_HUKM",
+        "D7_TANZIL"
+      ]
+    },
+    "input_contract_ref": {
+      "type": "string",
+      "minLength": 1
+    },
+    "expected_verdict": {
+      "type": "string",
+      "enum": [
+        "EXPECTED_ACCEPTED_CANDIDATE",
+        "EXPECTED_BLOCKED",
+        "EXPECTED_RESIDUAL",
+        "EXPECTED_BRIDGE_REQUIRED",
+        "EXPECTED_PROOF_REQUIRED"
+      ]
+    },
+    "expected_failure_family": {
+      "type": "string",
+      "minLength": 1
+    },
+    "required_contracts": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "minItems": 1
+    },
+    "required_gates": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "required_bridges": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "expected_residual_policy": {
+      "type": "string",
+      "minLength": 1
+    },
+    "trace_ref": {
+      "type": "string",
+      "minLength": 1
+    }
+  },
+  "not": {
+    "anyOf": [
+      {
+        "required": [
+          "computed_verdict"
+        ]
+      },
+      {
+        "required": [
+          "ComputedVerdict"
+        ]
+      },
+      {
+        "required": [
+          "dashboard_total"
+        ]
+      },
+      {
+        "required": [
+          "manual_dashboard"
+        ]
+      },
+      {
+        "required": [
+          "mrk_defaults"
+        ]
+      },
+      {
+        "required": [
+          "domain_proved"
+        ]
+      },
+      {
+        "required": [
+          "unit_proved"
+        ]
+      },
+      {
+        "required": [
+          "identity_preserved"
+        ]
+      },
+      {
+        "required": [
+          "trace_preserved"
+        ]
+      },
+      {
+        "required": [
+          "gate_passed"
+        ]
+      },
+      {
+        "required": [
+          "is_preserved"
+        ]
+      },
+      {
+        "properties": {
+          "closure_status": {
+            "description": "Pre-computed closure claims are forbidden in schema-only expected cases.",
+            "const": "closed"
+          }
+        },
+        "required": [
+          "closure_status"
+        ]
+      },
+      {
+        "properties": {
+          "rank": {
+            "enum": [
+              "CERTIFICATE",
+              "REJECTED"
+            ]
+          }
+        },
+        "required": [
+          "rank"
+        ]
+      }
+    ]
+  }
+}
