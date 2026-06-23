@@ -75,12 +75,18 @@ from taaqqul_slot_geometry.core.mark_registry import (
     get_mark_by_id,
 )
 from taaqqul_slot_geometry.core.transition_registry import (
+    EUCLIDEAN_GATE_SEQUENCE,
     TRANSITION_BY_ID,
     TRANSITION_REGISTRY,
+    EuclideanGate,
+    EuclideanTransitionContract,
+    EuclideanTransitionProbe,
+    EuclideanTransitionResult,
     TransitionLayer,
     TransitionLaw,
     TransitionVerdict,
     check_transition_licensed,
+    evaluate_euclidean_transition,
     get_transition_law,
 )
 from taaqqul_slot_geometry.core.dal_atomic_pipeline import (
@@ -203,10 +209,16 @@ __all__ = [
     # Transition Registry (docs/59)
     "TRANSITION_BY_ID",
     "TRANSITION_REGISTRY",
+    "EUCLIDEAN_GATE_SEQUENCE",
+    "EuclideanGate",
+    "EuclideanTransitionContract",
+    "EuclideanTransitionProbe",
+    "EuclideanTransitionResult",
     "TransitionLayer",
     "TransitionLaw",
     "TransitionVerdict",
     "check_transition_licensed",
+    "evaluate_euclidean_transition",
     "get_transition_law",
     # DAL Atomic Pipeline (DAL_ONLY)
     "CarrierIdentityProfile",

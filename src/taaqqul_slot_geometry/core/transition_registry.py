@@ -18,7 +18,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import FrozenSet, Tuple
+from typing import FrozenSet, Optional, Tuple
 
 from taaqqul_slot_geometry.constitution.failure_taxonomy import FailureCode
 
@@ -49,6 +49,33 @@ class TransitionVerdict(str, Enum):
     BLOCKED = "blocked"
     DEFERRED = "deferred"
     RESIDUAL = "residual"
+
+
+class EuclideanGate(str, Enum):
+    """Canonical Euclidean gate order for licensed origin→branch transitions.
+
+    Origin: docs/00_MAQOOL_CONSTITUTION.md §5 (Rules 5, 7, 8)
+    trace_ref: docs/59_ARABIC_DIGITAL_IDENTITY_LAW.md §TransitionRegistry
+    """
+
+    IDENTITY_LINK = "identity_link"
+    COMMON_ILLAH = "common_illah"
+    EFFECTIVE_DESCRIPTION = "effective_description"
+    QADIH_DIFFERENCE = "qadih_difference"
+    CONDITION = "condition"
+    CAUSE = "cause"
+    PREVENTER = "preventer"
+
+
+EUCLIDEAN_GATE_SEQUENCE: Tuple[EuclideanGate, ...] = (
+    EuclideanGate.IDENTITY_LINK,
+    EuclideanGate.COMMON_ILLAH,
+    EuclideanGate.EFFECTIVE_DESCRIPTION,
+    EuclideanGate.QADIH_DIFFERENCE,
+    EuclideanGate.CONDITION,
+    EuclideanGate.CAUSE,
+    EuclideanGate.PREVENTER,
+)
 
 
 @dataclass(frozen=True)
@@ -125,6 +152,245 @@ class TransitionLaw:
             raise ValueError(FailureCode.M_00_11.value)
         if self.rank != "CANDIDATE":
             raise ValueError(FailureCode.M_00_10.value)
+
+
+@dataclass(frozen=True)
+class EuclideanTransitionContract:
+    """Licensed contract linking origin ↔ branch under Euclidean progression.
+
+    Origin: docs/00_MAQOOL_CONSTITUTION.md §5 Rule 7 + Rule 8
+    trace_ref: docs/59_ARABIC_DIGITAL_IDENTITY_LAW.md §TransitionRegistry
+    """
+
+    contract_id: str
+    origin_ref: str
+    branch_ref: str
+    preserved_identity: FrozenSet[str]
+    common_illah: str
+    effective_description: str
+    qadih_difference_rule: str
+    condition: str
+    cause: str
+    preventers: FrozenSet[str]
+    minimal_complete_gates: Tuple[EuclideanGate, ...]
+    trace_ref: str = "docs/59_ARABIC_DIGITAL_IDENTITY_LAW.md §TransitionRegistry"
+    rank: str = "CANDIDATE"
+    residuals: FrozenSet[str] = field(default_factory=frozenset)
+
+    def __post_init__(self) -> None:
+        if not self.contract_id:
+            raise ValueError(
+                f"{FailureCode.M_CX_02.value}: contract_id cannot be empty"
+            )
+        if not self.origin_ref:
+            raise ValueError(
+                f"{FailureCode.M_CX_02.value}: origin_ref cannot be empty"
+            )
+        if not self.branch_ref:
+            raise ValueError(
+                f"{FailureCode.M_CX_02.value}: branch_ref cannot be empty"
+            )
+        if not self.preserved_identity:
+            raise ValueError(
+                f"{FailureCode.M_CX_01.value}: preserved_identity cannot be empty"
+            )
+        if not self.common_illah:
+            raise ValueError(
+                f"{FailureCode.M_02_04.value}: common_illah cannot be empty"
+            )
+        if not self.effective_description:
+            raise ValueError(
+                f"{FailureCode.M_CX_02.value}: effective_description cannot be empty"
+            )
+        if not self.qadih_difference_rule:
+            raise ValueError(
+                f"{FailureCode.M_CX_02.value}: qadih_difference_rule cannot be empty"
+            )
+        if not self.condition:
+            raise ValueError(f"{FailureCode.M_02_06.value}: condition cannot be empty")
+        if not self.cause:
+            raise ValueError(f"{FailureCode.M_02_04.value}: cause cannot be empty")
+        if not self.minimal_complete_gates:
+            raise ValueError(
+                f"{FailureCode.M_CX_02.value}: minimal_complete_gates cannot be empty"
+            )
+        if tuple(EUCLIDEAN_GATE_SEQUENCE[: len(self.minimal_complete_gates)]) != (
+            self.minimal_complete_gates
+        ):
+            raise ValueError(
+                f"{FailureCode.M_CX_02.value}: minimal_complete_gates must be a "
+                "progressive prefix of EUCLIDEAN_GATE_SEQUENCE"
+            )
+        if not self.trace_ref:
+            raise ValueError(FailureCode.M_00_11.value)
+        if self.rank != "CANDIDATE":
+            raise ValueError(FailureCode.M_00_10.value)
+
+
+@dataclass(frozen=True)
+class EuclideanTransitionProbe:
+    """Runtime probe values for evaluating a Euclidean transition contract.
+
+    Origin: docs/00_MAQOOL_CONSTITUTION.md §5 Rule 8
+    trace_ref: docs/59_ARABIC_DIGITAL_IDENTITY_LAW.md §TransitionRegistry
+    """
+
+    origin_ref: str
+    branch_ref: str
+    source_identity: FrozenSet[str]
+    target_identity: FrozenSet[str]
+    common_illah_valid: bool
+    effective_description_valid: bool
+    qadih_difference_absent: bool
+    condition_met: bool
+    cause_active: bool
+    preventer_active: bool
+    residuals: FrozenSet[str] = field(default_factory=frozenset)
+    trace_ref: str = "docs/59_ARABIC_DIGITAL_IDENTITY_LAW.md §TransitionRegistry"
+    rank: str = "CANDIDATE"
+
+    def __post_init__(self) -> None:
+        if not self.origin_ref:
+            raise ValueError(
+                f"{FailureCode.M_CX_02.value}: origin_ref cannot be empty"
+            )
+        if not self.branch_ref:
+            raise ValueError(
+                f"{FailureCode.M_CX_02.value}: branch_ref cannot be empty"
+            )
+        if not self.trace_ref:
+            raise ValueError(FailureCode.M_00_11.value)
+        if self.rank != "CANDIDATE":
+            raise ValueError(FailureCode.M_00_10.value)
+
+
+@dataclass(frozen=True)
+class EuclideanTransitionResult:
+    """Result of staged Euclidean gate evaluation with energy-aware stopping.
+
+    Origin: docs/00_MAQOOL_CONSTITUTION.md §5 Rule 8
+    trace_ref: docs/59_ARABIC_DIGITAL_IDENTITY_LAW.md §TransitionRegistry
+    """
+
+    contract_id: str
+    origin_ref: str
+    branch_ref: str
+    verdict: TransitionVerdict
+    result_rank: str
+    executed_gates: Tuple[EuclideanGate, ...]
+    failed_gate: Optional[EuclideanGate]
+    identity_preserved: bool
+    minimal_complete_reached: bool
+    energy_used: int
+    energy_budget: int
+    residuals: FrozenSet[str]
+    trace_ref: str = "docs/59_ARABIC_DIGITAL_IDENTITY_LAW.md §TransitionRegistry"
+    rank: str = "CANDIDATE"
+
+    def __post_init__(self) -> None:
+        if not self.contract_id:
+            raise ValueError(
+                f"{FailureCode.M_CX_02.value}: contract_id cannot be empty"
+            )
+        if not self.trace_ref:
+            raise ValueError(FailureCode.M_00_11.value)
+        if self.rank != "CANDIDATE":
+            raise ValueError(FailureCode.M_00_10.value)
+        if self.energy_used > self.energy_budget:
+            raise ValueError(
+                f"{FailureCode.M_CX_02.value}: energy_used cannot exceed energy_budget"
+            )
+
+
+def _gate_failure_verdict(gate: EuclideanGate) -> TransitionVerdict:
+    """Map failed Euclidean gate to constitutional verdict."""
+    if gate in (
+        EuclideanGate.IDENTITY_LINK,
+        EuclideanGate.QADIH_DIFFERENCE,
+        EuclideanGate.PREVENTER,
+    ):
+        return TransitionVerdict.BLOCKED
+    return TransitionVerdict.DEFERRED
+
+
+def _verdict_rank(verdict: TransitionVerdict) -> str:
+    """Map transition verdict to conservative rank label."""
+    if verdict == TransitionVerdict.LICENSED:
+        return "LICENSED"
+    if verdict == TransitionVerdict.BLOCKED:
+        return "BLOCKED"
+    if verdict == TransitionVerdict.DEFERRED:
+        return "DEFERRED"
+    return "RESIDUAL"
+
+
+def evaluate_euclidean_transition(
+    contract: EuclideanTransitionContract,
+    probe: EuclideanTransitionProbe,
+) -> EuclideanTransitionResult:
+    """Evaluate origin→branch transition through progressive Euclidean gates.
+
+    Stops at first failed gate (energy preservation) or at minimal-complete boundary.
+    """
+    energy_budget = len(contract.minimal_complete_gates)
+    executed: list[EuclideanGate] = []
+
+    identity_linked = (
+        probe.origin_ref == contract.origin_ref
+        and probe.branch_ref == contract.branch_ref
+        and contract.preserved_identity.issubset(probe.source_identity)
+        and probe.source_identity.issubset(probe.target_identity)
+    )
+
+    gate_checks: dict[EuclideanGate, bool] = {
+        EuclideanGate.IDENTITY_LINK: identity_linked,
+        EuclideanGate.COMMON_ILLAH: probe.common_illah_valid,
+        EuclideanGate.EFFECTIVE_DESCRIPTION: probe.effective_description_valid,
+        EuclideanGate.QADIH_DIFFERENCE: probe.qadih_difference_absent,
+        EuclideanGate.CONDITION: probe.condition_met,
+        EuclideanGate.CAUSE: probe.cause_active,
+        EuclideanGate.PREVENTER: not probe.preventer_active,
+    }
+
+    for gate in contract.minimal_complete_gates:
+        executed.append(gate)
+        if not gate_checks[gate]:
+            verdict = _gate_failure_verdict(gate)
+            return EuclideanTransitionResult(
+                contract_id=contract.contract_id,
+                origin_ref=probe.origin_ref,
+                branch_ref=probe.branch_ref,
+                verdict=verdict,
+                result_rank=_verdict_rank(verdict),
+                executed_gates=tuple(executed),
+                failed_gate=gate,
+                identity_preserved=identity_linked,
+                minimal_complete_reached=False,
+                energy_used=len(executed),
+                energy_budget=energy_budget,
+                residuals=contract.residuals | probe.residuals,
+            )
+
+    verdict = (
+        TransitionVerdict.LICENSED
+        if energy_budget == len(EUCLIDEAN_GATE_SEQUENCE)
+        else TransitionVerdict.DEFERRED
+    )
+    result_rank = "CANDIDATE" if verdict == TransitionVerdict.DEFERRED else "LICENSED"
+    return EuclideanTransitionResult(
+        contract_id=contract.contract_id,
+        origin_ref=probe.origin_ref,
+        branch_ref=probe.branch_ref,
+        verdict=verdict,
+        result_rank=result_rank,
+        executed_gates=tuple(executed),
+        failed_gate=None,
+        identity_preserved=identity_linked,
+        minimal_complete_reached=True,
+        energy_used=len(executed),
+        energy_budget=energy_budget,
+        residuals=contract.residuals | probe.residuals,
+    )
 
 
 # ── Canonical transition laws ─────────────────────────────────────────────────
