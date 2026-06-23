@@ -338,6 +338,51 @@ license = BranchLicense(
 
 ---
 
+## مسار التعلم الإقليدي — Euclidean Learning Track (مرخّص)
+
+> هذا المسار يعمل داخل النطاق المسموح في الخارطة ويخدم هدف المشروع النهائي: 
+> التحقق من معقولية إجابات GPT عبر عقود انتقال قابلة للفحص والتعلم من النجاح/الفشل.
+
+### ترخيص الفرع (BranchLicense)
+
+```python
+from taaqqul_slot_geometry.constitution import BranchLicense
+
+license = BranchLicense(
+    roadmap_ref="docs/15_PROJECT_ROADMAP.md §مسار التعلم الإقليدي",
+    parent_ref="Phase 1 — L1 Closure (FORMALLY CLOSED)",
+    trunk_complete=True,
+    motive="تنفيذ تعلم إقليدي قائم على العقود والبوابات بدل حفظ النتائج السطحية",
+    description="core/euclidean_learning.py + tests/core/test_euclidean_learning.py",
+    qualifying_difference="العقد التنفيذي يضيف قرار البوابة/سجل الفشل/التنبؤ الدستوري مع توافق خلفي مع transition_registry",
+    condition="عدم فتح حكم L3 أو runtime decision engine خارج النطاق المرخّص",
+    cause="تمكين مقارنة L2 لاحقًا بعقود انتقال متعلمة ومفحوصة",
+    barrier_absent=True,
+    barrier_check_description="لا قفز طبقي، لا I/O، لا كسر لقواعد trace_ref/rank/residuals",
+)
+```
+
+### سلسلة PRs الصغيرة المعتمدة للمسار
+
+| PR | الهدف | المخرج |
+|----|-------|--------|
+| PR-E1 | فتح المسار دستوريًا | مرجع خارطة + BranchLicense موثّق |
+| PR-E2 | توحيد primitives | ExecutionRank + ResidualKind + Evidence + MinimalCompleteRequirement |
+| PR-E3 | توسيع عقد الانتقال والقرار | EuclideanTransitionContract + EuclideanGateDecision (متوافق خلفيًا) |
+| PR-E4 | تعلم الفشل | EuclideanFailureRecord + to_failure_record |
+| PR-E5 | تعلم النجاح/الفشل | LearningMemory + learn_success + learn_failure |
+| PR-E6 | تنبؤ دستوري بالفروع | predict_branch (branch/rank/residuals/handoff) |
+| PR-E7 | Energy Guard طبقي | energy_guard + Layer ceilings + overreach blocking |
+| PR-E8 | تكامل وتغطية | euclidean_learning_step + اختبارات نجاح/فشل متكاملة |
+
+### قيود إلزامية لهذا المسار
+
+- لا فتح `L3` verdict logic داخل المسار.
+- لا إدخال runtime decision engine خارج الترخيص.
+- كل تغيير يمر عبر: `pytest tests/` + `pytest tests/test_kpi_indicators.py -v` + `python -m ci.constitutional_guard --source-dir src`.
+
+---
+
 ## الخطوة التالية الفورية
 
 **Prepare L1 closure declaration and roadmap reconciliation**
