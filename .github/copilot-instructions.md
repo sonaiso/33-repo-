@@ -110,6 +110,8 @@ If any invariant fails, stop and report `BLOCKED`.
 
 ## Current Roadmap After PR #53
 
+Source of truth: `docs/15_PROJECT_ROADMAP.md`.
+
 Next required sequence:
 
 1. Harden Euclidean Domain Boundary guardrails.
