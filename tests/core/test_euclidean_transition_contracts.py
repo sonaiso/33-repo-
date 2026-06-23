@@ -80,12 +80,11 @@ def test_full_chain_success_is_licensed() -> None:
 
 
 def test_qadih_difference_blocks_and_stops_early() -> None:
-    probe = _full_probe()
     probe = EuclideanTransitionProbe(
-        origin_ref=probe.origin_ref,
-        branch_ref=probe.branch_ref,
-        source_identity=probe.source_identity,
-        target_identity=probe.target_identity,
+        origin_ref="origin:Zayd",
+        branch_ref="branch:NominalPredication",
+        source_identity=frozenset({"entity", "candidate"}),
+        target_identity=frozenset({"entity", "candidate", "relation"}),
         common_illah_valid=True,
         effective_description_valid=True,
         qadih_difference_absent=False,

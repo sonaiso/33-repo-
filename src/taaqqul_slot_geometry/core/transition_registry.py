@@ -376,7 +376,11 @@ def evaluate_euclidean_transition(
         if energy_budget == len(EUCLIDEAN_GATE_SEQUENCE)
         else TransitionVerdict.DEFERRED
     )
-    result_rank = "CANDIDATE" if verdict == TransitionVerdict.DEFERRED else "LICENSED"
+    result_rank = (
+        "CANDIDATE"
+        if verdict == TransitionVerdict.DEFERRED
+        else _verdict_rank(verdict)
+    )
     return EuclideanTransitionResult(
         contract_id=contract.contract_id,
         origin_ref=probe.origin_ref,
