@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "Computed Coverage Case Schema",
-  "description": "trace_ref: docs/09_COMPUTED_COVERAGE_CONSTITUTION.md Coverage Computation Law",
+  "description": "trace_ref: docs/09_COMPUTED_COVERAGE_CONSTITUTION.md Coverage Computation Law. D3-D7 domain values are expected-case labels only and do not open runtime domains.",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -166,5 +166,85 @@
         ]
       }
     ]
-  }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "expected_verdict": {
+            "const": "EXPECTED_BLOCKED"
+          }
+        },
+        "required": [
+          "expected_verdict"
+        ]
+      },
+      "then": {
+        "required": [
+          "expected_failure_family"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "expected_verdict": {
+            "const": "EXPECTED_PROOF_REQUIRED"
+          }
+        },
+        "required": [
+          "expected_verdict"
+        ]
+      },
+      "then": {
+        "required": [
+          "expected_failure_family"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "expected_verdict": {
+            "const": "EXPECTED_RESIDUAL"
+          }
+        },
+        "required": [
+          "expected_verdict"
+        ]
+      },
+      "then": {
+        "required": [
+          "expected_residual_policy"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "expected_verdict": {
+            "const": "EXPECTED_BRIDGE_REQUIRED"
+          }
+        },
+        "required": [
+          "expected_verdict"
+        ]
+      },
+      "then": {
+        "required": [
+          "required_bridges"
+        ],
+        "properties": {
+          "required_bridges": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "minItems": 1
+          }
+        }
+      }
+    }
+  ]
 }
