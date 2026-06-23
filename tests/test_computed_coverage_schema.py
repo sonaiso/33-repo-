@@ -53,7 +53,7 @@ def _validate_rule(key: str, value: Any, rule: dict[str, Any]) -> None:
 
 
 def _fallback_validate(schema: dict[str, Any], payload: dict[str, Any]) -> None:
-    """Fallback validator for required/enum/type/additionalProperties/not-anyOf checks."""
+    """Fallback validator for required/enum/type/additionalProperties/not.anyOf and allOf(if/then) checks."""
     if not isinstance(payload, dict):
         raise ValueError("Payload must be an object")
 
@@ -289,3 +289,43 @@ def test_fallback_validator_rejects_forbidden_fields(monkeypatch: pytest.MonkeyP
     """trace_ref: docs/09_COMPUTED_COVERAGE_CONSTITUTION.md Coverage Computation Law."""
     monkeypatch.setattr("tests.test_computed_coverage_schema.Draft202012Validator", None)
     _assert_invalid(_minimal_valid_case() | {"computed_verdict": "manual"})
+
+
+def test_fallback_requires_failure_family_for_expected_blocked(monkeypatch: pytest.MonkeyPatch):
+    """trace_ref: docs/09_COMPUTED_COVERAGE_CONSTITUTION.md Coverage Computation Law."""
+    monkeypatch.setattr("tests.test_computed_coverage_schema.Draft202012Validator", None)
+    _assert_invalid(_minimal_valid_case() | {"expected_verdict": "EXPECTED_BLOCKED"})
+
+
+def test_fallback_requires_failure_family_for_expected_proof_required(
+    monkeypatch: pytest.MonkeyPatch,
+):
+    """trace_ref: docs/09_COMPUTED_COVERAGE_CONSTITUTION.md Coverage Computation Law."""
+    monkeypatch.setattr("tests.test_computed_coverage_schema.Draft202012Validator", None)
+    _assert_invalid(_minimal_valid_case() | {"expected_verdict": "EXPECTED_PROOF_REQUIRED"})
+
+
+def test_fallback_requires_residual_policy_for_expected_residual(monkeypatch: pytest.MonkeyPatch):
+    """trace_ref: docs/09_COMPUTED_COVERAGE_CONSTITUTION.md Coverage Computation Law."""
+    monkeypatch.setattr("tests.test_computed_coverage_schema.Draft202012Validator", None)
+    _assert_invalid(_minimal_valid_case() | {"expected_verdict": "EXPECTED_RESIDUAL"})
+
+
+def test_fallback_requires_bridges_for_expected_bridge_required(monkeypatch: pytest.MonkeyPatch):
+    """trace_ref: docs/09_COMPUTED_COVERAGE_CONSTITUTION.md Coverage Computation Law."""
+    monkeypatch.setattr("tests.test_computed_coverage_schema.Draft202012Validator", None)
+    _assert_invalid(_minimal_valid_case() | {"expected_verdict": "EXPECTED_BRIDGE_REQUIRED"})
+
+
+def test_fallback_rejects_empty_bridges_for_expected_bridge_required(
+    monkeypatch: pytest.MonkeyPatch,
+):
+    """trace_ref: docs/09_COMPUTED_COVERAGE_CONSTITUTION.md Coverage Computation Law."""
+    monkeypatch.setattr("tests.test_computed_coverage_schema.Draft202012Validator", None)
+    _assert_invalid(
+        _minimal_valid_case()
+        | {
+            "expected_verdict": "EXPECTED_BRIDGE_REQUIRED",
+            "required_bridges": [],
+        }
+    )
