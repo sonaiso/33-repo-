@@ -1,4 +1,4 @@
-# Copilot Repository Instructions — Taaqol / 33-repo-
+# Copilot Repository Instructions — sonaiso/33-repo-
 
 ## Constitutional Priority
 
