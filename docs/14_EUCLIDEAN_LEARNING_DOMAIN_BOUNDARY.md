@@ -19,7 +19,7 @@ The mapping is boundary guidance only. It does not authorize runtime domain open
 - `T13_HUKM_AUDIT` → `D6_HUKM` (audit-only, not opened)
 
 ## Binding Boundary Law
-- LearningLayer label is not Domain opening.
+- Layer label is not domain opening.
 - Audit relation is not Relation runtime.
 - Audit ifadah is not Ifadah runtime.
 - Audit hukm is not Hukm runtime.

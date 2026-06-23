@@ -118,14 +118,34 @@ def test_outputs_remain_non_authoritative_and_no_runtime_verdict_labels() -> Non
     assert failure.authoritative is False
     assert prediction.authoritative is False
 
-    runtime_labels = {"FinalMeaning", "Hukm", "Tanzil"}
-    observed_strings = {
+    runtime_labels = (
+        "FinalMeaning",
+        "FinalSyntaxRole",
+        "RuntimeHukm",
+        "Hukm",
+        "Tanzil",
+        "IfadahClosed",
+        "RealityCertifiedHukm",
+    )
+    observed_strings = (
         decision.reason,
         decision.handoff,
         failure.failed_transition,
         prediction.handoff,
-    }
-    assert runtime_labels.isdisjoint(observed_strings)
+    )
+    for observed in observed_strings:
+        if observed is None:
+            continue
+        for label in runtime_labels:
+            assert label not in observed
+
+
+def test_domain_boundary_document_uses_layer_label_wording() -> None:
+    content = (
+        REPO_ROOT / "docs" / "14_EUCLIDEAN_LEARNING_DOMAIN_BOUNDARY.md"
+    ).read_text(encoding="utf-8")
+    assert "Layer label is not domain opening." in content
+    assert "LearningLayer label is not Domain opening." not in content
 
 
 def test_runtime_embargo_document_stays_active() -> None:
