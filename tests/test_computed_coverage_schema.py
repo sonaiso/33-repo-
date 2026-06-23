@@ -133,8 +133,7 @@ def _minimal_valid_case() -> dict[str, Any]:
         "input_text": "example input",
         "input_domain": "D1_DAL_ONLY",
         "input_contract_ref": "docs/07_GATE_BRIDGE_CONSTITUTION.md#contract",
-        "expected_verdict": "EXPECTED_BLOCKED",
-        "expected_failure_family": "EMBARGO_FAMILY",
+        "expected_verdict": "EXPECTED_ACCEPTED_CANDIDATE",
         "required_contracts": ["docs/12_RUNTIME_EMBARGO_CONSTITUTION.md"],
         "trace_ref": "docs/09_COMPUTED_COVERAGE_CONSTITUTION.md",
     }
@@ -213,10 +212,10 @@ def test_expected_verdict_is_allowed():
     schema = _load_schema()
     verdict_payloads = {
         "EXPECTED_ACCEPTED_CANDIDATE": {},
-        "EXPECTED_BLOCKED": {},
+        "EXPECTED_BLOCKED": {"expected_failure_family": "EMBARGO_FAMILY"},
         "EXPECTED_RESIDUAL": {"expected_residual_policy": "KEEP_RESIDUALS"},
         "EXPECTED_BRIDGE_REQUIRED": {"required_bridges": ["D1_TO_D2_GATE"]},
-        "EXPECTED_PROOF_REQUIRED": {},
+        "EXPECTED_PROOF_REQUIRED": {"expected_failure_family": "EMBARGO_FAMILY"},
     }
     for expected_verdict, extra_fields in verdict_payloads.items():
         payload = _minimal_valid_case() | {"expected_verdict": expected_verdict} | extra_fields
@@ -225,15 +224,13 @@ def test_expected_verdict_is_allowed():
 
 def test_expected_blocked_requires_expected_failure_family():
     """trace_ref: docs/09_COMPUTED_COVERAGE_CONSTITUTION.md Coverage Computation Law."""
-    case = _minimal_valid_case()
-    case.pop("expected_failure_family")
+    case = _minimal_valid_case() | {"expected_verdict": "EXPECTED_BLOCKED"}
     _assert_invalid(case)
 
 
 def test_expected_proof_required_requires_expected_failure_family():
     """trace_ref: docs/09_COMPUTED_COVERAGE_CONSTITUTION.md Coverage Computation Law."""
     case = _minimal_valid_case() | {"expected_verdict": "EXPECTED_PROOF_REQUIRED"}
-    case.pop("expected_failure_family")
     _assert_invalid(case)
 
 
