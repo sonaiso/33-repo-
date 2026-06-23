@@ -1,7 +1,7 @@
 # Rejected Runtime Anti-Patterns — `docs/15_REJECTED_RUNTIME_PATTERNS.md`
 
 ## Scope
-Define forbidden pre-runtime implementation patterns and keep runtime embargo enforcement audit-only.
+Define forbidden runtime patterns under embargo and keep runtime embargo enforcement audit-only.
 
 ## Non-scope
 This document does not authorize kernel code, predicates, translators, computed runtime coverage, or any runtime-domain opening.
@@ -15,21 +15,21 @@ This document does not authorize kernel code, predicates, translators, computed 
 - `.github/copilot-instructions.md`
 
 ## Rejected patterns (embargoed)
-- `binding_kernel.py`
-- `decision_engine.py`
-- `coverage_matrix_v0.1.yaml`
-- `BindingDecisionEngine`
-- `MRK boolean defaults`
-- `domain_proved: true`
-- `unit_proved: true`
-- `identity_preserved: true`
-- `trace_preserved: true`
-- `gate_passed: true`
-- `is_preserved: bool = True`
-- `Rank.CERTIFICATE`
-- `Rank.REJECTED`
-- `evidence list as proof`
-- `transform(operation: str): pass`
+- `binding_kernel.py` — would introduce runtime kernel before embargo lift.
+- `decision_engine.py` — would introduce runtime decision authority before constitutional sequence completion.
+- `coverage_matrix_v0.1.yaml` — would convert audit artifacts into runtime coverage authority.
+- `BindingDecisionEngine` — would bypass audit-only contracts and open runtime execution paths.
+- `MRK boolean defaults` — converts proof obligations into unchecked defaults.
+- `domain_proved: true` — boolean-as-proof; proof cannot be asserted by default.
+- `unit_proved: true` — boolean-as-proof; proof cannot be asserted by default.
+- `identity_preserved: true` — boolean-as-proof; identity preservation requires named checks.
+- `trace_preserved: true` — boolean-as-proof; trace continuity requires explicit proof objects.
+- `gate_passed: true` — boolean-as-proof; gate status must be derived, not hardcoded.
+- `is_preserved: bool = True` — default-true preservation bypasses constitutional guard conditions.
+- `Rank.CERTIFICATE` — would violate `rank = "CANDIDATE"` under embargo.
+- `Rank.REJECTED` — introduces rank promotion/reclassification outside authorized runtime flow.
+- `evidence list as proof` — evidence references are not executable proof.
+- `transform(operation: str): pass` — placeholder translators/predicates are runtime-opening stubs.
 
 ## Constitutional invariants preserved
 - All rows remain audit-only.

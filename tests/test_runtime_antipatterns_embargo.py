@@ -5,14 +5,16 @@ from __future__ import annotations
 import re
 from pathlib import Path
 
+import pytest
+
 
 REPO_ROOT = Path(__file__).parent.parent
 GUARD_DOC = REPO_ROOT / "docs" / "15_REJECTED_RUNTIME_PATTERNS.md"
 
-FORBIDDEN_FILES = [
-    REPO_ROOT / "src" / "taaqqul_slot_geometry" / "L1" / "binding_kernel.py",
-    REPO_ROOT / "src" / "taaqqul_slot_geometry" / "L1" / "decision_engine.py",
-    REPO_ROOT / "coverage_matrix_v0.1.yaml",
+FORBIDDEN_FILE_NAMES = [
+    "binding_kernel.py",
+    "decision_engine.py",
+    "coverage_matrix_v0.1.yaml",
 ]
 
 REQUIRED_DOC_PHRASES = [
@@ -44,25 +46,21 @@ FORBIDDEN_REGEXES = [
     r"\bBindingDecisionEngine\b",
     r"\bRank\.CERTIFICATE\b",
     r"\bRank\.REJECTED\b",
-    r"\bdomain_proved\s*:\s*true\b",
-    r"\bunit_proved\s*:\s*true\b",
-    r"\bidentity_preserved\s*:\s*true\b",
-    r"\btrace_preserved\s*:\s*true\b",
-    r"\bgate_passed\s*:\s*true\b",
-    r"\bis_preserved\s*:\s*bool\s*=\s*True\b",
+    r"\bdomain_proved\s*:\s*(?:true|True)\b",
+    r"\bunit_proved\s*:\s*(?:true|True)\b",
+    r"\bidentity_preserved\s*:\s*(?:true|True)\b",
+    r"\btrace_preserved\s*:\s*(?:true|True)\b",
+    r"\bgate_passed\s*:\s*(?:true|True)\b",
+    r"\bis_preserved\s*:\s*bool\s*=\s*(?:true|True)\b",
     r"\btransform\(operation:\s*str\):\s*pass\b",
     r"\bevidence\s+list\s+as\s+proof\b",
     r"\bMRK\s+boolean\s+defaults\b",
 ]
 
-FORBIDDEN_PLAIN_TOKENS = [
-    "binding_kernel.py",
-    "decision_engine.py",
-    "coverage_matrix_v0.1.yaml",
-]
+ALLOWED_SUFFIXES = {".py", ".toml", ".yaml", ".yml"}
 
 
-def _scan_targets() -> list[Path]:
+def scan_targets() -> list[Path]:
     """Collect source/config files where pre-runtime anti-patterns are forbidden."""
     targets: set[Path] = set()
     targets.update((REPO_ROOT / "src").rglob("*.py"))
@@ -75,6 +73,30 @@ def _scan_targets() -> list[Path]:
     return sorted(path for path in targets if path.is_file())
 
 
+def forbidden_runtime_files() -> list[Path]:
+    """Return forbidden runtime file artifacts if they exist anywhere in the repo."""
+    paths: list[Path] = []
+    for name in FORBIDDEN_FILE_NAMES:
+        paths.extend(path for path in REPO_ROOT.rglob(name) if path.is_file())
+    return sorted(set(paths))
+
+
+@pytest.fixture(scope="module")
+def scanned_targets() -> list[Path]:
+    return scan_targets()
+
+
+def test_scanned_targets_are_source_and_config_files_only(scanned_targets: list[Path]):
+    """trace_ref: docs/12_RUNTIME_EMBARGO_CONSTITUTION.md Embargo Rule."""
+    targets = scanned_targets
+    assert targets, "scan targets must not be empty"
+    assert all(path.is_file() for path in targets)
+    assert all(path.suffix in ALLOWED_SUFFIXES for path in targets)
+    assert any(path.is_relative_to(REPO_ROOT / "src") for path in targets)
+    assert any(path.is_relative_to(REPO_ROOT / "ci") for path in targets)
+    assert REPO_ROOT / "pyproject.toml" in targets
+
+
 def test_rejected_runtime_patterns_doc_exists_with_required_markers():
     """trace_ref: docs/12_RUNTIME_EMBARGO_CONSTITUTION.md Explicit Prohibitions."""
     assert GUARD_DOC.exists(), "Missing rejected runtime anti-pattern guard document"
@@ -85,20 +107,28 @@ def test_rejected_runtime_patterns_doc_exists_with_required_markers():
 
 def test_forbidden_runtime_files_are_absent():
     """trace_ref: docs/12_RUNTIME_EMBARGO_CONSTITUTION.md Explicit Prohibitions."""
-    for path in FORBIDDEN_FILES:
-        assert not path.exists(), f"Forbidden pre-runtime artifact exists: {path}"
+    matches = forbidden_runtime_files()
+    assert not matches, "Forbidden pre-runtime artifacts exist:\n" + "\n".join(
+        str(path) for path in matches
+    )
 
 
-def test_source_and_config_files_block_rejected_runtime_antipatterns():
+def test_source_and_config_files_block_rejected_runtime_anti_patterns(
+    scanned_targets: list[Path],
+):
     """trace_ref: docs/12_RUNTIME_EMBARGO_CONSTITUTION.md Embargo Rule."""
     violations: list[str] = []
-    for path in _scan_targets():
+    for path in scanned_targets:
         text = path.read_text(encoding="utf-8")
-        for token in FORBIDDEN_PLAIN_TOKENS:
-            if token in text:
-                violations.append(f"{path}: plain token '{token}'")
+        file_violations: list[str] = []
         for regex in FORBIDDEN_REGEXES:
-            if re.search(regex, text):
-                violations.append(f"{path}: regex '{regex}'")
+            for match in re.finditer(regex, text):
+                line_number = text.count("\n", 0, match.start()) + 1
+                matched_text = match.group(0)
+                file_violations.append(
+                    f"regex '{regex}' matched '{matched_text}' at line {line_number}"
+                )
+        if file_violations:
+            violations.append(f"{path}: " + ", ".join(file_violations))
 
     assert not violations, "\n" + "\n".join(violations)
