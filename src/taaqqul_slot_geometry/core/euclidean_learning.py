@@ -367,6 +367,8 @@ FORBIDDEN_OVERREACH: dict[Layer, frozenset[str]] = {
     Layer.T13_HUKM_AUDIT: frozenset({"RuntimeAuthorityEscalation", "RuntimeVerdictEscalation"}),
 }
 
+# Layer currently defines the full Euclidean audit label set (T8→T13 only).
+# This map is declarative boundary metadata and cannot open runtime domains.
 EUCLIDEAN_LAYER_DOMAIN_AUDIT_MAP: dict[Layer, DomainID | None] = {
     Layer.T8_PHONIC_SIGNIFIER: DomainID.D1_DAL_ONLY,
     Layer.T9_RAW_MEANING: None,

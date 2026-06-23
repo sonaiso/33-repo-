@@ -12,7 +12,7 @@ The mapping is boundary guidance only. It does not authorize runtime domain open
 
 ## Audit-Only Layer → Domain Boundary Map
 - `T8_PHONIC_SIGNIFIER` → `D1_DAL_ONLY` (audit-only)
-- `T9_RAW_MEANING` → bridge-required (`None` in mapping, cannot emit meaning)
+- `T9_RAW_MEANING` → bridge-required (`None` in mapping, cannot emit meaning; requires a declared constitutional BridgeSpec before any domain transition, per `docs/15_PROJECT_ROADMAP.md` constitutional sequence)
 - `T10_CONVENTIONAL` → `D3_LEXICAL_MADLUL` (audit-only, not opened)
 - `T11_RELATION_AUDIT` → `D4_RELATION` (audit-only, not opened)
 - `T12_IFADAH_AUDIT` → `D5_IFADAH` (audit-only, not opened)

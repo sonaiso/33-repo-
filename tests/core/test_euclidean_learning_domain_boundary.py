@@ -26,7 +26,7 @@ from taaqqul_slot_geometry.core.euclidean_learning import (
 REPO_ROOT = Path(__file__).parent.parent.parent
 
 
-def _requirement() -> MinimalCompleteRequirement:
+def _minimal_complete_requirement() -> MinimalCompleteRequirement:
     return MinimalCompleteRequirement(
         required_fields=MinimalCompleteRequirement.CONTRACT_FIELD_NAMES,
         forbidden_overreach=frozenset(),
@@ -34,7 +34,7 @@ def _requirement() -> MinimalCompleteRequirement:
     )
 
 
-def _contract(preventer: str | None = None):
+def _euclidean_transition_contract(preventer: str | None = None):
     from taaqqul_slot_geometry.core.euclidean_learning import EuclideanTransitionContract
 
     return EuclideanTransitionContract(
@@ -50,7 +50,7 @@ def _contract(preventer: str | None = None):
         preventer=preventer,
         transition_residuals=(),
         execution_rank=ExecutionRank.LICENSED,
-        minimal_complete_requirement=_requirement(),
+        minimal_complete_requirement=_minimal_complete_requirement(),
         handoff="T11",
         evidence=(
             Evidence(
@@ -63,14 +63,17 @@ def _contract(preventer: str | None = None):
 
 
 def test_layer_domain_boundary_map_is_complete_and_audit_only() -> None:
+    expected_map = {
+        Layer.T8_PHONIC_SIGNIFIER: DomainID.D1_DAL_ONLY,
+        Layer.T9_RAW_MEANING: None,
+        Layer.T10_CONVENTIONAL: DomainID.D3_LEXICAL_MADLUL,
+        Layer.T11_RELATION_AUDIT: DomainID.D4_RELATION,
+        Layer.T12_IFADAH_AUDIT: DomainID.D5_IFADAH,
+        Layer.T13_HUKM_AUDIT: DomainID.D6_HUKM,
+    }
     assert EUCLIDEAN_LAYER_DOMAIN_MAP_IS_AUDIT_ONLY is True
     assert set(EUCLIDEAN_LAYER_DOMAIN_AUDIT_MAP.keys()) == set(Layer)
-    assert EUCLIDEAN_LAYER_DOMAIN_AUDIT_MAP[Layer.T8_PHONIC_SIGNIFIER] == DomainID.D1_DAL_ONLY
-    assert EUCLIDEAN_LAYER_DOMAIN_AUDIT_MAP[Layer.T9_RAW_MEANING] is None
-    assert EUCLIDEAN_LAYER_DOMAIN_AUDIT_MAP[Layer.T10_CONVENTIONAL] == DomainID.D3_LEXICAL_MADLUL
-    assert EUCLIDEAN_LAYER_DOMAIN_AUDIT_MAP[Layer.T11_RELATION_AUDIT] == DomainID.D4_RELATION
-    assert EUCLIDEAN_LAYER_DOMAIN_AUDIT_MAP[Layer.T12_IFADAH_AUDIT] == DomainID.D5_IFADAH
-    assert EUCLIDEAN_LAYER_DOMAIN_AUDIT_MAP[Layer.T13_HUKM_AUDIT] == DomainID.D6_HUKM
+    assert EUCLIDEAN_LAYER_DOMAIN_AUDIT_MAP == expected_map
 
 
 def test_relation_ifadah_hukm_audit_layers_do_not_open_runtime_domains() -> None:
@@ -80,7 +83,9 @@ def test_relation_ifadah_hukm_audit_layers_do_not_open_runtime_domains() -> None
         (Layer.T12_IFADAH_AUDIT, frozenset({"IfadahCandidate"})),
         (Layer.T13_HUKM_AUDIT, frozenset({"HukmAuditCandidate"})),
     ):
-        memory, decision = euclidean_learning_step(memory, "example", layer, _contract(), outputs)
+        memory, decision = euclidean_learning_step(
+            memory, "example", layer, _euclidean_transition_contract(), outputs
+        )
         assert decision.allowed is True
         assert decision.authoritative is False
         assert decision.decision_scope == EUCLIDEAN_LEARNING_DECISION_SCOPE
@@ -94,13 +99,17 @@ def test_relation_ifadah_hukm_audit_layers_do_not_open_runtime_domains() -> None
 
 
 def test_outputs_remain_non_authoritative_and_no_runtime_verdict_labels() -> None:
-    decision = evaluate_transition(_contract())
-    _, failure = learn_failure(LearningMemory(), "example", _contract(preventer="MissingRightHost"))
+    decision = evaluate_transition(_euclidean_transition_contract())
+    _, failure = learn_failure(
+        LearningMemory(),
+        "example",
+        _euclidean_transition_contract(preventer="MissingRightHost"),
+    )
     memory, _ = euclidean_learning_step(
         LearningMemory(),
         "example",
         Layer.T11_RELATION_AUDIT,
-        _contract(),
+        _euclidean_transition_contract(),
         frozenset({"RelationCandidate"}),
     )
     prediction = predict_branch(memory, "origin:entity")[0]
