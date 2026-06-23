@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "Computed Coverage Case Schema",
-  "description": "trace_ref: docs/09_COMPUTED_COVERAGE_CONSTITUTION.md",
+  "description": "trace_ref: docs/09_COMPUTED_COVERAGE_CONSTITUTION.md Coverage Computation Law",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -24,6 +24,7 @@
     },
     "input_domain": {
       "type": "string",
+      "description": "D1_DAL_ONLY and D2_LAFZI_FORM remain pre-runtime contract layers under embargo (docs/12_RUNTIME_EMBARGO_CONSTITUTION.md).",
       "enum": [
         "D1_DAL_ONLY",
         "D2_LAFZI_FORM",
@@ -143,6 +144,7 @@
       {
         "properties": {
           "closure_status": {
+            "description": "Pre-computed closure claims are forbidden in schema-only expected cases.",
             "const": "closed"
           }
         },

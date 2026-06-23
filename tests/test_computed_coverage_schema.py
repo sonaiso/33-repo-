@@ -1,4 +1,7 @@
-"""Schema-only guardrails for computed coverage cases (PR #58)."""
+"""Schema-only guardrails for computed coverage cases (PR #58).
+
+trace_ref: docs/09_COMPUTED_COVERAGE_CONSTITUTION.md Coverage Computation Law
+"""
 
 from __future__ import annotations
 
@@ -11,7 +14,7 @@ import pytest
 try:
     from jsonschema import Draft202012Validator
     from jsonschema.exceptions import ValidationError
-except ImportError:  # pragma: no cover - fallback for minimal envs.
+except ImportError:  # pragma: no cover - fallback for minimal environments
     Draft202012Validator = None
     ValidationError = ValueError
 
@@ -25,6 +28,7 @@ def _load_schema() -> dict[str, Any]:
 
 
 def _fallback_validate(schema: dict[str, Any], payload: dict[str, Any]) -> None:
+    """Fallback validator for required/enum/type/additionalProperties/not-anyOf checks."""
     if not isinstance(payload, dict):
         raise ValueError("Payload must be an object")
 
@@ -56,13 +60,15 @@ def _fallback_validate(schema: dict[str, Any], payload: dict[str, Any]) -> None:
             for item in value:
                 if item_rule.get("type") == "string" and not isinstance(item, str):
                     raise ValueError(f"{key} array items must be strings")
-                if item_rule.get("minLength", 0) and len(item) < item_rule["minLength"]:
+                if "minLength" in item_rule and len(item) < item_rule["minLength"]:
                     raise ValueError(f"{key} array items must satisfy minLength")
 
         if "enum" in rule and value not in rule["enum"]:
             raise ValueError(f"{key} must be one of enum values")
 
-    forbidden = schema["not"]["anyOf"]
+    forbidden = schema.get("not", {}).get("anyOf")
+    if not isinstance(forbidden, list):
+        raise ValueError("Schema must include not.anyOf forbiddance list")
     for entry in forbidden:
         required_fields = entry.get("required", [])
         if required_fields and all(field in payload for field in required_fields):
@@ -109,6 +115,15 @@ def test_schema_file_exists():
     assert SCHEMA_PATH.exists()
 
 
+def test_schema_is_valid_draft_2020_12():
+    """trace_ref: docs/09_COMPUTED_COVERAGE_CONSTITUTION.md Coverage Computation Law."""
+    schema = _load_schema()
+    if Draft202012Validator is not None:
+        Draft202012Validator.check_schema(schema)
+    else:
+        assert isinstance(schema, dict)
+
+
 def test_valid_minimal_expected_case_passes():
     """trace_ref: docs/09_COMPUTED_COVERAGE_CONSTITUTION.md Coverage Computation Law."""
     schema = _load_schema()
@@ -116,36 +131,49 @@ def test_valid_minimal_expected_case_passes():
 
 
 def test_computed_verdict_is_rejected():
+    """trace_ref: docs/09_COMPUTED_COVERAGE_CONSTITUTION.md Coverage Computation Law."""
     case = _minimal_valid_case() | {"computed_verdict": "manual"}
     _assert_invalid(case)
 
 
+def test_computed_verdict_capitalized_is_rejected():
+    """trace_ref: docs/09_COMPUTED_COVERAGE_CONSTITUTION.md Coverage Computation Law."""
+    case = _minimal_valid_case() | {"ComputedVerdict": "manual"}
+    _assert_invalid(case)
+
+
 def test_mrk_defaults_is_rejected():
+    """trace_ref: docs/09_COMPUTED_COVERAGE_CONSTITUTION.md Coverage Computation Law."""
     case = _minimal_valid_case() | {"mrk_defaults": {"identity_preserved": True}}
     _assert_invalid(case)
 
 
 def test_domain_proved_true_is_rejected():
+    """trace_ref: docs/09_COMPUTED_COVERAGE_CONSTITUTION.md Coverage Computation Law."""
     case = _minimal_valid_case() | {"domain_proved": True}
     _assert_invalid(case)
 
 
 def test_identity_preserved_true_is_rejected():
+    """trace_ref: docs/09_COMPUTED_COVERAGE_CONSTITUTION.md Coverage Computation Law."""
     case = _minimal_valid_case() | {"identity_preserved": True}
     _assert_invalid(case)
 
 
 def test_gate_passed_true_is_rejected():
+    """trace_ref: docs/09_COMPUTED_COVERAGE_CONSTITUTION.md Coverage Computation Law."""
     case = _minimal_valid_case() | {"gate_passed": True}
     _assert_invalid(case)
 
 
 def test_rank_certificate_is_rejected_if_rank_appears():
+    """trace_ref: docs/09_COMPUTED_COVERAGE_CONSTITUTION.md Coverage Computation Law."""
     case = _minimal_valid_case() | {"rank": "CERTIFICATE"}
     _assert_invalid(case)
 
 
 def test_expected_verdict_is_allowed():
+    """trace_ref: docs/09_COMPUTED_COVERAGE_CONSTITUTION.md Coverage Computation Law."""
     schema = _load_schema()
     for expected_verdict in [
         "EXPECTED_ACCEPTED_CANDIDATE",
@@ -159,5 +187,19 @@ def test_expected_verdict_is_allowed():
 
 
 def test_coverage_matrix_v0_1_yaml_does_not_exist():
+    """trace_ref: docs/12_RUNTIME_EMBARGO_CONSTITUTION.md Explicit Prohibitions."""
     forbidden = REPO_ROOT / "coverage_matrix_v0.1.yaml"
     assert not forbidden.exists()
+
+
+def test_fallback_validator_accepts_minimal_valid_case(monkeypatch: pytest.MonkeyPatch):
+    """trace_ref: docs/09_COMPUTED_COVERAGE_CONSTITUTION.md Coverage Computation Law."""
+    monkeypatch.setattr("tests.test_computed_coverage_schema.Draft202012Validator", None)
+    schema = _load_schema()
+    _validate_payload(schema, _minimal_valid_case())
+
+
+def test_fallback_validator_rejects_forbidden_fields(monkeypatch: pytest.MonkeyPatch):
+    """trace_ref: docs/09_COMPUTED_COVERAGE_CONSTITUTION.md Coverage Computation Law."""
+    monkeypatch.setattr("tests.test_computed_coverage_schema.Draft202012Validator", None)
+    _assert_invalid(_minimal_valid_case() | {"computed_verdict": "manual"})
