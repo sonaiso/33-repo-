@@ -25,6 +25,11 @@ FORBIDDEN_CANONICAL_RUNTIME_ARTIFACTS = (
     REPO_ROOT / "data" / "coverage_matrix_v0.1.yaml",
     REPO_ROOT / "schemas" / "coverage_matrix_v0.1.yaml",
     REPO_ROOT / "tests" / "test_binding_constraints.py",
+    REPO_ROOT / "l_protocol" / "contracts" / "binding_instructions.py",
+    REPO_ROOT / "l_protocol" / "engine" / "binding_kernel.py",
+    REPO_ROOT / "l_protocol" / "engine" / "decision_engine.py",
+    REPO_ROOT / "l_protocol" / "coverage_matrix_v0.1.yaml",
+    REPO_ROOT / "l_protocol" / "tests" / "test_binding_constraints.py",
 )
 CLASS_FIELD_LOOKAHEAD_LIMIT = 400
 
@@ -40,11 +45,11 @@ REQUIRED_DOC_PHRASES = [
         str(p.relative_to(REPO_ROOT)).replace("\\", "/")
         for p in FORBIDDEN_CANONICAL_RUNTIME_ARTIFACTS
     ),
-    # Generic artifact markers (filename only) — required in the guard doc in addition to
-    # the canonical paths above, so that the doc explicitly names the forbidden artifacts
-    # without relying solely on path-qualified references.
+    # Generic forbidden artifact names — required because the guard document
+    # names these runtime artifacts without path qualification as well.
     *(
-        p.name for p in FORBIDDEN_CANONICAL_RUNTIME_ARTIFACTS
+        p.name
+        for p in FORBIDDEN_CANONICAL_RUNTIME_ARTIFACTS
         if p.name in {"binding_kernel.py", "decision_engine.py"}
     ),
     "MRK boolean defaults",

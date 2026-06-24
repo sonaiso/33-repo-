@@ -48,6 +48,19 @@ The following files and canonical repository paths are forbidden before explicit
 - `schemas/coverage_matrix_v0.1.yaml`
 - `tests/test_binding_constraints.py`
 
+Legacy rejected `l_protocol` relocation paths:
+
+- `l_protocol/contracts/binding_instructions.py`
+- `l_protocol/engine/binding_kernel.py`
+- `l_protocol/engine/decision_engine.py`
+- `l_protocol/coverage_matrix_v0.1.yaml`
+- `l_protocol/tests/test_binding_constraints.py`
+
+These are rejected because they originate from a pre-embargo anti-pattern:
+MRK booleans, text-only gates/bridges, evidence-list-as-proof,
+identity_preserved=True, Rank.CERTIFICATE/Rank.REJECTED,
+and manual coverage_matrix_v0.1.yaml.
+
 These canonical-path prohibitions do not authorize runtime, a kernel, a decision engine, a coverage matrix,
 runtime predicates, translators, or runtime-domain opening.
 
