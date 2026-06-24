@@ -41,7 +41,7 @@ Forbidden:
 
 - `Rank.CERTIFICATE`
 - `Rank.REJECTED`
-- `ExecutionRank.CERTIFIED` as runtime authority
+- ExecutionRank.CERTIFIED as runtime authority
 
 Required:
 
