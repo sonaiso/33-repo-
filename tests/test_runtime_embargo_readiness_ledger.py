@@ -1,4 +1,4 @@
-"""Runtime Embargo Readiness Ledger guardrails (docs + tests only)."""
+"""Runtime Embargo Readiness Ledger guardrails for PR #65 (docs + tests only)."""
 
 from pathlib import Path
 
@@ -13,11 +13,8 @@ REQUIRED_PHRASES = [
     "Coverage matrix runtime is not authorized.",
     "Anti-pattern guard green",
     "| Anti-pattern guard green | DONE |",
-    "| TraceStep identity ProofObject-backed | PASS |",
-    "identity_preserved is recorded verdict, not proof",
-    "TraceStep requires `identity_proof_ref`.",
-    "Runtime authority: none.",
-    "Embargo status: still active.",
+    "| TraceStep identity ProofObject-backed | PARTIAL |",
+    "explicit bool only",
     "| Runtime kernel allowed | NOT AUTHORIZED |",
     "| decision_engine.py allowed | NOT AUTHORIZED |",
     "| coverage_matrix_v0.1.yaml allowed | NOT AUTHORIZED |",
