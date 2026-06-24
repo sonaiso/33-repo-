@@ -249,6 +249,21 @@ def test_manual_dashboard_is_rejected():
     _assert_invalid(case)
 
 
+def test_forbidden_outputs_accepts_non_empty_audit_labels():
+    """trace_ref: docs/09_COMPUTED_COVERAGE_CONSTITUTION.md Coverage Schema-Only Law."""
+    schema = _load_schema()
+    case = _minimal_valid_case() | {
+        "forbidden_outputs": ["manual_dashboard", "coverage_matrix_v0.1.yaml"]
+    }
+    _validate_payload(schema, case)
+
+
+def test_forbidden_outputs_rejects_empty_array():
+    """trace_ref: docs/09_COMPUTED_COVERAGE_CONSTITUTION.md Coverage Schema-Only Law."""
+    case = _minimal_valid_case() | {"forbidden_outputs": []}
+    _assert_invalid(case)
+
+
 def test_expected_verdict_is_allowed():
     """trace_ref: docs/09_COMPUTED_COVERAGE_CONSTITUTION.md Coverage Schema-Only Law."""
     schema = _load_schema()

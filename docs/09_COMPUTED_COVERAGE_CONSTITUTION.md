@@ -27,7 +27,7 @@ It may not accept manual `computed_verdict`, manual dashboards, MRK boolean defa
 
 Compatibility guard markers retained as schema-only prohibitions:
 - ComputedVerdict cannot be manually supplied.
-- Dashboard must be computed.
+- Dashboard must be computed. In schema-only mode, this means manual dashboards are forbidden and no dashboard computation is authorized here.
 - YAML may declare expected_verdict only.
 - MRK defaults cannot be all true.
 

@@ -162,6 +162,9 @@
         ]
       },
       {
+        "properties": {
+          "is_preserved": {}
+        },
         "required": [
           "is_preserved"
         ]
