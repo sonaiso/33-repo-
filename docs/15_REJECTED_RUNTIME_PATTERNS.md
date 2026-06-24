@@ -1,5 +1,7 @@
 # Rejected Runtime Patterns — docs/15_REJECTED_RUNTIME_PATTERNS.md
 
+Origin: `docs/12_RUNTIME_EMBARGO_CONSTITUTION.md`; `docs/00_MAQOOL_CONSTITUTION.md`
+
 ## Scope
 
 PR #63 records rejected runtime anti-patterns and guardrails while the Runtime Embargo remains active.
