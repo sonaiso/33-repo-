@@ -320,6 +320,28 @@ def test_high_domains_are_allowed_as_labels_only_without_runtime_artifacts():
     assert not (REPO_ROOT / "decision_engine.py").exists()
 
 
+@pytest.mark.parametrize(
+    ("source_domain", "target_domain"),
+    [
+        ("D1_DAL_ONLY", "D2_LAFZI_FORM"),
+        ("D2_LAFZI_FORM", "D3_LEXICAL_MADLUL"),
+        ("D3_LEXICAL_MADLUL", "D4_RELATION"),
+        ("D4_RELATION", "D5_IFADAH"),
+        ("D5_IFADAH", "D6_HUKM"),
+        ("D6_HUKM", "D7_TANZIL"),
+    ],
+)
+def test_domain_pairs_are_schema_labels_only(source_domain: str, target_domain: str):
+    """trace_ref: docs/12_RUNTIME_EMBARGO_CONSTITUTION.md Embargo Rule."""
+    schema = _load_schema()
+    case = _minimal_valid_case() | {
+        "source_domain": source_domain,
+        "target_domain": target_domain,
+    }
+    _validate_payload(schema, case)
+    assert "labels only" in schema["description"]
+
+
 def test_coverage_matrix_v0_1_yaml_does_not_exist():
     """trace_ref: docs/12_RUNTIME_EMBARGO_CONSTITUTION.md Explicit Prohibitions."""
     forbidden = REPO_ROOT / "coverage_matrix_v0.1.yaml"
