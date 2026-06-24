@@ -16,10 +16,15 @@ GUARD_DOC = REPO_ROOT / "docs" / "15_REJECTED_RUNTIME_PATTERNS.md"
 FORBIDDEN_CANONICAL_RUNTIME_ARTIFACTS = (
     REPO_ROOT / "src" / "taaqqul_slot_geometry" / "L1" / "binding_kernel.py",
     REPO_ROOT / "src" / "taaqqul_slot_geometry" / "L1" / "decision_engine.py",
+    REPO_ROOT / "src" / "taaqqul_slot_geometry" / "runtime" / "binding_kernel.py",
     REPO_ROOT / "src" / "taaqqul_slot_geometry" / "runtime" / "decision_engine.py",
+    REPO_ROOT / "src" / "taaqqul_slot_geometry" / "core" / "binding_kernel.py",
+    REPO_ROOT / "src" / "taaqqul_slot_geometry" / "core" / "decision_engine.py",
     REPO_ROOT / "coverage_matrix_v0.1.yaml",
     REPO_ROOT / "docs" / "coverage_matrix_v0.1.yaml",
     REPO_ROOT / "data" / "coverage_matrix_v0.1.yaml",
+    REPO_ROOT / "schemas" / "coverage_matrix_v0.1.yaml",
+    REPO_ROOT / "tests" / "test_binding_constraints.py",
 )
 CLASS_FIELD_LOOKAHEAD_LIMIT = 400
 
@@ -30,6 +35,11 @@ REQUIRED_DOC_PHRASES = [
     "binding_kernel.py",
     "decision_engine.py",
     "coverage_matrix_v0.1.yaml",
+    "src/taaqqul_slot_geometry/runtime/binding_kernel.py",
+    "src/taaqqul_slot_geometry/core/binding_kernel.py",
+    "src/taaqqul_slot_geometry/core/decision_engine.py",
+    "schemas/coverage_matrix_v0.1.yaml",
+    "tests/test_binding_constraints.py",
     "MRK boolean defaults",
     "domain_proved: true",
     "unit_proved: true",
