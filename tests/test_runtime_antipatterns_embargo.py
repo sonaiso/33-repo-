@@ -13,11 +13,12 @@ import pytest
 REPO_ROOT = Path(__file__).parent.parent
 GUARD_DOC = REPO_ROOT / "docs" / "15_REJECTED_RUNTIME_PATTERNS.md"
 
-FORBIDDEN_FILES = {
+FORBIDDEN_FILE_NAMES = {
     "binding_kernel.py",
     "decision_engine.py",
     "coverage_matrix_v0.1.yaml",
 }
+CLASS_FIELD_LOOKAHEAD_LIMIT = 400
 
 REQUIRED_DOC_PHRASES = [
     "Rejected Runtime Anti-Patterns",
@@ -65,8 +66,12 @@ FORBIDDEN_PATTERNS = [
     re.compile(r"\bif\s+self\.evidence\s*:\s*self\.licensed\s*=\s*true\b", re.IGNORECASE),
     re.compile(r"\bdef\s+transform\(self,\s*operation:\s*str\)\b"),
     re.compile(r"\btransform\(operation:\s*str\):\s*pass\b"),
-    re.compile(r"\bclass\s+Bridge\b[\s\S]{0,400}\btranslator\s*:\s*str\b"),
-    re.compile(r"\bclass\s+Gate\b[\s\S]{0,400}\bcondition\s*:\s*str\b"),
+    re.compile(
+        rf"\bclass\s+Bridge\b[\s\S]{{0,{CLASS_FIELD_LOOKAHEAD_LIMIT}}}\btranslator\s*:\s*str\b"
+    ),
+    re.compile(
+        rf"\bclass\s+Gate\b[\s\S]{{0,{CLASS_FIELD_LOOKAHEAD_LIMIT}}}\bcondition\s*:\s*str\b"
+    ),
     re.compile(r"\bComputedVerdict\b"),
     re.compile(r"\bcomputed_verdict\s*:"),
     re.compile(r"\bmrk_defaults\s*:"),
@@ -100,7 +105,7 @@ def scan_targets() -> list[Path]:
 def forbidden_runtime_files() -> list[Path]:
     """Return forbidden runtime file artifacts if they exist anywhere in the repo."""
     paths: list[Path] = []
-    for name in FORBIDDEN_FILES:
+    for name in FORBIDDEN_FILE_NAMES:
         paths.extend(path for path in REPO_ROOT.rglob(name) if path.is_file())
     return sorted(set(paths))
 

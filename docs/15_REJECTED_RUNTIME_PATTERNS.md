@@ -38,7 +38,7 @@ This document does not authorize kernel code, predicates, translators, computed 
 - `mrk_defaults` with all `true` fields — pre-approving proofs by defaults is forbidden.
 
 ## Enforcement Law
-A rejected pattern may appear only inside this documentation file as a quoted anti-pattern.
+A rejected pattern may appear only inside this documentation file (`docs/15_REJECTED_RUNTIME_PATTERNS.md`) as a quoted anti-pattern.
 It may not appear in `src/`, `schemas/`, or runtime-facing tests.
 Runtime-facing tests here means tests that exercise or enforce runtime-path contracts
 (for example under `tests/runtime/` and `tests/test_runtime*.py`).
