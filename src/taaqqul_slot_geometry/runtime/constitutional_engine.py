@@ -132,6 +132,10 @@ class TraceStep:
             raise ValueError(
                 f"{FailureCode.M_CX_12.value}: constitutional_ref is empty"
             )
+        if not isinstance(self.identity_preserved, bool):
+            raise ValueError(
+                f"{FailureCode.M_CX_01.value}: identity_preserved must be bool"
+            )
         if not self.trace_ref:
             raise ValueError(FailureCode.M_CX_12.value)
         if self.rank != "CANDIDATE":
