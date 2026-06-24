@@ -5,13 +5,16 @@ trace_ref: docs/18_RUNTIME_EMBARGO_LIFT_PROTOCOL.md
 
 from __future__ import annotations
 
-import importlib.util
 import json
 import re
 from pathlib import Path
 from typing import Any
 
 import pytest
+
+from tests.test_runtime_antipatterns_embargo import (
+    FORBIDDEN_RUNTIME_ARTIFACTS as EMBARGO_FORBIDDEN_RUNTIME_ARTIFACTS,
+)
 
 try:
     from jsonschema import Draft202012Validator
@@ -87,30 +90,24 @@ def _schema_forbidden_authorized_artifacts_enum() -> list[str]:
 
 
 def _embargo_test_forbidden_artifacts() -> set[str]:
-    module_path = REPO_ROOT / "tests" / "test_runtime_antipatterns_embargo.py"
-    spec = importlib.util.spec_from_file_location(
-        "test_runtime_antipatterns_embargo",
-        module_path,
-    )
-    assert spec is not None
-    assert spec.loader is not None
-    module = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(module)
-    return {
-        str(path.relative_to(REPO_ROOT)).replace("\\", "/")
-        for path in module.FORBIDDEN_CANONICAL_RUNTIME_ARTIFACTS
-    }
+    return set(EMBARGO_FORBIDDEN_RUNTIME_ARTIFACTS)
 
 
 def _forbidden_artifact_path_variants(artifact: str) -> list[str]:
     double_slash = artifact.replace("/", "//", 1) if "/" in artifact else f"safe//{artifact}"
+    all_double_slashes = artifact.replace("/", "//") if "/" in artifact else f"safe//{artifact}"
     backslash = artifact.replace("/", "\\", 1) if "/" in artifact else f"safe\\{artifact}"
+    all_backslashes = artifact.replace("/", "\\") if "/" in artifact else f"safe\\{artifact}"
+    middle_dotdot = artifact.replace("/", "/../", 1) if "/" in artifact else f"safe/../{artifact}"
     return [
         f"./{artifact}",
         f" {artifact}",
         f"{artifact} ",
         double_slash,
+        all_double_slashes,
         backslash,
+        all_backslashes,
+        middle_dotdot,
         f"safe/../{artifact}",
     ]
 

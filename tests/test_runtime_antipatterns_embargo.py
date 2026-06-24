@@ -13,6 +13,8 @@ import pytest
 REPO_ROOT = Path(__file__).parent.parent
 GUARD_DOC = REPO_ROOT / "docs" / "15_REJECTED_RUNTIME_PATTERNS.md"
 
+# Repo-relative forbidden artifact paths under the runtime embargo.
+# FORBIDDEN_CANONICAL_RUNTIME_ARTIFACTS is derived by prepending REPO_ROOT.
 FORBIDDEN_RUNTIME_ARTIFACTS = (
     "src/taaqqul_slot_geometry/L1/binding_kernel.py",
     "src/taaqqul_slot_geometry/L1/decision_engine.py",
