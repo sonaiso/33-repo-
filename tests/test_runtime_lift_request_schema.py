@@ -23,6 +23,14 @@ except ImportError:  # pragma: no cover
 REPO_ROOT = Path(__file__).parent.parent
 SCHEMA_PATH = REPO_ROOT / "schemas" / "runtime_lift_request.schema.json"
 TEMPLATE_PATH = REPO_ROOT / "docs" / "19_RUNTIME_EMBARGO_LIFT_PR_TEMPLATE.md"
+REQUIRED_NEGATIVE_TESTS = [
+    "reject-rank-certificate",
+    "reject-rank-rejected",
+    "reject-boolean-as-proof",
+    "reject-evidence-list-as-proof",
+    "reject-domain-open-without-bridge",
+    "reject-manual-computed-verdict",
+]
 
 
 def _load_schema() -> dict[str, Any]:
@@ -97,12 +105,7 @@ def _valid_request() -> dict[str, Any]:
         ],
         "rollback_plan": "Revert schema and template files; keep embargo active.",
         "negative_tests": [
-            "reject-rank-certificate",
-            "reject-rank-rejected",
-            "reject-boolean-as-proof",
-            "reject-evidence-list-as-proof",
-            "reject-domain-open-without-bridge",
-            "reject-manual-computed-verdict",
+            *REQUIRED_NEGATIVE_TESTS,
         ],
         "domain_opening": "none",
         "rank_policy": "CANDIDATE_ONLY",
@@ -165,14 +168,56 @@ def test_negative_tests_are_required():
     _assert_invalid(payload)
 
 
+def test_negative_tests_reject_empty_list():
+    payload = _valid_request()
+    payload["negative_tests"] = []
+    _assert_invalid(payload)
+
+
+@pytest.mark.parametrize("missing_test_id", REQUIRED_NEGATIVE_TESTS)
+def test_negative_tests_must_include_required_minimum_set(missing_test_id: str):
+    payload = _valid_request()
+    payload["negative_tests"] = [
+        test_id
+        for test_id in REQUIRED_NEGATIVE_TESTS
+        if test_id != missing_test_id
+    ]
+    _assert_invalid(payload)
+
+
+def test_negative_tests_reject_partial_required_subset():
+    payload = _valid_request()
+    payload["negative_tests"] = REQUIRED_NEGATIVE_TESTS[:3]
+    _assert_invalid(payload)
+
+
+def test_negative_tests_accept_exact_required_set():
+    payload = _valid_request()
+    payload["negative_tests"] = [*REQUIRED_NEGATIVE_TESTS]
+    schema = _load_schema()
+    _validate_payload(schema, payload)
+
+
 def test_authorized_artifacts_must_be_exact_paths_without_wildcards():
     _assert_invalid(_valid_request() | {"authorized_artifacts": ["*"]})
 
 
-@pytest.mark.parametrize("domain_opening", ["none", "D3_LEXICAL_MADLUL", "D4_RELATION"])
-def test_domain_opening_must_be_none_or_exact_domain(domain_opening: str):
+def test_schema_runtime_requires_domain_opening_none():
+    _assert_invalid(
+        _valid_request()
+        | {
+            "lift_type": "LIFT_TYPE_SCHEMA_RUNTIME",
+            "domain_opening": "D3_LEXICAL_MADLUL",
+        }
+    )
+
+
+def test_bridge_evaluator_allows_explicit_domain_opening():
     schema = _load_schema()
-    payload = _valid_request() | {"domain_opening": domain_opening}
+    payload = _valid_request() | {
+        "lift_type": "LIFT_TYPE_BRIDGE_EVALUATOR",
+        "domain_opening": "D4_RELATION",
+    }
     _validate_payload(schema, payload)
 
 
@@ -184,9 +229,38 @@ def test_rank_policy_cannot_allow_certificate():
     _assert_invalid(_valid_request() | {"rank_policy": "CERTIFICATE_ALLOWED"})
 
 
-def test_binding_kernel_remains_forbidden_without_explicit_lift_authorization():
+@pytest.mark.parametrize(
+    "artifact",
+    [
+        "src/taaqqul_slot_geometry/runtime/binding_kernel.py",
+        "src/taaqqul_slot_geometry/core/decision_engine.py",
+        "coverage_matrix_v0.1.yaml",
+    ],
+)
+def test_schema_runtime_rejects_forbidden_runtime_artifacts(artifact: str):
     payload = _valid_request()
-    assert "src/taaqqul_slot_geometry/runtime/binding_kernel.py" in payload["non_scope_artifacts"]
+    payload["lift_type"] = "LIFT_TYPE_SCHEMA_RUNTIME"
+    payload["authorized_artifacts"] = [artifact]
+    _assert_invalid(payload)
+
+
+@pytest.mark.parametrize(
+    "field,value",
+    [
+        ("authorized_artifacts", "/abs/path.py"),
+        ("authorized_artifacts", "../runtime/binding_kernel.py"),
+        ("authorized_artifacts", "src\\windows\\path.py"),
+        ("authorized_artifacts", "src//double/slash.py"),
+        ("non_scope_artifacts", "/abs/path.py"),
+        ("non_scope_artifacts", "../runtime/binding_kernel.py"),
+        ("non_scope_artifacts", "src\\windows\\path.py"),
+        ("non_scope_artifacts", "src//double/slash.py"),
+    ],
+)
+def test_paths_reject_non_canonical_entries(field: str, value: str):
+    payload = _valid_request()
+    payload[field] = [value]
+    _assert_invalid(payload)
 
 
 def test_binding_kernel_file_not_created():

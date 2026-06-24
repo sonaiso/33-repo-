@@ -33,7 +33,12 @@ One of:
 - `LIFT_TYPE_KERNEL`
 
 ## 2) Exact Authorized Artifacts / Files
-List exact file paths only. No globs.
+List exact repo-relative canonical file paths only.
+- No globs/wildcards (`*`, `?`, `[ ]`, `{ }`).
+- No absolute paths.
+- No `..` segments.
+- No backslashes.
+- No empty segments (`//`).
 
 ## 3) Explicit Non-Authorized Artifacts
 List runtime artifacts that remain forbidden in this PR.
@@ -55,6 +60,14 @@ Must include explicit rejection tests for:
 - evidence-list-as-proof
 - domain opening without bridge
 - manually supplied computed verdict
+
+Minimum required negative-test identifiers:
+- `reject-rank-certificate`
+- `reject-rank-rejected`
+- `reject-boolean-as-proof`
+- `reject-evidence-list-as-proof`
+- `reject-domain-open-without-bridge`
+- `reject-manual-computed-verdict`
 
 ## 8) Rollback Plan
 Required and executable rollback steps.
