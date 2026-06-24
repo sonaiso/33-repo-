@@ -25,11 +25,11 @@ No runtime-domain opening.
 The schema may declare `expected_verdict` only.
 It may not accept manual `computed_verdict`, manual dashboards, MRK boolean defaults, or authoritative runtime claims.
 
-Compatibility guard markers retained as schema-only prohibitions:
-- ComputedVerdict cannot be manually supplied.
-- Dashboard must be computed. In schema-only mode, this means manual dashboards are forbidden and no dashboard computation is authorized here.
-- YAML may declare expected_verdict only.
-- MRK defaults cannot be all true.
+Quoted legacy guard markers retained solely as schema-only prohibitions:
+- `ComputedVerdict cannot be manually supplied.` Schema-only interpretation: `computed_verdict` is forbidden.
+- `Dashboard must be computed.` Schema-only interpretation: `manual_dashboard` is forbidden, and no dashboard computation is authorized here.
+- `YAML may declare expected_verdict only.` Schema-only interpretation: future case data may declare `expected_verdict` only.
+- `MRK defaults cannot be all true.` Schema-only interpretation: `mrk_defaults` and Boolean-as-proof fields are forbidden.
 
 ## Required Separation
 

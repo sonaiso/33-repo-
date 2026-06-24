@@ -21,7 +21,6 @@ except ImportError:  # pragma: no cover - fallback for minimal environments
 
 REPO_ROOT = Path(__file__).parent.parent
 SCHEMA_PATH = REPO_ROOT / "schemas" / "coverage_case.schema.json"
-LEDGER_PATH = REPO_ROOT / "docs" / "17_RUNTIME_EMBARGO_READINESS_LEDGER.md"
 
 
 def _load_schema() -> dict[str, Any]:
@@ -376,7 +375,8 @@ def test_coverage_matrix_v0_1_yaml_does_not_exist():
 
 def test_runtime_embargo_ledger_keeps_coverage_runtime_unauthorized():
     """trace_ref: docs/12_RUNTIME_EMBARGO_CONSTITUTION.md Explicit Prohibitions."""
-    content = LEDGER_PATH.read_text(encoding="utf-8")
+    ledger_path = REPO_ROOT / "docs" / "17_RUNTIME_EMBARGO_READINESS_LEDGER.md"
+    content = ledger_path.read_text(encoding="utf-8")
     assert "| coverage_matrix_v0.1.yaml allowed | NOT AUTHORIZED |" in content
     assert "Coverage matrix runtime is not authorized." in content
 
