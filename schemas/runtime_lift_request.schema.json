@@ -4,6 +4,93 @@
   "description": "trace_ref: docs/18_RUNTIME_EMBARGO_LIFT_PROTOCOL.md Request-shape schema only; no runtime authorization.",
   "type": "object",
   "additionalProperties": false,
+  "allOf": [
+    {
+      "properties": {
+        "negative_tests": {
+          "allOf": [
+            {
+              "contains": {
+                "const": "reject-rank-certificate"
+              }
+            },
+            {
+              "contains": {
+                "const": "reject-rank-rejected"
+              }
+            },
+            {
+              "contains": {
+                "const": "reject-boolean-as-proof"
+              }
+            },
+            {
+              "contains": {
+                "const": "reject-evidence-list-as-proof"
+              }
+            },
+            {
+              "contains": {
+                "const": "reject-domain-open-without-bridge"
+              }
+            },
+            {
+              "contains": {
+                "const": "reject-manual-computed-verdict"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "lift_type": {
+            "const": "LIFT_TYPE_SCHEMA_RUNTIME"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "domain_opening": {
+            "const": "none"
+          },
+          "authorized_artifacts": {
+            "not": {
+              "contains": {
+                "enum": [
+                  "src/taaqqul_slot_geometry/runtime/binding_kernel.py",
+                  "src/taaqqul_slot_geometry/core/decision_engine.py",
+                  "coverage_matrix_v0.1.yaml"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "lift_type": {
+            "enum": [
+              "LIFT_TYPE_SCHEMA_RUNTIME",
+              "LIFT_TYPE_PROOF_EVALUATOR",
+              "LIFT_TYPE_COVERAGE_RUNNER"
+            ]
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "domain_opening": {
+            "const": "none"
+          }
+        }
+      }
+    }
+  ],
   "required": [
     "lift_type",
     "authorized_artifacts",
@@ -32,7 +119,7 @@
       "items": {
         "type": "string",
         "minLength": 1,
-        "pattern": "^(?!.*[*?\\[\\]{}]).+$"
+        "pattern": "^(?!/)(?!.*\\\\)(?!.*(?:^|/)\\.\\.(?:/|$))(?!.*//)(?!.*[*?\\[\\]{}]).+$"
       }
     },
     "non_scope_artifacts": {
@@ -42,7 +129,7 @@
       "items": {
         "type": "string",
         "minLength": 1,
-        "pattern": "^(?!.*[*?\\[\\]{}]).+$"
+        "pattern": "^(?!/)(?!.*\\\\)(?!.*(?:^|/)\\.\\.(?:/|$))(?!.*//)(?!.*[*?\\[\\]{}]).+$"
       }
     },
     "rollback_plan": {
@@ -52,6 +139,7 @@
     "negative_tests": {
       "type": "array",
       "minItems": 1,
+      "uniqueItems": true,
       "items": {
         "type": "string",
         "minLength": 1
