@@ -1,18 +1,15 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "Computed Coverage Case Schema",
-  "description": "trace_ref: docs/09_COMPUTED_COVERAGE_CONSTITUTION.md Coverage Schema-Only Law. Runtime embargo reference: docs/12_RUNTIME_EMBARGO_CONSTITUTION.md. Domain values are expected-case labels only and do not open runtime domains.",
+  "description": "trace_ref: docs/18_COMPUTED_COVERAGE_SCHEMA_CONSTITUTION.md Schema-only constitutional contract under runtime embargo.",
   "type": "object",
   "additionalProperties": false,
   "required": [
     "case_id",
     "input_text",
-    "source_domain",
-    "target_domain",
-    "source_contract",
-    "target_contract",
+    "input_domain",
     "expected_verdict",
-    "forbidden_outputs",
+    "required_contracts",
     "trace_ref"
   ],
   "properties": {
@@ -24,45 +21,13 @@
       "type": "string",
       "minLength": 1
     },
-    "source_domain": {
+    "input_domain": {
       "type": "string",
-      "description": "Source-domain label for schema-only expected cases under Runtime Embargo.",
-      "enum": [
-        "D1_DAL_ONLY",
-        "D2_LAFZI_FORM",
-        "D3_LEXICAL_MADLUL",
-        "D4_RELATION",
-        "D5_IFADAH",
-        "D6_HUKM",
-        "D7_TANZIL"
-      ]
-    },
-    "target_domain": {
-      "type": "string",
-      "description": "Target-domain label for schema-only expected cases under Runtime Embargo.",
-      "enum": [
-        "D1_DAL_ONLY",
-        "D2_LAFZI_FORM",
-        "D3_LEXICAL_MADLUL",
-        "D4_RELATION",
-        "D5_IFADAH",
-        "D6_HUKM",
-        "D7_TANZIL"
-      ]
-    },
-    "source_contract": {
-      "type": "string",
-      "description": "Constitutional document or contract reference governing the source-domain label under Runtime Embargo.",
-      "minLength": 1
-    },
-    "target_contract": {
-      "type": "string",
-      "description": "Constitutional document or contract reference governing the target-domain label under Runtime Embargo.",
       "minLength": 1
     },
     "expected_verdict": {
       "type": "string",
-      "description": "Expected verdict label only; no computed verdict is accepted before explicit runtime authorization.",
+      "description": "Expected verdict label only; computed verdict fields are forbidden under embargo.",
       "enum": [
         "EXPECTED_ACCEPTED_CANDIDATE",
         "EXPECTED_BLOCKED",
@@ -71,25 +36,18 @@
         "EXPECTED_PROOF_REQUIRED"
       ]
     },
-    "required_bridges": {
+    "required_contracts": {
       "type": "array",
       "items": {
         "type": "string",
         "minLength": 1
-      }
+      },
+      "minItems": 1
     },
-    "required_proof_kinds": {
+    "required_bridges": {
       "type": "array",
       "items": {
         "type": "string",
-        "enum": [
-          "MRKProof",
-          "IdentityProof",
-          "GateProof",
-          "BridgeProof",
-          "EvidenceProof",
-          "CoverageProof"
-        ],
         "minLength": 1
       }
     },
@@ -100,14 +58,6 @@
     "expected_residual_policy": {
       "type": "string",
       "minLength": 1
-    },
-    "forbidden_outputs": {
-      "type": "array",
-      "items": {
-        "type": "string",
-        "minLength": 1
-      },
-      "minItems": 1
     },
     "trace_ref": {
       "type": "string",
@@ -162,6 +112,11 @@
         ]
       },
       {
+        "required": [
+          "coverage_matrix_v0.1.yaml"
+        ]
+      },
+      {
         "properties": {
           "is_preserved": {}
         },
@@ -190,6 +145,26 @@
         },
         "required": [
           "authoritative"
+        ]
+      },
+      {
+        "properties": {
+          "rank": {
+            "const": "Rank.\\u0043ERTIFICATE"
+          }
+        },
+        "required": [
+          "rank"
+        ]
+      },
+      {
+        "properties": {
+          "rank": {
+            "const": "Rank.\\u0052EJECTED"
+          }
+        },
+        "required": [
+          "rank"
         ]
       }
     ]
@@ -260,35 +235,17 @@
       "if": {
         "properties": {
           "expected_verdict": {
-            "const": "EXPECTED_PROOF_REQUIRED"
+            "enum": [
+              "EXPECTED_BLOCKED",
+              "EXPECTED_PROOF_REQUIRED"
+            ]
           }
-        },
-        "required": [
-          "expected_verdict"
-        ]
+        }
       },
       "then": {
         "required": [
-          "required_proof_kinds"
-        ],
-        "properties": {
-          "required_proof_kinds": {
-            "type": "array",
-            "items": {
-              "type": "string",
-              "enum": [
-                "MRKProof",
-                "IdentityProof",
-                "GateProof",
-                "BridgeProof",
-                "EvidenceProof",
-                "CoverageProof"
-              ],
-              "minLength": 1
-            },
-            "minItems": 1
-          }
-        }
+          "expected_failure_family"
+        ]
       }
     }
   ]

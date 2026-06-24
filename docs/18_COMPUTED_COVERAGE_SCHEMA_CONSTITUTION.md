@@ -1,0 +1,71 @@
+# Computed Coverage Schema Constitution — `docs/18_COMPUTED_COVERAGE_SCHEMA_CONSTITUTION.md`
+
+## Scope
+Schema-only constitutional contract for future coverage cases under Runtime Embargo.
+
+## Non-scope
+No runtime kernel.
+No decision engine.
+No `coverage_matrix_v0.1.yaml`.
+No runtime predicates/translators.
+No runtime domain opening.
+No computed verdict execution.
+
+## Authority docs
+- `docs/00_MAQOOL_CONSTITUTION.md`
+- `docs/00A_CONSTITUTIONAL_PROGRAMMING_AMENDMENT.md`
+- `docs/12_RUNTIME_EMBARGO_CONSTITUTION.md`
+- `docs/13_FAILURE_ALIGNMENT_CONSTITUTION.md`
+- `docs/15_REJECTED_RUNTIME_PATTERNS.md`
+
+## Files changed
+- `docs/18_COMPUTED_COVERAGE_SCHEMA_CONSTITUTION.md`
+- `schemas/coverage_case.schema.json`
+- `tests/test_computed_coverage_schema.py`
+
+## Schema contract
+Allowed fields:
+- `case_id`
+- `input_text`
+- `input_domain`
+- `expected_verdict`
+- `required_contracts`
+- `required_bridges`
+- `expected_failure_family`
+- `expected_residual_policy`
+- `trace_ref`
+
+Conditional requirements:
+- `EXPECTED_BLOCKED` requires `expected_failure_family`.
+- `EXPECTED_PROOF_REQUIRED` requires `expected_failure_family`.
+- `EXPECTED_RESIDUAL` requires `expected_residual_policy`.
+- `EXPECTED_BRIDGE_REQUIRED` requires non-empty `required_bridges`.
+
+Forbidden fields/claims:
+- `computed_verdict`
+- `manual_dashboard`
+- `mrk_defaults`
+- `domain_proved`
+- `unit_proved`
+- `identity_preserved`
+- `trace_preserved`
+- `gate_passed`
+- `is_preserved`
+- `rank = CERTIFICATE`
+- `rank = REJECTED`
+- `Rank.CERTIFICATE`
+- `Rank.REJECTED`
+- `coverage_matrix_v0.1.yaml`
+
+## Tests run
+Required before finish:
+- `pytest tests/`
+- `pytest tests/test_kpi_indicators.py -v`
+- `python -m ci.constitutional_guard --source-dir src`
+
+## Constitutional invariants preserved
+- Runtime Embargo remains active.
+- Schema is declarative-only.
+- No kernel/decision authority is introduced.
+- No runtime artifact is introduced.
+- No boolean-as-proof fields are authorized.
