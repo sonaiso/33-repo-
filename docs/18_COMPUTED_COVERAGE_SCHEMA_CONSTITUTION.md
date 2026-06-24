@@ -26,9 +26,15 @@ No computed verdict execution.
 - `tests/fixtures/coverage_cases/manifest.json`
 - `tests/test_coverage_fixture_manifest.py`
 - `tests/fixtures/coverage_cases/valid_blocked_ifadah_case.json`
+- `tests/fixtures/coverage_cases/valid_accepted_candidate_lafzi_case.json`
 - `tests/fixtures/coverage_cases/valid_proof_required_hukm_case.json`
+- `tests/fixtures/coverage_cases/valid_bridge_required_dal_only_case.json`
+- `tests/fixtures/coverage_cases/valid_bridge_required_lafzi_form_case.json`
+- `tests/fixtures/coverage_cases/valid_bridge_required_lexical_madlul_case.json`
 - `tests/fixtures/coverage_cases/valid_bridge_required_tanzil_case.json`
+- `tests/fixtures/coverage_cases/valid_residual_relation_case.json`
 - `tests/fixtures/coverage_cases/invalid_accepted_ifadah_case.json`
+- `tests/fixtures/coverage_cases/invalid_boolean_proof_case.json`
 - `tests/fixtures/coverage_cases/invalid_computed_verdict_case.json`
 - `tests/fixtures/coverage_cases/invalid_mrk_defaults_case.json`
 - `tests/fixtures/coverage_cases/invalid_rank_certificate_case.json`
@@ -75,6 +81,10 @@ Forbidden fields/claims:
 - `invalid_fixtures` entries must start with `invalid_` and fail `schemas/coverage_case.schema.json`.
 - Locked domains `D5_IFADAH`, `D6_HUKM`, `D7_TANZIL` remain embargoed from `EXPECTED_ACCEPTED_CANDIDATE`.
 - Forbidden-pattern fixtures (`computed_verdict`, `mrk_defaults`, `rank=CERTIFICATE` or `Rank.CERTIFICATE`) must remain quarantined under `invalid_fixtures`.
+- Manifest coverage completeness is mandatory for all schema verdict classes (`EXPECTED_ACCEPTED_CANDIDATE`, `EXPECTED_BLOCKED`, `EXPECTED_PROOF_REQUIRED`, `EXPECTED_BRIDGE_REQUIRED`, `EXPECTED_RESIDUAL`).
+- Invalid fixtures must include explicit anti-pattern quarantine reasons for `COMPUTED_VERDICT_FORBIDDEN`, `MRK_DEFAULTS_FORBIDDEN`, `BOOLEAN_PROOF_FORBIDDEN`, and `RANK_CERTIFICATE_FORBIDDEN`.
+- Bridge-required coverage must include audit fixtures for `D1_DAL_ONLY → D2_LAFZI_FORM`, `D2_LAFZI_FORM → D3_LEXICAL_MADLUL`, and `D3_LEXICAL_MADLUL → D4_RELATION` with declared bridge requirements.
+- Residual coverage must include at least one fixture with `EXPECTED_RESIDUAL` and explicit `expected_residual_policy`.
 
 ## Tests run
 Required before finish:

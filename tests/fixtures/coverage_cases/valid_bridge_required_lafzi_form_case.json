@@ -1,0 +1,14 @@
+{
+  "case_id": "fixture-valid-bridge-required-lafzi-form-001",
+  "input_text": "lafzi form to lexical madlul requires bridge",
+  "input_domain": "D2_LAFZI_FORM",
+  "expected_verdict": "EXPECTED_BRIDGE_REQUIRED",
+  "required_contracts": [
+    "docs/11_LAFZI_FORM_CONSTITUTION.md",
+    "docs/18_COMPUTED_COVERAGE_SCHEMA_CONSTITUTION.md"
+  ],
+  "required_bridges": [
+    "D2_LAFZI_FORM_TO_D3_LEXICAL_MADLUL_BRIDGE"
+  ],
+  "trace_ref": "docs/18_COMPUTED_COVERAGE_SCHEMA_CONSTITUTION.md"
+}

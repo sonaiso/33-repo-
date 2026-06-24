@@ -1,0 +1,14 @@
+{
+  "case_id": "fixture-valid-bridge-required-lexical-madlul-001",
+  "input_text": "lexical madlul to relation requires relation bridge",
+  "input_domain": "D3_LEXICAL_MADLUL",
+  "expected_verdict": "EXPECTED_BRIDGE_REQUIRED",
+  "required_contracts": [
+    "docs/18_COMPUTED_COVERAGE_SCHEMA_CONSTITUTION.md"
+  ],
+  "required_bridges": [
+    "D3_LEXICAL_MADLUL_TO_D4_RELATION_BRIDGE",
+    "RELATION_BRIDGE"
+  ],
+  "trace_ref": "docs/18_COMPUTED_COVERAGE_SCHEMA_CONSTITUTION.md"
+}

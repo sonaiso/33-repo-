@@ -1,0 +1,13 @@
+{
+  "case_id": "fixture-invalid-boolean-proof-001",
+  "input_text": "boolean proof field remains forbidden",
+  "input_domain": "D6_HUKM",
+  "expected_verdict": "EXPECTED_PROOF_REQUIRED",
+  "required_contracts": [
+    "docs/12_RUNTIME_EMBARGO_CONSTITUTION.md",
+    "docs/18_COMPUTED_COVERAGE_SCHEMA_CONSTITUTION.md"
+  ],
+  "expected_failure_family": "FAMILY_PROOF_REQUIRED",
+  "domain_proved": true,
+  "trace_ref": "docs/18_COMPUTED_COVERAGE_SCHEMA_CONSTITUTION.md"
+}
