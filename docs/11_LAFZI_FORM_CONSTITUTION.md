@@ -58,7 +58,7 @@ LAFZI_FORM is a pure form layer. It accepts only authorized DAL_ONLY surface can
 - `NO_ADDITION` means no form-level addition is claimed; it is not lexical purity.
 - RootFormCandidate is not LexicalRoot.
 - PatternFormCandidate is not semantic weight meaning.
-- BareVerbFormCandidate is not tense/valency/isnad.
+- BareTriliteralVerbFormCandidate and BareQuadriliteralVerbFormCandidate are not tense/valency/isnad.
 - MasdarFormCandidate is not MasdarMeaning.
 - ToolFormCandidate is not ToolMeaning.
 - MabniNounFormCandidate is not reference resolution or lexical usage.

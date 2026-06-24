@@ -249,7 +249,7 @@ def test_source_and_config_files_block_rejected_runtime_anti_patterns(
     assert not violations, "\n" + "\n".join(violations)
 
 
-def test_boolean_antipattern_regexes_are_case_insensitive():
+def test_antipattern_regexes_match_case_and_multiline_variants():
     samples = [
         "domain_proved: TRUE",
         "unit_proved: TrUe",

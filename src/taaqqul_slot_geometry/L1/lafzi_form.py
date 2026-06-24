@@ -37,7 +37,7 @@ NO_ADDITION = "NO_ADDITION"
 def _validate_common(
     *,
     trace_ref: str,
-    rank: str,
+    rank: Rank,
     domain_id: DomainID,
     source_domain_id: DomainID,
     source_surface_ref: str,
