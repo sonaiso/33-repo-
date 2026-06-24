@@ -79,8 +79,9 @@ FORBIDDEN_PATTERNS = [
     re.compile(r"\bis_preserved\s*:\s*bool\s*=\s*true\b", re.IGNORECASE),
     re.compile(r"\bidentity_preserved\s*:\s*bool\s*=\s*true\b", re.IGNORECASE),
     re.compile(r"\bif\s+self\.evidence\s*:\s*self\.licensed\s*=\s*true\b", re.IGNORECASE),
-    re.compile(r"\bdef\s+transform\(self,\s*operation:\s*str\)\b"),
-    re.compile(r"\btransform\(operation:\s*str\):\s*pass\b"),
+    re.compile(
+        r"\bdef\s+transform\s*\(\s*self\s*,\s*operation\s*:\s*str\s*\)\s*:\s*pass\b"
+    ),
     re.compile(
         rf"\bclass\s+Bridge\b[\s\S]{{0,{CLASS_FIELD_LOOKAHEAD_LIMIT}}}\btranslator\s*:\s*str\b"
     ),
@@ -132,19 +133,16 @@ def scanned_text(path: Path) -> str:
     if path.suffix != ".py":
         return text
 
-    tokens: list[str] = []
+    tokens: list[tuple[int, str]] = []
     try:
         for token in tokenize.generate_tokens(io.StringIO(text).readline):
             if token.type in {tokenize.COMMENT, tokenize.STRING}:
                 continue
-            if token.type in {tokenize.NL, tokenize.NEWLINE}:
-                tokens.append("\n")
-                continue
-            tokens.append(token.string)
+            tokens.append((token.type, token.string))
     except tokenize.TokenError:
         return text
 
-    return "".join(tokens)
+    return tokenize.untokenize(tokens)
 
 
 @pytest.fixture(scope="module")
@@ -185,6 +183,19 @@ def test_forbidden_runtime_files_are_absent():
     )
 
 
+def test_forbidden_runtime_files_are_absent_from_src():
+    """trace_ref: docs/12_RUNTIME_EMBARGO_CONSTITUTION.md Explicit Prohibitions."""
+    matches = [
+        path
+        for name in FORBIDDEN_FILE_NAMES
+        for path in (REPO_ROOT / "src").rglob(name)
+        if path.is_file()
+    ]
+    assert not matches, "Forbidden src runtime artifacts exist:\n" + "\n".join(
+        str(path) for path in matches
+    )
+
+
 def test_source_and_config_files_block_rejected_runtime_anti_patterns(
     scanned_targets: list[Path],
 ):
@@ -217,6 +228,7 @@ def test_boolean_antipattern_regexes_are_case_insensitive():
         "is_preserved: bool = TRUE",
         "if self.evidence: self.licensed = TRUE",
         "ExecutionRank.CERTIFIED",
+        "def transform(self, operation: str): pass",
     ]
     for sample in samples:
         assert any(pattern.search(sample) for pattern in FORBIDDEN_PATTERNS)

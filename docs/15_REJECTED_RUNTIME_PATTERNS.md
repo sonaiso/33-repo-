@@ -71,6 +71,9 @@ Required:
 - `EvidenceProof`
 - `CoverageProof`
 
+These are structured proof objects, not Boolean flags.
+They must preserve constitutional traceability through `trace_ref`, `rank`, and `residuals`, and they remain non-runtime until explicit embargo lift.
+
 ## Rejected Evidence Pattern
 
 Forbidden:
