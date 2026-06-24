@@ -73,6 +73,11 @@ No runtime kernel, no decision engine, no runtime coverage matrix, no runtime pr
 
 ## Readiness table
 
+DONE in this ledger means the named prerequisite is complete as audit/schema/contract readiness only.
+DONE does not lift Runtime Embargo.
+DONE does not authorize `binding_kernel.py`, `decision_engine.py`, `coverage_matrix_v0.1.yaml`, runtime predicates, runtime translators, or computed verdict runtime.
+Only an explicit Runtime Embargo Lift PR may authorize runtime.
+
 | Condition | Status | Evidence | Verdict |
 | --- | --- | --- | --- |
 | D1_DAL_ONLY contracts frozen | DONE | `docs/10_DAL_ATOMIC_CONSTITUTION.md`, contracts/tests | does not lift runtime |
