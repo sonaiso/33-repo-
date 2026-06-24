@@ -2,6 +2,7 @@
 
 ## Scope
 Schema-only constitutional contract for future coverage cases under Runtime Embargo.
+Fixture-manifest quarantine for coverage corpus classification (valid vs invalid).
 
 ## Non-scope
 No runtime kernel.
@@ -22,6 +23,8 @@ No computed verdict execution.
 - `docs/18_COMPUTED_COVERAGE_SCHEMA_CONSTITUTION.md`
 - `schemas/coverage_case.schema.json`
 - `tests/test_computed_coverage_schema.py`
+- `tests/fixtures/coverage_cases/manifest.json`
+- `tests/test_coverage_fixture_manifest.py`
 - `tests/fixtures/coverage_cases/valid_blocked_ifadah_case.json`
 - `tests/fixtures/coverage_cases/valid_proof_required_hukm_case.json`
 - `tests/fixtures/coverage_cases/valid_bridge_required_tanzil_case.json`
@@ -63,6 +66,14 @@ Forbidden fields/claims:
 - `Rank.CERTIFICATE`
 - `Rank.REJECTED`
 - `coverage_matrix_v0.1.yaml`
+
+## Fixture manifest quarantine contract
+- Manifest path: `tests/fixtures/coverage_cases/manifest.json`.
+- Every coverage fixture in `tests/fixtures/coverage_cases/*.json` (except `manifest.json`) must be listed exactly once.
+- `valid_fixtures` entries must start with `valid_` and pass `schemas/coverage_case.schema.json`.
+- `invalid_fixtures` entries must start with `invalid_` and fail `schemas/coverage_case.schema.json`.
+- Locked domains `D5_IFADAH`, `D6_HUKM`, `D7_TANZIL` remain embargoed from `EXPECTED_ACCEPTED_CANDIDATE`.
+- Forbidden-pattern fixtures (`computed_verdict`, `mrk_defaults`, `rank=CERTIFICATE` or `Rank.CERTIFICATE`) must remain quarantined under `invalid_fixtures`.
 
 ## Tests run
 Required before finish:

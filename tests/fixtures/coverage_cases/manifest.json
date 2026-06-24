@@ -1,0 +1,42 @@
+{
+  "fixture_policy": "SCHEMA_ONLY_AUDIT_FIXTURES",
+  "runtime_status": "EMBARGOED",
+  "valid_fixtures": [
+    {
+      "file": "valid_blocked_ifadah_case.json",
+      "input_domain": "D5_IFADAH",
+      "expected_verdict": "EXPECTED_BLOCKED",
+      "expected_failure_family": "FAMILY_EMBARGO_BLOCKED"
+    },
+    {
+      "file": "valid_proof_required_hukm_case.json",
+      "input_domain": "D6_HUKM",
+      "expected_verdict": "EXPECTED_PROOF_REQUIRED",
+      "expected_failure_family": "FAMILY_PROOF_REQUIRED"
+    },
+    {
+      "file": "valid_bridge_required_tanzil_case.json",
+      "input_domain": "D7_TANZIL",
+      "expected_verdict": "EXPECTED_BRIDGE_REQUIRED"
+    }
+  ],
+  "invalid_fixtures": [
+    {
+      "file": "invalid_accepted_ifadah_case.json",
+      "must_fail_reason": "LOCKED_DOMAIN_ACCEPTED_FORBIDDEN"
+    },
+    {
+      "file": "invalid_computed_verdict_case.json",
+      "must_fail_reason": "COMPUTED_VERDICT_FORBIDDEN"
+    },
+    {
+      "file": "invalid_mrk_defaults_case.json",
+      "must_fail_reason": "MRK_DEFAULTS_FORBIDDEN"
+    },
+    {
+      "file": "invalid_rank_certificate_case.json",
+      "must_fail_reason": "RANK_CERTIFICATE_FORBIDDEN"
+    }
+  ],
+  "trace_ref": "docs/18_COMPUTED_COVERAGE_SCHEMA_CONSTITUTION.md"
+}
