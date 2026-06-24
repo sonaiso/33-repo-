@@ -32,14 +32,14 @@ REQUIRED_DOC_PHRASES = [
     "Rejected Runtime Anti-Patterns",
     "This document records rejected patterns only.",
     "It is audit-only.",
-    "binding_kernel.py",
-    "decision_engine.py",
-    "coverage_matrix_v0.1.yaml",
-    "src/taaqqul_slot_geometry/runtime/binding_kernel.py",
-    "src/taaqqul_slot_geometry/core/binding_kernel.py",
-    "src/taaqqul_slot_geometry/core/decision_engine.py",
-    "schemas/coverage_matrix_v0.1.yaml",
-    "tests/test_binding_constraints.py",
+    # Canonical forbidden artifact paths — derived from FORBIDDEN_CANONICAL_RUNTIME_ARTIFACTS
+    # so that this check stays in sync with the enforced canonical path list.
+    # All paths in FORBIDDEN_CANONICAL_RUNTIME_ARTIFACTS are constructed as
+    # REPO_ROOT / <subpath>, so .relative_to(REPO_ROOT) is always valid here.
+    *(
+        str(p.relative_to(REPO_ROOT)).replace("\\", "/")
+        for p in FORBIDDEN_CANONICAL_RUNTIME_ARTIFACTS
+    ),
     "MRK boolean defaults",
     "domain_proved: true",
     "unit_proved: true",
