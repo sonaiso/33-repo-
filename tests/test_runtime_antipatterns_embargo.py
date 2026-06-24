@@ -40,6 +40,13 @@ REQUIRED_DOC_PHRASES = [
         str(p.relative_to(REPO_ROOT)).replace("\\", "/")
         for p in FORBIDDEN_CANONICAL_RUNTIME_ARTIFACTS
     ),
+    # Generic artifact markers (filename only) — required in the guard doc in addition to
+    # the canonical paths above, so that the doc explicitly names the forbidden artifacts
+    # without relying solely on path-qualified references.
+    *(
+        {p.name for p in FORBIDDEN_CANONICAL_RUNTIME_ARTIFACTS
+         if p.name in {"binding_kernel.py", "decision_engine.py"}}
+    ),
     "MRK boolean defaults",
     "domain_proved: true",
     "unit_proved: true",
