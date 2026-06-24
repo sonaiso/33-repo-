@@ -44,8 +44,8 @@ REQUIRED_DOC_PHRASES = [
     # the canonical paths above, so that the doc explicitly names the forbidden artifacts
     # without relying solely on path-qualified references.
     *(
-        {p.name for p in FORBIDDEN_CANONICAL_RUNTIME_ARTIFACTS
-         if p.name in {"binding_kernel.py", "decision_engine.py"}}
+        p.name for p in FORBIDDEN_CANONICAL_RUNTIME_ARTIFACTS
+        if p.name in {"binding_kernel.py", "decision_engine.py"}
     ),
     "MRK boolean defaults",
     "domain_proved: true",
