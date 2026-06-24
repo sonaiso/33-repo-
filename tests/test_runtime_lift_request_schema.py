@@ -38,6 +38,13 @@ LIFT_TYPES = [
     "LIFT_TYPE_COVERAGE_RUNNER",
     "LIFT_TYPE_KERNEL",
 ]
+NON_NONE_DOMAIN_OPENINGS = [
+    "D3_LEXICAL_MADLUL",
+    "D4_RELATION",
+    "D5_IFADAH",
+    "D6_HUKM",
+    "D7_TANZIL",
+]
 FORBIDDEN_RUNTIME_ARTIFACTS = [
     "src/taaqqul_slot_geometry/L1/binding_kernel.py",
     "src/taaqqul_slot_geometry/L1/decision_engine.py",
@@ -289,6 +296,18 @@ def test_kernel_lift_cannot_open_domain():
     )
 
 
+@pytest.mark.parametrize("lift_type", LIFT_TYPES)
+@pytest.mark.parametrize("domain_opening", NON_NONE_DOMAIN_OPENINGS)
+def test_all_lift_types_require_domain_opening_none(
+    lift_type: str,
+    domain_opening: str,
+):
+    payload = _valid_request()
+    payload["lift_type"] = lift_type
+    payload["domain_opening"] = domain_opening
+    _assert_invalid(payload)
+
+
 def test_domain_opening_rejects_implicit_value():
     _assert_invalid(_valid_request() | {"domain_opening": "implicit_domain"})
 
@@ -311,7 +330,6 @@ def test_all_lift_types_reject_forbidden_authorized_artifacts(
 ):
     payload = _valid_request()
     payload["lift_type"] = lift_type
-    payload["domain_opening"] = "none"
     payload["authorized_artifacts"] = [artifact]
     _assert_invalid(payload)
 
