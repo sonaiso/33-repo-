@@ -137,12 +137,12 @@ def scanned_text(path: Path) -> str:
     if path.suffix != ".py":
         return text
 
-    tokens: list[tokenize.TokenInfo] = []
+    tokens: list[tuple[int, str]] = []
     try:
         for token in tokenize.generate_tokens(io.StringIO(text).readline):
             if token.type in {tokenize.COMMENT, tokenize.STRING}:
                 continue
-            tokens.append(token)
+            tokens.append((token.type, token.string))
     except tokenize.TokenError:
         return text
 
