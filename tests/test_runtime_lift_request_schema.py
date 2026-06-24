@@ -94,20 +94,30 @@ def _embargo_test_forbidden_artifacts() -> set[str]:
 
 
 def _forbidden_artifact_path_variants(artifact: str) -> list[str]:
-    double_slash = artifact.replace("/", "//", 1) if "/" in artifact else f"safe//{artifact}"
-    all_double_slashes = artifact.replace("/", "//") if "/" in artifact else f"safe//{artifact}"
-    backslash = artifact.replace("/", "\\", 1) if "/" in artifact else f"safe\\{artifact}"
-    all_backslashes = artifact.replace("/", "\\") if "/" in artifact else f"safe\\{artifact}"
-    middle_dotdot = artifact.replace("/", "/../", 1) if "/" in artifact else f"safe/../{artifact}"
+    single_double_slash_variant = (
+        artifact.replace("/", "//", 1) if "/" in artifact else f"safe//{artifact}"
+    )
+    all_double_slash_variant = (
+        artifact.replace("/", "//") if "/" in artifact else f"safe//{artifact}"
+    )
+    single_backslash_variant = (
+        artifact.replace("/", "\\", 1) if "/" in artifact else f"safe\\{artifact}"
+    )
+    all_backslash_variant = (
+        artifact.replace("/", "\\") if "/" in artifact else f"safe\\{artifact}"
+    )
+    single_dotdot_variant = (
+        artifact.replace("/", "/../", 1) if "/" in artifact else f"safe/../{artifact}"
+    )
     return [
         f"./{artifact}",
         f" {artifact}",
         f"{artifact} ",
-        double_slash,
-        all_double_slashes,
-        backslash,
-        all_backslashes,
-        middle_dotdot,
+        single_double_slash_variant,
+        all_double_slash_variant,
+        single_backslash_variant,
+        all_backslash_variant,
+        single_dotdot_variant,
         f"safe/../{artifact}",
     ]
 

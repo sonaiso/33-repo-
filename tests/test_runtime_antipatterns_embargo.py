@@ -27,9 +27,9 @@ FORBIDDEN_RUNTIME_ARTIFACTS = (
     "data/coverage_matrix_v0.1.yaml",
     "schemas/coverage_matrix_v0.1.yaml",
     "tests/test_binding_constraints.py",
+    "l_protocol/contracts/binding_instructions.py",
     "l_protocol/engine/binding_kernel.py",
     "l_protocol/engine/decision_engine.py",
-    "l_protocol/contracts/binding_instructions.py",
     "l_protocol/coverage_matrix_v0.1.yaml",
     "l_protocol/tests/test_binding_constraints.py",
 )
