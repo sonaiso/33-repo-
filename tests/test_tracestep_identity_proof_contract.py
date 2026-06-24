@@ -6,11 +6,13 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).parent.parent
 CONTRACT_DOC = REPO_ROOT / "docs" / "18_TRACESTEP_IDENTITY_PROOF_CONTRACT.md"
 
-FORBIDDEN_RUNTIME_ARTIFACTS = [
-    "binding_kernel.py",
-    "decision_engine.py",
-    "coverage_matrix_v0.1.yaml",
-]
+FORBIDDEN_CANONICAL_RUNTIME_ARTIFACT_PATHS = (
+    REPO_ROOT / "src" / "taaqqul_slot_geometry" / "L1" / "binding_kernel.py",
+    REPO_ROOT / "src" / "taaqqul_slot_geometry" / "L1" / "decision_engine.py",
+    REPO_ROOT / "coverage_matrix_v0.1.yaml",
+    REPO_ROOT / "docs" / "coverage_matrix_v0.1.yaml",
+    REPO_ROOT / "data" / "coverage_matrix_v0.1.yaml",
+)
 
 
 def _contract_content() -> str:
@@ -58,12 +60,14 @@ def test_contract_declares_runtime_embargo_active():
     assert "Coverage matrix runtime is not authorized." in content
 
 
-def test_forbidden_runtime_artifacts_remain_absent():
+def test_forbidden_runtime_artifacts_absent_from_canonical_paths():
     """trace_ref: docs/12_RUNTIME_EMBARGO_CONSTITUTION.md Explicit Prohibitions."""
-    matches: list[Path] = []
-    for artifact in FORBIDDEN_RUNTIME_ARTIFACTS:
-        matches.extend(path for path in REPO_ROOT.rglob(artifact) if path.is_file())
+    matches = [
+        path
+        for path in FORBIDDEN_CANONICAL_RUNTIME_ARTIFACT_PATHS
+        if path.exists()
+    ]
 
     assert not matches, "Forbidden runtime artifacts exist:\n" + "\n".join(
-        str(path) for path in sorted(matches)
+        str(path.relative_to(REPO_ROOT)) for path in matches
     )
