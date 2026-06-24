@@ -55,12 +55,12 @@ No runtime kernel, no decision engine, no runtime coverage matrix, no runtime pr
 - Legacy `l_protocol` relocation blocked.
 - Euclidean Learning contained as `AUDIT_SANDBOX_ONLY`.
 - Euclidean Layer to Domain map audit-only.
+- Computed Coverage schema readiness.
 
 ### PARTIAL
 
 - TraceStep identity ProofObject-backed.
 - ProofObject references stable failure policies.
-- Computed Coverage schema readiness.
 
 ### BLOCKED
 
@@ -82,7 +82,7 @@ No runtime kernel, no decision engine, no runtime coverage matrix, no runtime pr
 | FailureAlignment audit-clean | DONE | `docs/13_FAILURE_ALIGNMENT_CONSTITUTION.md`, tests | audit-only |
 | FailureAlignment canonical families | DONE | `data/failure_alignment.csv`, tests | audit-only |
 | ProofObject failure-policy alignment | DONE | `docs/16_PROOF_FAILURE_POLICY_ALIGNMENT.md`, tests | audit-only |
-| Coverage schema readiness | PARTIAL | `schemas/coverage_case.schema.json`, coverage schema tests | schema-only |
+| Coverage schema readiness | DONE | `schemas/coverage_case.schema.json`, coverage schema tests + fixture manifest quarantine tests | schema-only |
 | Anti-pattern guard green | DONE | `tests/test_runtime_antipatterns_embargo.py`, PR #63/#64 remediation | no runtime |
 | Rejected Runtime Patterns guard | DONE | `docs/15_REJECTED_RUNTIME_PATTERNS.md`, tests | no runtime |
 | Canonical runtime artifact blocking | DONE | `tests/test_runtime_antipatterns_embargo.py`, PR #71/#72/#73 chain | no runtime |

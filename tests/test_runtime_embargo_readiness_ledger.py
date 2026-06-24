@@ -38,6 +38,7 @@ REQUIRED_PHRASES = [
     "Kernel/decision authority.",
     "Anti-pattern guard green",
     "| Anti-pattern guard green | DONE |",
+    "| Coverage schema readiness | DONE |",
     "| Rejected Runtime Patterns guard | DONE |",
     "| Canonical runtime artifact blocking | DONE |",
     "| Legacy l_protocol relocation blocked | DONE |",
