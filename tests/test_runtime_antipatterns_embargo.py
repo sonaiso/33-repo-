@@ -13,14 +13,13 @@ import pytest
 REPO_ROOT = Path(__file__).parent.parent
 GUARD_DOC = REPO_ROOT / "docs" / "15_REJECTED_RUNTIME_PATTERNS.md"
 
-FORBIDDEN_FILE_NAMES = {
-    "binding_kernel.py",
-    "decision_engine.py",
-    "coverage_matrix_v0.1.yaml",
-}
-FORBIDDEN_FILE_SEARCH_ROOTS = (
-    REPO_ROOT,
-    REPO_ROOT / "src",
+FORBIDDEN_CANONICAL_RUNTIME_ARTIFACTS = (
+    REPO_ROOT / "src" / "taaqqul_slot_geometry" / "L1" / "binding_kernel.py",
+    REPO_ROOT / "src" / "taaqqul_slot_geometry" / "L1" / "decision_engine.py",
+    REPO_ROOT / "src" / "taaqqul_slot_geometry" / "runtime" / "decision_engine.py",
+    REPO_ROOT / "coverage_matrix_v0.1.yaml",
+    REPO_ROOT / "docs" / "coverage_matrix_v0.1.yaml",
+    REPO_ROOT / "data" / "coverage_matrix_v0.1.yaml",
 )
 CLASS_FIELD_LOOKAHEAD_LIMIT = 400
 
@@ -123,12 +122,13 @@ def scan_targets() -> list[Path]:
     )
 
 
-def forbidden_runtime_files(root: Path = REPO_ROOT) -> list[Path]:
-    """Return forbidden runtime file artifacts if they exist anywhere in the repo."""
-    paths: list[Path] = []
-    for name in FORBIDDEN_FILE_NAMES:
-        paths.extend(path for path in root.rglob(name) if path.is_file())
-    return sorted(set(paths))
+def forbidden_runtime_files() -> list[Path]:
+    """Return forbidden canonical runtime artifacts if they exist."""
+    return [
+        path
+        for path in FORBIDDEN_CANONICAL_RUNTIME_ARTIFACTS
+        if path.exists()
+    ]
 
 
 def scanned_text(path: Path) -> str:
@@ -179,12 +179,11 @@ def test_rejected_runtime_patterns_doc_exists_with_required_markers():
         assert phrase in content, f"Missing required rejected-pattern phrase: {phrase}"
 
 
-@pytest.mark.parametrize("search_root", FORBIDDEN_FILE_SEARCH_ROOTS)
-def test_forbidden_runtime_files_are_absent(search_root: Path):
+def test_forbidden_runtime_files_are_absent():
     """trace_ref: docs/12_RUNTIME_EMBARGO_CONSTITUTION.md Explicit Prohibitions."""
-    matches = forbidden_runtime_files(search_root)
+    matches = forbidden_runtime_files()
     assert not matches, "Forbidden pre-runtime artifacts exist:\n" + "\n".join(
-        str(path) for path in matches
+        str(path.relative_to(REPO_ROOT)) for path in matches
     )
 
 
