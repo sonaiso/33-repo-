@@ -53,6 +53,12 @@ def _validate_rule(key: str, value: Any, rule: dict[str, Any]) -> None:
 
 
 def _fallback_validate(schema: dict[str, Any], payload: dict[str, Any]) -> None:
+    """Validate payloads when jsonschema is unavailable.
+
+    Supports required fields, type/minLength/minItems, enum/const checks,
+    additionalProperties blocking, forbidden `not.anyOf` rules, and `allOf`
+    conditional requirements used by this schema.
+    """
     if not isinstance(payload, dict):
         raise ValueError("Payload must be an object")
 
