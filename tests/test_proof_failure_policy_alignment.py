@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from pathlib import Path
+import re
 
 import pytest
 
@@ -12,7 +13,7 @@ ALIGNMENT_DOC = REPO_ROOT / "docs" / "16_PROOF_FAILURE_POLICY_ALIGNMENT.md"
 EMBARGO_DOC = REPO_ROOT / "docs" / "12_RUNTIME_EMBARGO_CONSTITUTION.md"
 
 REQUIRED_PROOF_KINDS = {
-    "MRKProof": "PROOF/MRK",
+    "MRKProof": "PROOF_MRK",
     "DomainProof": "DOMAIN",
     "IdentityProof": "IDENTITY",
     "GateProof": "GATE",
@@ -26,6 +27,9 @@ FORBIDDEN_TOKENS = (
     "Rank.CERTIFICATE",
     "Rank.REJECTED",
 )
+
+
+SAFE_CANONICAL_FAMILY_PATTERN = re.compile(r"^[A-Z][A-Z0-9_]*$")
 
 REQUIRED_COLUMNS = (
     "proof_kind",
@@ -144,6 +148,15 @@ def test_required_family_mappings(row_by_kind: dict[str, dict[str, str]]):
     """trace_ref: docs/13_FAILURE_ALIGNMENT_CONSTITUTION.md Canonical Family Set."""
     for proof_kind, expected_family in REQUIRED_PROOF_KINDS.items():
         assert row_by_kind[proof_kind]["canonical_family"] == expected_family
+
+
+def test_canonical_family_values_are_schema_safe(rows: list[dict[str, str]]):
+    """trace_ref: docs/13_FAILURE_ALIGNMENT_CONSTITUTION.md Canonical Family Set."""
+    for row in rows:
+        family = row["canonical_family"]
+        assert SAFE_CANONICAL_FAMILY_PATTERN.fullmatch(family), (
+            f"canonical_family must be schema-safe, got: {family}"
+        )
 
 
 def test_runtime_embargo_doc_still_declares_embargo_active():

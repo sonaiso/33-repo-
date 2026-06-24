@@ -43,7 +43,7 @@ No proof policy may replace FailureCode.
 
 | proof_kind | missing_policy | broken_policy | canonical_family | proof_obligation | runtime_status | is_executable | preserves_failure_code | rank_ceiling |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| MRKProof | MRK_PROOF_MISSING | MRK_PROOF_INCOMPLETE | PROOF/MRK | PROOF_MRK_REQUIRED | AUDIT_ONLY | false | true | CANDIDATE |
+| MRKProof | MRK_PROOF_MISSING | MRK_PROOF_INCOMPLETE | PROOF_MRK | PROOF_MRK_REQUIRED | AUDIT_ONLY | false | true | CANDIDATE |
 | DomainProof | DOMAIN_PROOF_MISSING | DOMAIN_ORIGIN_UNPROVED | DOMAIN | PROOF_DOMAIN_REQUIRED | AUDIT_ONLY | false | true | CANDIDATE |
 | IdentityProof | IDENTITY_PROOF_MISSING | IDENTITY_BROKEN | IDENTITY | PROOF_IDENTITY_REQUIRED | AUDIT_ONLY | false | true | CANDIDATE |
 | GateProof | GATE_PROOF_MISSING | GATE_FAILED | GATE | PROOF_GATE_REQUIRED | AUDIT_ONLY | false | true | CANDIDATE |
