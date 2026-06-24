@@ -1,0 +1,80 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Runtime Embargo Lift Request Schema",
+  "description": "trace_ref: docs/18_RUNTIME_EMBARGO_LIFT_PROTOCOL.md Request-shape schema only; no runtime authorization.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "lift_type",
+    "authorized_artifacts",
+    "non_scope_artifacts",
+    "rollback_plan",
+    "negative_tests",
+    "domain_opening",
+    "rank_policy",
+    "blanket_lift"
+  ],
+  "properties": {
+    "lift_type": {
+      "type": "string",
+      "enum": [
+        "LIFT_TYPE_SCHEMA_RUNTIME",
+        "LIFT_TYPE_PROOF_EVALUATOR",
+        "LIFT_TYPE_BRIDGE_EVALUATOR",
+        "LIFT_TYPE_COVERAGE_RUNNER",
+        "LIFT_TYPE_KERNEL"
+      ]
+    },
+    "authorized_artifacts": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "pattern": "^(?!.*[\\*\\?\\[\\]\\{\\}]).+$"
+      }
+    },
+    "non_scope_artifacts": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "pattern": "^(?!.*[\\*\\?\\[\\]\\{\\}]).+$"
+      }
+    },
+    "rollback_plan": {
+      "type": "string",
+      "minLength": 1
+    },
+    "negative_tests": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "domain_opening": {
+      "type": "string",
+      "enum": [
+        "none",
+        "D3_LEXICAL_MADLUL",
+        "D4_RELATION",
+        "D5_IFADAH",
+        "D6_HUKM",
+        "D7_TANZIL"
+      ]
+    },
+    "rank_policy": {
+      "type": "string",
+      "const": "CANDIDATE_ONLY"
+    },
+    "blanket_lift": {
+      "type": "boolean",
+      "const": false
+    }
+  }
+}
