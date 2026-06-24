@@ -184,6 +184,34 @@
     {
       "if": {
         "properties": {
+          "input_domain": {
+            "enum": [
+              "D5_IFADAH",
+              "D6_HUKM",
+              "D7_TANZIL"
+            ]
+          }
+        },
+        "required": [
+          "input_domain"
+        ]
+      },
+      "then": {
+        "properties": {
+          "expected_verdict": {
+            "enum": [
+              "EXPECTED_BLOCKED",
+              "EXPECTED_RESIDUAL",
+              "EXPECTED_BRIDGE_REQUIRED",
+              "EXPECTED_PROOF_REQUIRED"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
           "expected_verdict": {
             "const": "EXPECTED_BLOCKED"
           }

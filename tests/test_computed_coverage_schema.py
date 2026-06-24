@@ -173,9 +173,6 @@ def test_schema_accepts_valid_expected_accepted_case():
         "D2_LAFZI_FORM",
         "D3_LEXICAL_MADLUL",
         "D4_RELATION",
-        "D5_IFADAH",
-        "D6_HUKM",
-        "D7_TANZIL",
     ],
 )
 def test_schema_accepts_canonical_input_domains(domain: str):
@@ -184,8 +181,40 @@ def test_schema_accepts_canonical_input_domains(domain: str):
     _validate_payload(schema, payload)
 
 
+@pytest.mark.parametrize(
+    ("domain", "expected_verdict", "extra"),
+    [
+        ("D5_IFADAH", "EXPECTED_RESIDUAL", {"expected_residual_policy": "KEEP_RESIDUALS"}),
+        ("D6_HUKM", "EXPECTED_PROOF_REQUIRED", {"expected_failure_family": "FAMILY_PROOF_REQUIRED"}),
+        ("D7_TANZIL", "EXPECTED_BRIDGE_REQUIRED", {"required_bridges": ["L2_TO_L3_BRIDGE"]}),
+    ],
+)
+def test_schema_accepts_locked_domains_with_embargo_safe_expected_verdicts(
+    domain: str,
+    expected_verdict: str,
+    extra: dict[str, Any],
+):
+    schema = _load_schema()
+    payload = _minimal_valid_case() | {
+        "input_domain": domain,
+        "expected_verdict": expected_verdict,
+    } | extra
+    _validate_payload(schema, payload)
+
+
 def test_schema_rejects_unknown_input_domain():
     _assert_invalid(_minimal_valid_case() | {"input_domain": "RELATION_RUNTIME"})
+
+
+@pytest.mark.parametrize("domain", ["D5_IFADAH", "D6_HUKM", "D7_TANZIL"])
+def test_schema_rejects_expected_accepted_candidate_for_locked_domains(domain: str):
+    _assert_invalid(
+        _minimal_valid_case()
+        | {
+            "input_domain": domain,
+            "expected_verdict": "EXPECTED_ACCEPTED_CANDIDATE",
+        }
+    )
 
 
 def test_schema_accepts_valid_expected_blocked_only_with_failure_family():
