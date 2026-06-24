@@ -31,6 +31,13 @@ REQUIRED_NEGATIVE_TESTS = [
     "reject-domain-open-without-bridge",
     "reject-manual-computed-verdict",
 ]
+LIFT_TYPES = [
+    "LIFT_TYPE_SCHEMA_RUNTIME",
+    "LIFT_TYPE_PROOF_EVALUATOR",
+    "LIFT_TYPE_BRIDGE_EVALUATOR",
+    "LIFT_TYPE_COVERAGE_RUNNER",
+    "LIFT_TYPE_KERNEL",
+]
 FORBIDDEN_RUNTIME_ARTIFACTS = [
     "src/taaqqul_slot_geometry/L1/binding_kernel.py",
     "src/taaqqul_slot_geometry/L1/decision_engine.py",
@@ -291,12 +298,20 @@ def test_rank_policy_cannot_allow_certificate():
 
 
 @pytest.mark.parametrize(
+    "lift_type",
+    LIFT_TYPES,
+)
+@pytest.mark.parametrize(
     "artifact",
     FORBIDDEN_RUNTIME_ARTIFACTS,
 )
-def test_schema_runtime_rejects_all_rejected_runtime_artifact_paths(artifact: str):
+def test_all_lift_types_reject_forbidden_authorized_artifacts(
+    lift_type: str,
+    artifact: str,
+):
     payload = _valid_request()
-    payload["lift_type"] = "LIFT_TYPE_SCHEMA_RUNTIME"
+    payload["lift_type"] = lift_type
+    payload["domain_opening"] = "none"
     payload["authorized_artifacts"] = [artifact]
     _assert_invalid(payload)
 

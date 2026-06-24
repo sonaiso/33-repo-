@@ -39,6 +39,7 @@ List exact repo-relative canonical file paths only.
 - No `..` segments.
 - No backslashes.
 - No empty segments (`//`).
+- Forbidden runtime paths may not appear in `authorized_artifacts` for any current lift type, including proof evaluator, bridge evaluator, coverage runner, and kernel lift requests.
 
 ## 3) Explicit Non-Authorized Artifacts
 List runtime artifacts that remain forbidden in this PR.
