@@ -154,10 +154,9 @@ def test_lafzi_entities_accept_rank_enum_as_string_subtype(entity_cls, payload_f
 
 @pytest.mark.parametrize("entity_cls,payload_factory", ALL_ENTITIES)
 def test_lafzi_entities_reject_rank_promotion(entity_cls, payload_factory):
-    with pytest.raises(ValueError, match=FailureCode.M_01_16.value):
-        entity_cls(**payload_factory(), rank="CERTIFIED")  # type: ignore[arg-type]
-    with pytest.raises(ValueError, match=FailureCode.M_01_16.value):
-        entity_cls(**payload_factory(), rank="Rank.CANDIDATE")  # type: ignore[arg-type]
+    for invalid_rank in ("CERTIFIED", "Rank.CANDIDATE", "Rank.CERTIFIED", "Rank.REJECTED"):
+        with pytest.raises(ValueError, match=FailureCode.M_01_16.value):
+            entity_cls(**payload_factory(), rank=invalid_rank)  # type: ignore[arg-type]
 
 
 @pytest.mark.parametrize("entity_cls,payload_factory", ALL_ENTITIES)
