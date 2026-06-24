@@ -114,7 +114,7 @@ class TraceStep:
     constitutional_ref: str
     input_type: str
     output_type: str
-    identity_preserved: bool = True
+    identity_preserved: bool
     trace_ref: str = "docs/00_MAQOOL_CONSTITUTION.md §5 Rule 7"
     rank: str = "CANDIDATE"
     residuals: FrozenSet[str] = field(default_factory=frozenset)
@@ -131,6 +131,10 @@ class TraceStep:
         if not self.constitutional_ref:
             raise ValueError(
                 f"{FailureCode.M_CX_12.value}: constitutional_ref is empty"
+            )
+        if not isinstance(self.identity_preserved, bool):
+            raise ValueError(
+                f"{FailureCode.M_CX_01.value}: identity_preserved must be bool"
             )
         if not self.trace_ref:
             raise ValueError(FailureCode.M_CX_12.value)
@@ -392,6 +396,7 @@ class ConstitutionalEngine:
             constitutional_ref="docs/00_MAQOOL_CONSTITUTION.md §3 (MCE-1)",
             input_type="str",
             output_type="PhonemeUnit",
+            identity_preserved=True,
         ))
 
         # Step 2: Syllable
@@ -402,6 +407,7 @@ class ConstitutionalEngine:
             constitutional_ref="docs/00_MAQOOL_CONSTITUTION.md §4 (MCE-2)",
             input_type="PhonemeUnit",
             output_type="Syllable",
+            identity_preserved=True,
         ))
 
         # Step 3: Utterance
@@ -412,6 +418,7 @@ class ConstitutionalEngine:
             constitutional_ref="docs/00_MAQOOL_CONSTITUTION.md §2 Category 2",
             input_type="Syllable",
             output_type="Utterance",
+            identity_preserved=True,
         ))
 
         # Step 4: Signifier
@@ -422,6 +429,7 @@ class ConstitutionalEngine:
             constitutional_ref="docs/00_MAQOOL_CONSTITUTION.md §8 P1",
             input_type="Utterance",
             output_type="Signifier",
+            identity_preserved=True,
         ))
 
         # Step 5: JamidUnit
@@ -432,6 +440,7 @@ class ConstitutionalEngine:
             constitutional_ref="docs/01_L0_PHONETIC_BOUNDARY.md BL-L0-05",
             input_type="Signifier",
             output_type="JamidUnit",
+            identity_preserved=True,
         ))
 
         return jamid, trace

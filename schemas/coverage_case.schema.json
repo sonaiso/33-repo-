@@ -93,11 +93,6 @@
       },
       {
         "required": [
-          "ComputedVerdict"
-        ]
-      },
-      {
-        "required": [
           "dashboard_total"
         ]
       },
