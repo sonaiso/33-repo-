@@ -1,4 +1,4 @@
-"""Rejected runtime anti-pattern guardrails for PR #56 (docs + tests only)."""
+"""Rejected runtime anti-pattern guardrails for PR #63 (docs + tests only)."""
 
 from __future__ import annotations
 
@@ -13,11 +13,11 @@ import pytest
 REPO_ROOT = Path(__file__).parent.parent
 GUARD_DOC = REPO_ROOT / "docs" / "15_REJECTED_RUNTIME_PATTERNS.md"
 
-FORBIDDEN_FILE_NAMES = [
+FORBIDDEN_FILES = {
     "binding_kernel.py",
     "decision_engine.py",
     "coverage_matrix_v0.1.yaml",
-]
+}
 
 REQUIRED_DOC_PHRASES = [
     "Rejected Runtime Anti-Patterns",
@@ -31,11 +31,18 @@ REQUIRED_DOC_PHRASES = [
     "identity_preserved: true",
     "trace_preserved: true",
     "gate_passed: true",
+    "identity_preserved: bool = True",
     "is_preserved: bool = True",
     "Rank.CERTIFICATE",
     "Rank.REJECTED",
     "evidence list as proof",
+    "if self.evidence: self.licensed = True",
     "transform(operation: str): pass",
+    "condition: str",
+    "translator: str",
+    "ComputedVerdict",
+    "computed_verdict",
+    "mrk_defaults",
     "All rows remain audit-only.",
     "Runtime embargo remains active.",
     "No kernel.",
@@ -54,31 +61,46 @@ FORBIDDEN_PATTERNS = [
     re.compile(r"\btrace_preserved\s*:\s*true\b", re.IGNORECASE),
     re.compile(r"\bgate_passed\s*:\s*true\b", re.IGNORECASE),
     re.compile(r"\bis_preserved\s*:\s*bool\s*=\s*true\b", re.IGNORECASE),
+    re.compile(r"\bidentity_preserved\s*:\s*bool\s*=\s*true\b", re.IGNORECASE),
+    re.compile(r"\bif\s+self\.evidence\s*:\s*self\.licensed\s*=\s*true\b", re.IGNORECASE),
+    re.compile(r"\bdef\s+transform\(self,\s*operation:\s*str\)\b"),
     re.compile(r"\btransform\(operation:\s*str\):\s*pass\b"),
+    re.compile(r"\btranslator\s*:\s*str\b"),
+    re.compile(r"\bcondition\s*:\s*str\b"),
+    re.compile(r"\bComputedVerdict\b"),
+    re.compile(r"\bcomputed_verdict\s*:"),
+    re.compile(r"\bmrk_defaults\s*:"),
     re.compile(r"\bevidence\s+list\s+as\s+proof\b"),
     re.compile(r"\bMRK\s+boolean\s+defaults\b"),
 ]
 
 ALLOWED_SUFFIXES = {".py", ".toml", ".yaml", ".yml"}
+ALLOWED_EXCEPTION_PATHS = {GUARD_DOC}
 
 
 def scan_targets() -> list[Path]:
-    """Collect source/config files where pre-runtime anti-patterns are forbidden."""
+    """Collect paths where pre-runtime anti-patterns are forbidden."""
     targets: set[Path] = set()
     targets.update((REPO_ROOT / "src").rglob("*.py"))
+    targets.update((REPO_ROOT / "schemas").rglob("*"))
+    targets.update((REPO_ROOT / "tests" / "runtime").rglob("*.py"))
+    targets.update(REPO_ROOT.glob("tests/test_runtime*.py"))
     targets.update((REPO_ROOT / "ci").rglob("*.py"))
 
     for pattern in ("*.toml", "*.yaml", "*.yml"):
         targets.update(REPO_ROOT.glob(pattern))
+        targets.update((REPO_ROOT / "schemas").rglob(pattern))
         targets.update((REPO_ROOT / "ci").rglob(pattern))
 
-    return sorted(path for path in targets if path.is_file())
+    return sorted(
+        path for path in targets if path.is_file() and path not in ALLOWED_EXCEPTION_PATHS
+    )
 
 
 def forbidden_runtime_files() -> list[Path]:
     """Return forbidden runtime file artifacts if they exist anywhere in the repo."""
     paths: list[Path] = []
-    for name in FORBIDDEN_FILE_NAMES:
+    for name in FORBIDDEN_FILES:
         paths.extend(path for path in REPO_ROOT.rglob(name) if path.is_file())
     return sorted(set(paths))
 
@@ -109,15 +131,18 @@ def scanned_targets() -> list[Path]:
     return scan_targets()
 
 
-def test_scanned_targets_are_source_and_config_files_only(scanned_targets: list[Path]):
+def test_scanned_targets_are_expected_embargo_scope(scanned_targets: list[Path]):
     """trace_ref: docs/12_RUNTIME_EMBARGO_CONSTITUTION.md Embargo Rule."""
     targets = scanned_targets
     assert targets, "scan targets must not be empty"
     assert all(path.is_file() for path in targets)
-    assert all(path.suffix in ALLOWED_SUFFIXES for path in targets)
+    assert all(path.suffix in ALLOWED_SUFFIXES or path.parent == REPO_ROOT / "schemas" for path in targets)
     assert any(path.is_relative_to(REPO_ROOT / "src") for path in targets)
+    assert any(path.is_relative_to(REPO_ROOT / "schemas") for path in targets)
+    assert any(path.is_relative_to(REPO_ROOT / "tests" / "runtime") for path in targets)
     assert any(path.is_relative_to(REPO_ROOT / "ci") for path in targets)
     assert REPO_ROOT / "pyproject.toml" in targets
+    assert GUARD_DOC not in targets
 
 
 def test_rejected_runtime_patterns_doc_exists_with_required_markers():
@@ -164,7 +189,9 @@ def test_boolean_antipattern_regexes_are_case_insensitive():
         "identity_preserved: true",
         "trace_preserved: True",
         "gate_passed: tRuE",
+        "identity_preserved: bool = TRUE",
         "is_preserved: bool = TRUE",
+        "if self.evidence: self.licensed = TRUE",
     ]
     for sample in samples:
         assert any(pattern.search(sample) for pattern in FORBIDDEN_PATTERNS)
