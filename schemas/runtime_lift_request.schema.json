@@ -119,6 +119,7 @@
       "items": {
         "type": "string",
         "minLength": 1,
+        "description": "Repo-relative canonical path only: no absolute paths, no backslashes, no '..' segments, no empty segments ('//'), and no glob wildcards.",
         "pattern": "^(?!/)(?!.*\\\\)(?!.*(?:^|/)\\.\\.(?:/|$))(?!.*//)(?!.*[*?\\[\\]{}]).+$"
       }
     },
@@ -129,6 +130,7 @@
       "items": {
         "type": "string",
         "minLength": 1,
+        "description": "Repo-relative canonical path only: no absolute paths, no backslashes, no '..' segments, no empty segments ('//'), and no glob wildcards.",
         "pattern": "^(?!/)(?!.*\\\\)(?!.*(?:^|/)\\.\\.(?:/|$))(?!.*//)(?!.*[*?\\[\\]{}]).+$"
       }
     },

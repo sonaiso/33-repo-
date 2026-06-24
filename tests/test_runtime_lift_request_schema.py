@@ -170,7 +170,11 @@ def test_negative_tests_are_required():
 
 def test_negative_tests_must_include_required_minimum_set():
     payload = _valid_request()
-    payload["negative_tests"] = REQUIRED_NEGATIVE_TESTS[:-1]
+    payload["negative_tests"] = [
+        test_id
+        for test_id in REQUIRED_NEGATIVE_TESTS
+        if test_id != "reject-manual-computed-verdict"
+    ]
     _assert_invalid(payload)
 
 
@@ -179,7 +183,13 @@ def test_authorized_artifacts_must_be_exact_paths_without_wildcards():
 
 
 def test_schema_runtime_requires_domain_opening_none():
-    _assert_invalid(_valid_request() | {"domain_opening": "D3_LEXICAL_MADLUL"})
+    _assert_invalid(
+        _valid_request()
+        | {
+            "lift_type": "LIFT_TYPE_SCHEMA_RUNTIME",
+            "domain_opening": "D3_LEXICAL_MADLUL",
+        }
+    )
 
 
 def test_bridge_evaluator_allows_explicit_domain_opening():
