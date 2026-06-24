@@ -46,7 +46,9 @@ def _validate_rule(key: str, value: Any, rule: dict[str, Any]) -> None:
             if "minLength" in item_rule and len(item) < item_rule["minLength"]:
                 raise ValueError(f"{key} array items must satisfy minLength")
             if "enum" in item_rule and item not in item_rule["enum"]:
-                raise ValueError(f"{key} array items must be one of enum values")
+                raise ValueError(
+                    f"{key} array item {item!r} must be one of {item_rule['enum']!r}"
+                )
 
     if "enum" in rule and value not in rule["enum"]:
         raise ValueError(f"{key} must be one of enum values")
