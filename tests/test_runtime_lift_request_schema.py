@@ -105,25 +105,24 @@ def _forbidden_artifact_path_variants(artifact: str) -> list[str]:
     These variants model normalization bypass attempts: leading ./, surrounding
     whitespace, consecutive slashes, backslashes, and injected .. segments.
     """
-    partial_double_slash = (
-        artifact.replace("/", "//", 1) if "/" in artifact else f"safe//{artifact}"
-    )
-    full_double_slash = (
-        artifact.replace("/", "//") if "/" in artifact else f"safe//{artifact}"
-    )
-    partial_backslash = (
-        artifact.replace("/", "\\", 1) if "/" in artifact else f"safe\\{artifact}"
-    )
-    full_backslash = (
-        artifact.replace("/", "\\") if "/" in artifact else f"safe\\{artifact}"
-    )
-    partial_dotdot = (
-        artifact.replace("/", "/../", 1) if "/" in artifact else f"safe/../{artifact}"
-    )
+    def replaced_or_prefixed(replacement: str, count: int = -1) -> str:
+        if "/" not in artifact:
+            return f"safe{replacement}{artifact}"
+        if count == -1:
+            return artifact.replace("/", replacement)
+        return artifact.replace("/", replacement, count)
+
+    leading_whitespace = f" {artifact}"
+    trailing_whitespace = f"{artifact} "
+    partial_double_slash = replaced_or_prefixed("//", 1)
+    full_double_slash = replaced_or_prefixed("//")
+    partial_backslash = replaced_or_prefixed("\\", 1)
+    full_backslash = replaced_or_prefixed("\\")
+    partial_dotdot = replaced_or_prefixed("/../", 1)
     return [
         f"./{artifact}",
-        f" {artifact}",
-        f"{artifact} ",
+        leading_whitespace,
+        trailing_whitespace,
         partial_double_slash,
         full_double_slash,
         partial_backslash,
