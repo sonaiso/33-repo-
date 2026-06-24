@@ -1,0 +1,14 @@
+{
+  "case_id": "fixture-valid-bridge-required-tanzil-001",
+  "input_text": "locked tanzil audit case",
+  "input_domain": "D7_TANZIL",
+  "expected_verdict": "EXPECTED_BRIDGE_REQUIRED",
+  "required_contracts": [
+    "docs/12_RUNTIME_EMBARGO_CONSTITUTION.md",
+    "docs/18_COMPUTED_COVERAGE_SCHEMA_CONSTITUTION.md"
+  ],
+  "required_bridges": [
+    "L2_TO_L3_BRIDGE"
+  ],
+  "trace_ref": "docs/18_COMPUTED_COVERAGE_SCHEMA_CONSTITUTION.md"
+}

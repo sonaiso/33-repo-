@@ -22,10 +22,15 @@ except ImportError:  # pragma: no cover
 
 REPO_ROOT = Path(__file__).parent.parent
 SCHEMA_PATH = REPO_ROOT / "schemas" / "coverage_case.schema.json"
+FIXTURES_DIR = REPO_ROOT / "tests" / "fixtures" / "coverage_cases"
 
 
 def _load_schema() -> dict[str, Any]:
     return json.loads(SCHEMA_PATH.read_text(encoding="utf-8"))
+
+
+def _load_fixture(name: str) -> dict[str, Any]:
+    return json.loads((FIXTURES_DIR / name).read_text(encoding="utf-8"))
 
 
 def _validate_rule(key: str, value: Any, rule: dict[str, Any]) -> None:
@@ -150,6 +155,7 @@ def _assert_invalid(payload: dict[str, Any]) -> None:
 
 def test_schema_file_exists():
     assert SCHEMA_PATH.exists()
+    assert FIXTURES_DIR.exists()
 
 
 def test_schema_is_valid_draft_2020_12():
@@ -206,6 +212,19 @@ def test_schema_rejects_unknown_input_domain():
     _assert_invalid(_minimal_valid_case() | {"input_domain": "RELATION_RUNTIME"})
 
 
+@pytest.mark.parametrize(
+    "fixture_name",
+    [
+        "valid_blocked_ifadah_case.json",
+        "valid_proof_required_hukm_case.json",
+        "valid_bridge_required_tanzil_case.json",
+    ],
+)
+def test_schema_accepts_locked_domain_valid_fixtures(fixture_name: str):
+    schema = _load_schema()
+    _validate_payload(schema, _load_fixture(fixture_name))
+
+
 @pytest.mark.parametrize("domain", ["D5_IFADAH", "D6_HUKM", "D7_TANZIL"])
 def test_schema_rejects_expected_accepted_candidate_for_locked_domains(domain: str):
     _assert_invalid(
@@ -215,6 +234,19 @@ def test_schema_rejects_expected_accepted_candidate_for_locked_domains(domain: s
             "expected_verdict": "EXPECTED_ACCEPTED_CANDIDATE",
         }
     )
+
+
+@pytest.mark.parametrize(
+    "fixture_name",
+    [
+        "invalid_accepted_ifadah_case.json",
+        "invalid_computed_verdict_case.json",
+        "invalid_mrk_defaults_case.json",
+        "invalid_rank_certificate_case.json",
+    ],
+)
+def test_schema_rejects_invalid_locked_domain_fixtures(fixture_name: str):
+    _assert_invalid(_load_fixture(fixture_name))
 
 
 def test_schema_accepts_valid_expected_blocked_only_with_failure_family():

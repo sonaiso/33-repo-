@@ -1,0 +1,11 @@
+{
+  "case_id": "fixture-invalid-accepted-ifadah-001",
+  "input_text": "locked ifadah must not be accepted candidate",
+  "input_domain": "D5_IFADAH",
+  "expected_verdict": "EXPECTED_ACCEPTED_CANDIDATE",
+  "required_contracts": [
+    "docs/12_RUNTIME_EMBARGO_CONSTITUTION.md",
+    "docs/18_COMPUTED_COVERAGE_SCHEMA_CONSTITUTION.md"
+  ],
+  "trace_ref": "docs/18_COMPUTED_COVERAGE_SCHEMA_CONSTITUTION.md"
+}

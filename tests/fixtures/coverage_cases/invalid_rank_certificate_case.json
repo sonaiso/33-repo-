@@ -1,0 +1,13 @@
+{
+  "case_id": "fixture-invalid-rank-certificate-001",
+  "input_text": "rank certificate remains forbidden under embargo",
+  "input_domain": "D5_IFADAH",
+  "expected_verdict": "EXPECTED_BLOCKED",
+  "required_contracts": [
+    "docs/12_RUNTIME_EMBARGO_CONSTITUTION.md",
+    "docs/18_COMPUTED_COVERAGE_SCHEMA_CONSTITUTION.md"
+  ],
+  "expected_failure_family": "FAMILY_EMBARGO_BLOCKED",
+  "rank": "Rank.CERTIFICATE",
+  "trace_ref": "docs/18_COMPUTED_COVERAGE_SCHEMA_CONSTITUTION.md"
+}

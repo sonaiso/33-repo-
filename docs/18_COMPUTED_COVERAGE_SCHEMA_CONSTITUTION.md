@@ -22,6 +22,13 @@ No computed verdict execution.
 - `docs/18_COMPUTED_COVERAGE_SCHEMA_CONSTITUTION.md`
 - `schemas/coverage_case.schema.json`
 - `tests/test_computed_coverage_schema.py`
+- `tests/fixtures/coverage_cases/valid_blocked_ifadah_case.json`
+- `tests/fixtures/coverage_cases/valid_proof_required_hukm_case.json`
+- `tests/fixtures/coverage_cases/valid_bridge_required_tanzil_case.json`
+- `tests/fixtures/coverage_cases/invalid_accepted_ifadah_case.json`
+- `tests/fixtures/coverage_cases/invalid_computed_verdict_case.json`
+- `tests/fixtures/coverage_cases/invalid_mrk_defaults_case.json`
+- `tests/fixtures/coverage_cases/invalid_rank_certificate_case.json`
 
 ## Schema contract
 Allowed fields:
