@@ -13,9 +13,9 @@ import pytest
 REPO_ROOT = Path(__file__).parent.parent
 GUARD_DOC = REPO_ROOT / "docs" / "15_REJECTED_RUNTIME_PATTERNS.md"
 
-# Repo-relative forbidden artifact paths under the runtime embargo.
-# FORBIDDEN_CANONICAL_RUNTIME_ARTIFACTS is derived by prepending REPO_ROOT.
-FORBIDDEN_RUNTIME_ARTIFACTS = (
+FORBIDDEN_RUNTIME_ARTIFACT_PATHS = (
+    # Repo-relative forbidden artifact paths under the runtime embargo.
+    # FORBIDDEN_CANONICAL_RUNTIME_ARTIFACTS prepends REPO_ROOT to these paths.
     "src/taaqqul_slot_geometry/L1/binding_kernel.py",
     "src/taaqqul_slot_geometry/L1/decision_engine.py",
     "src/taaqqul_slot_geometry/runtime/binding_kernel.py",
@@ -34,7 +34,7 @@ FORBIDDEN_RUNTIME_ARTIFACTS = (
     "l_protocol/tests/test_binding_constraints.py",
 )
 FORBIDDEN_CANONICAL_RUNTIME_ARTIFACTS = tuple(
-    REPO_ROOT / artifact for artifact in FORBIDDEN_RUNTIME_ARTIFACTS
+    REPO_ROOT / artifact for artifact in FORBIDDEN_RUNTIME_ARTIFACT_PATHS
 )
 CLASS_FIELD_LOOKAHEAD_LIMIT = 400
 RETURN_TYPE_LOOKAHEAD_LIMIT = 120

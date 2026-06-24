@@ -13,7 +13,7 @@ from typing import Any
 import pytest
 
 from tests.test_runtime_antipatterns_embargo import (
-    FORBIDDEN_RUNTIME_ARTIFACTS as EMBARGO_FORBIDDEN_RUNTIME_ARTIFACTS,
+    FORBIDDEN_RUNTIME_ARTIFACT_PATHS as EMBARGO_FORBIDDEN_RUNTIME_ARTIFACTS,
 )
 
 try:
@@ -75,6 +75,12 @@ def _load_schema() -> dict[str, Any]:
 
 
 def _schema_forbidden_authorized_artifacts_enum() -> list[str]:
+    """Extract the schema-wide forbidden authorized_artifacts enum.
+
+    The runtime lift schema keeps this ban in an allOf constraint under
+    properties.authorized_artifacts.not.contains.enum so it applies to every
+    current lift type.
+    """
     schema = _load_schema()
     for rule in schema.get("allOf", []):
         artifacts = (
@@ -94,30 +100,35 @@ def _embargo_test_forbidden_artifacts() -> set[str]:
 
 
 def _forbidden_artifact_path_variants(artifact: str) -> list[str]:
-    single_double_slash_variant = (
+    """Build malformed path variants that must fail schema validation.
+
+    These variants model normalization bypass attempts: leading ./, surrounding
+    whitespace, consecutive slashes, backslashes, and injected .. segments.
+    """
+    partial_double_slash = (
         artifact.replace("/", "//", 1) if "/" in artifact else f"safe//{artifact}"
     )
-    all_double_slash_variant = (
+    full_double_slash = (
         artifact.replace("/", "//") if "/" in artifact else f"safe//{artifact}"
     )
-    single_backslash_variant = (
+    partial_backslash = (
         artifact.replace("/", "\\", 1) if "/" in artifact else f"safe\\{artifact}"
     )
-    all_backslash_variant = (
+    full_backslash = (
         artifact.replace("/", "\\") if "/" in artifact else f"safe\\{artifact}"
     )
-    single_dotdot_variant = (
+    partial_dotdot = (
         artifact.replace("/", "/../", 1) if "/" in artifact else f"safe/../{artifact}"
     )
     return [
         f"./{artifact}",
         f" {artifact}",
         f"{artifact} ",
-        single_double_slash_variant,
-        all_double_slash_variant,
-        single_backslash_variant,
-        all_backslash_variant,
-        single_dotdot_variant,
+        partial_double_slash,
+        full_double_slash,
+        partial_backslash,
+        full_backslash,
+        partial_dotdot,
         f"safe/../{artifact}",
     ]
 
