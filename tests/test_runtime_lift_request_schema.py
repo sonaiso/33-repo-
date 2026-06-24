@@ -168,14 +168,22 @@ def test_negative_tests_are_required():
     _assert_invalid(payload)
 
 
-def test_negative_tests_must_include_required_minimum_set():
+@pytest.mark.parametrize("missing_test_id", REQUIRED_NEGATIVE_TESTS)
+def test_negative_tests_must_include_required_minimum_set(missing_test_id: str):
     payload = _valid_request()
     payload["negative_tests"] = [
         test_id
         for test_id in REQUIRED_NEGATIVE_TESTS
-        if test_id != "reject-manual-computed-verdict"
+        if test_id != missing_test_id
     ]
     _assert_invalid(payload)
+
+
+def test_negative_tests_accept_exact_required_set():
+    payload = _valid_request()
+    payload["negative_tests"] = [*REQUIRED_NEGATIVE_TESTS]
+    schema = _load_schema()
+    _validate_payload(schema, payload)
 
 
 def test_authorized_artifacts_must_be_exact_paths_without_wildcards():
@@ -219,6 +227,7 @@ def test_rank_policy_cannot_allow_certificate():
 )
 def test_schema_runtime_rejects_forbidden_runtime_artifacts(artifact: str):
     payload = _valid_request()
+    payload["lift_type"] = "LIFT_TYPE_SCHEMA_RUNTIME"
     payload["authorized_artifacts"] = [artifact]
     _assert_invalid(payload)
 
