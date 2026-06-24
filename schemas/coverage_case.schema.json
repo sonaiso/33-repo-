@@ -113,11 +113,6 @@
       },
       {
         "required": [
-          "ComputedVerdict"
-        ]
-      },
-      {
-        "required": [
           "dashboard_total"
         ]
       },
@@ -166,9 +161,7 @@
           "rank": {
             "enum": [
               "CERTIFICATE",
-              "REJECTED",
-              "Rank.CERTIFICATE",
-              "Rank.REJECTED"
+              "REJECTED"
             ]
           }
         },

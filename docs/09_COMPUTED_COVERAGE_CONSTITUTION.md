@@ -24,6 +24,10 @@ No runtime-domain opening.
 
 The schema may declare `expected_verdict` only.
 It may not accept manual `computed_verdict`, manual dashboards, MRK boolean defaults, or authoritative runtime claims.
+ComputedVerdict cannot be manually supplied.
+Dashboard must be computed.
+YAML may declare expected_verdict only.
+MRK defaults cannot be all true.
 
 ## Required Separation
 
