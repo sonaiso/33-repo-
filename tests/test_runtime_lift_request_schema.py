@@ -168,6 +168,12 @@ def test_negative_tests_are_required():
     _assert_invalid(payload)
 
 
+def test_negative_tests_reject_empty_list():
+    payload = _valid_request()
+    payload["negative_tests"] = []
+    _assert_invalid(payload)
+
+
 @pytest.mark.parametrize("missing_test_id", REQUIRED_NEGATIVE_TESTS)
 def test_negative_tests_must_include_required_minimum_set(missing_test_id: str):
     payload = _valid_request()
@@ -176,6 +182,12 @@ def test_negative_tests_must_include_required_minimum_set(missing_test_id: str):
         for test_id in REQUIRED_NEGATIVE_TESTS
         if test_id != missing_test_id
     ]
+    _assert_invalid(payload)
+
+
+def test_negative_tests_reject_partial_required_subset():
+    payload = _valid_request()
+    payload["negative_tests"] = REQUIRED_NEGATIVE_TESTS[:3]
     _assert_invalid(payload)
 
 

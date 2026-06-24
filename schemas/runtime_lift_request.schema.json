@@ -75,7 +75,6 @@
         "properties": {
           "lift_type": {
             "enum": [
-              "LIFT_TYPE_SCHEMA_RUNTIME",
               "LIFT_TYPE_PROOF_EVALUATOR",
               "LIFT_TYPE_COVERAGE_RUNNER"
             ]
