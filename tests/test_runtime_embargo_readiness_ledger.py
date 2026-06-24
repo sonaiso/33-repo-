@@ -22,6 +22,9 @@ REQUIRED_PHRASES = [
 
 FORBIDDEN_PHRASES = [
     "embargo lifted",
+    "runtime authorized",
+    "kernel activated",
+    "embargo removed",
 ]
 
 
@@ -39,6 +42,8 @@ def test_runtime_embargo_readiness_ledger_has_required_claims():
 
 def test_runtime_embargo_readiness_ledger_does_not_claim_embargo_lifted():
     """trace_ref: docs/12_RUNTIME_EMBARGO_CONSTITUTION.md Embargo Rule."""
-    content = LEDGER_DOC.read_text(encoding="utf-8").lower()
+    content = LEDGER_DOC.read_text(encoding="utf-8").casefold()
     for phrase in FORBIDDEN_PHRASES:
-        assert phrase not in content, f"Forbidden phrase found in readiness ledger: {phrase}"
+        assert phrase.casefold() not in content, (
+            f"Forbidden phrase found in readiness ledger: {phrase}"
+        )
