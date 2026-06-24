@@ -186,6 +186,9 @@ def test_manifest_covers_bridge_required_transition_guards():
     observed_by_domain = {entry["input_domain"]: entry["file"] for entry in bridge_entries}
 
     for input_domain, bridge_name in required_transition_bridges.items():
+        assert input_domain in observed_by_domain, (
+            f"missing EXPECTED_BRIDGE_REQUIRED fixture coverage for {input_domain}"
+        )
         file_name = observed_by_domain[input_domain]
         payload = _fixture_payload(file_name)
         required_bridges = payload.get("required_bridges", [])

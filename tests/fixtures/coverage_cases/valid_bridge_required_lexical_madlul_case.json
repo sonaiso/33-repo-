@@ -7,7 +7,6 @@
     "docs/18_COMPUTED_COVERAGE_SCHEMA_CONSTITUTION.md"
   ],
   "required_bridges": [
-    "D3_LEXICAL_MADLUL_TO_D4_RELATION_BRIDGE",
     "RELATION_BRIDGE"
   ],
   "trace_ref": "docs/18_COMPUTED_COVERAGE_SCHEMA_CONSTITUTION.md"
