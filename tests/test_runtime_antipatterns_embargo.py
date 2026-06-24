@@ -32,6 +32,7 @@ FORBIDDEN_CANONICAL_RUNTIME_ARTIFACTS = (
     REPO_ROOT / "l_protocol" / "tests" / "test_binding_constraints.py",
 )
 CLASS_FIELD_LOOKAHEAD_LIMIT = 400
+RETURN_TYPE_LOOKAHEAD_LIMIT = 120
 
 REQUIRED_DOC_PHRASES = [
     "Rejected Runtime Anti-Patterns",
@@ -89,6 +90,7 @@ REQUIRED_DOC_PHRASES = [
     "No runtime translators.",
     "No coverage runner.",
     "No runtime domain opening.",
+    "The guard scanner must detect both single-line and multi-line forms of rejected evidence and transform anti-patterns.",
 ]
 
 FORBIDDEN_PATTERNS = [
@@ -105,7 +107,8 @@ FORBIDDEN_PATTERNS = [
     re.compile(r"\bidentity_preserved\s*:\s*bool\s*=\s*true\b", re.IGNORECASE),
     re.compile(r"\bif\s+self\.evidence\s*:\s*self\.licensed\s*=\s*true\b", re.IGNORECASE),
     re.compile(
-        r"\bdef\s+transform\s*\(\s*self\s*,\s*operation\s*:\s*str\s*\)\s*:\s*pass\b"
+        r"\bif\s+self\.evidence\s*:\s*(?:\r?\n[ \t]*)+self\.licensed\s*=\s*true\b",
+        re.IGNORECASE,
     ),
     re.compile(
         rf"\bclass\s+Bridge\b[\s\S]{{0,{CLASS_FIELD_LOOKAHEAD_LIMIT}}}\btranslator\s*:\s*str\b"
@@ -121,6 +124,23 @@ FORBIDDEN_PATTERNS = [
     re.compile(r"\bMRK\s+boolean\s+defaults\b"),
 ]
 
+TRANSFORM_ANTIPATTERN_PATTERNS = [
+    re.compile(
+        r"\bdef\s+transform\s*\(\s*self\s*,\s*operation\s*:\s*str\s*\)\s*:\s*"
+        r"(?:\r?\n[ \t]*)*pass\b"
+    ),
+    re.compile(
+        r"\bdef\s+transform\s*\(\s*self\s*,\s*operation\s*:\s*str\s*\)\s*->\s*"
+        r"[^:\n]+\s*:\s*(?:\r?\n[ \t]*)*pass\b"
+    ),
+    re.compile(
+        r"\bdef\s+transform\s*\(\s*self\s*,\s*operation\s*:\s*str\s*\)\s*->\s*"
+        rf"\([\s\S]{{0,{RETURN_TYPE_LOOKAHEAD_LIMIT}}}?\)\s*:\s*(?:\r?\n[ \t]*)*pass\b"
+    ),
+]
+
+FORBIDDEN_PATTERNS.extend(TRANSFORM_ANTIPATTERN_PATTERNS)
+
 ALLOWED_SUFFIXES = {".py", ".toml", ".yaml", ".yml"}
 ALLOWED_EXCEPTION_PATH = GUARD_DOC
 
@@ -130,8 +150,7 @@ def scan_targets() -> list[Path]:
     targets: set[Path] = set()
     targets.update((REPO_ROOT / "src").rglob("*.py"))
     targets.update((REPO_ROOT / "schemas").rglob("*"))
-    targets.update((REPO_ROOT / "tests" / "runtime").rglob("*.py"))
-    targets.update(REPO_ROOT.glob("tests/test_runtime*.py"))
+    targets.update((REPO_ROOT / "tests").rglob("*.py"))
     targets.update((REPO_ROOT / "ci").rglob("*.py"))
 
     for pattern in ("*.toml", "*.yaml", "*.yml"):
@@ -187,7 +206,7 @@ def test_scanned_targets_are_expected_embargo_scope(scanned_targets: list[Path])
     )
     assert any(path.is_relative_to(REPO_ROOT / "src") for path in targets)
     assert any(path.is_relative_to(REPO_ROOT / "schemas") for path in targets)
-    assert any(path.is_relative_to(REPO_ROOT / "tests" / "runtime") for path in targets)
+    assert any(path.is_relative_to(REPO_ROOT / "tests") for path in targets)
     assert any(path.is_relative_to(REPO_ROOT / "ci") for path in targets)
     assert REPO_ROOT / "pyproject.toml" in targets
     assert GUARD_DOC not in targets
@@ -240,8 +259,13 @@ def test_boolean_antipattern_regexes_are_case_insensitive():
         "identity_preserved: bool = TRUE",
         "is_preserved: bool = TRUE",
         "if self.evidence: self.licensed = TRUE",
+        "if self.evidence:\n    self.licensed = TRUE",
+        "if self.evidence:\n\n    self.licensed = TRUE",
         "ExecutionRank.CERTIFIED",
         "def transform(self, operation: str): pass",
+        "def transform(self, operation: str) -> \"SlotGeometry\":\n    pass",
+        "def transform(self, operation: str):\n    pass",
+        "def transform(self, operation: str) -> (\n    SlotGeometry\n):\n    pass",
     ]
     for sample in samples:
         assert any(pattern.search(sample) for pattern in FORBIDDEN_PATTERNS)
@@ -262,3 +286,14 @@ def test_python_comments_and_strings_are_ignored_for_antipattern_scan(tmp_path: 
     assert "domain_proved" not in stripped
     assert "Rank.CERTIFICATE" not in stripped
     assert "identity_preserved" not in stripped
+
+
+def test_transform_antipattern_regexes_cover_annotation_variants():
+    samples = [
+        "def transform(self, operation: str): pass",
+        "def transform(self, operation: str):\n    pass",
+        "def transform(self, operation: str) -> \"SlotGeometry\":\n    pass",
+        "def transform(self, operation: str) -> (\n    SlotGeometry\n):\n    pass",
+    ]
+    for sample in samples:
+        assert any(pattern.search(sample) for pattern in TRANSFORM_ANTIPATTERN_PATTERNS)
