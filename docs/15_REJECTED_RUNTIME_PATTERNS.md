@@ -31,11 +31,25 @@ It does not authorize runtime.
 
 ## Rejected Artifacts
 
-The following files are forbidden before explicit Runtime Embargo lift:
+The following files and canonical repository paths are forbidden before explicit Runtime Embargo lift:
 
 - `binding_kernel.py`
 - `decision_engine.py`
 - `coverage_matrix_v0.1.yaml`
+- `src/taaqqul_slot_geometry/L1/binding_kernel.py`
+- `src/taaqqul_slot_geometry/L1/decision_engine.py`
+- `src/taaqqul_slot_geometry/runtime/binding_kernel.py`
+- `src/taaqqul_slot_geometry/runtime/decision_engine.py`
+- `src/taaqqul_slot_geometry/core/binding_kernel.py`
+- `src/taaqqul_slot_geometry/core/decision_engine.py`
+- `coverage_matrix_v0.1.yaml`
+- `docs/coverage_matrix_v0.1.yaml`
+- `data/coverage_matrix_v0.1.yaml`
+- `schemas/coverage_matrix_v0.1.yaml`
+- `tests/test_binding_constraints.py`
+
+These canonical-path prohibitions do not authorize runtime, a kernel, a decision engine, a coverage matrix,
+runtime predicates, translators, or runtime-domain opening.
 
 ## Rejected Rank Patterns
 
