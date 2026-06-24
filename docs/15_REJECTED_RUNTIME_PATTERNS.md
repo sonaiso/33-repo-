@@ -1,4 +1,4 @@
-# Rejected Runtime Patterns — docs/15_REJECTED_RUNTIME_PATTERNS.md
+# Rejected Runtime Anti-Patterns — docs/15_REJECTED_RUNTIME_PATTERNS.md
 
 Origin: `docs/12_RUNTIME_EMBARGO_CONSTITUTION.md`; `docs/00_MAQOOL_CONSTITUTION.md`
 
@@ -76,6 +76,7 @@ Required:
 Forbidden:
 
 - evidence list as proof
+- `if self.evidence: self.licensed = True`
 
 ```python
 if self.evidence:
@@ -113,6 +114,8 @@ Required:
 ## Rejected SGE Pattern
 
 Forbidden:
+
+- `def transform(self, operation: str): pass`
 
 ```python
 def transform(self, operation: str):

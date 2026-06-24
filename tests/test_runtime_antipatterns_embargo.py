@@ -21,7 +21,7 @@ FORBIDDEN_FILE_NAMES = {
 CLASS_FIELD_LOOKAHEAD_LIMIT = 400
 
 REQUIRED_DOC_PHRASES = [
-    "Rejected Runtime Patterns",
+    "Rejected Runtime Anti-Patterns",
     "This document records rejected patterns only.",
     "It is audit-only.",
     "binding_kernel.py",
@@ -45,10 +45,8 @@ REQUIRED_DOC_PHRASES = [
     "EvidenceProof",
     "CoverageProof",
     "evidence list as proof",
-    "if self.evidence:",
-    "self.licensed = True",
-    "def transform(self, operation: str):",
-    "pass",
+    "if self.evidence: self.licensed = True",
+    "def transform(self, operation: str): pass",
     "condition: str",
     "translator: str",
     "ComputedVerdict",
