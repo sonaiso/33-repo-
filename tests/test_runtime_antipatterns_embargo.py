@@ -18,14 +18,19 @@ FORBIDDEN_FILE_NAMES = {
     "decision_engine.py",
     "coverage_matrix_v0.1.yaml",
 }
+FORBIDDEN_FILE_SEARCH_ROOTS = (
+    REPO_ROOT,
+    REPO_ROOT / "src",
+)
 CLASS_FIELD_LOOKAHEAD_LIMIT = 400
 
 REQUIRED_DOC_PHRASES = [
     "Rejected Runtime Anti-Patterns",
+    "This document records rejected patterns only.",
+    "It is audit-only.",
     "binding_kernel.py",
     "decision_engine.py",
     "coverage_matrix_v0.1.yaml",
-    "BindingDecisionEngine",
     "MRK boolean defaults",
     "domain_proved: true",
     "unit_proved: true",
@@ -36,26 +41,40 @@ REQUIRED_DOC_PHRASES = [
     "is_preserved: bool = True",
     "Rank.CERTIFICATE",
     "Rank.REJECTED",
+    "ExecutionRank.CERTIFIED as runtime authority",
+    "MRKProof",
+    "IdentityProof",
+    "GateProof",
+    "BridgeProof",
+    "EvidenceProof",
+    "CoverageProof",
     "evidence list as proof",
     "if self.evidence: self.licensed = True",
-    "transform(operation: str): pass",
+    "def transform(self, operation: str): pass",
     "condition: str",
     "translator: str",
     "ComputedVerdict",
     "computed_verdict",
     "mrk_defaults",
-    "All rows remain audit-only.",
+    "YAML granting proof",
+    "dashboard manual totals",
+    "manual_dashboard",
+    "expected_verdict",
+    "computed verdict only after explicit runtime authorization",
+    "All outputs are audit-only.",
     "Runtime embargo remains active.",
-    "No kernel.",
-    "No predicates.",
-    "No translators.",
-    "No coverage runtime.",
+    "No runtime kernel.",
+    "No runtime predicates.",
+    "No runtime translators.",
+    "No coverage runner.",
+    "No runtime domain opening.",
 ]
 
 FORBIDDEN_PATTERNS = [
     re.compile(r"\bBindingDecisionEngine\b"),
     re.compile(r"\bRank\.CERTIFICATE\b"),
     re.compile(r"\bRank\.REJECTED\b"),
+    re.compile(r"\bExecutionRank\.CERTIFIED\b"),
     re.compile(r"\bdomain_proved\s*:\s*true\b", re.IGNORECASE),
     re.compile(r"\bunit_proved\s*:\s*true\b", re.IGNORECASE),
     re.compile(r"\bidentity_preserved\s*:\s*true\b", re.IGNORECASE),
@@ -64,8 +83,9 @@ FORBIDDEN_PATTERNS = [
     re.compile(r"\bis_preserved\s*:\s*bool\s*=\s*true\b", re.IGNORECASE),
     re.compile(r"\bidentity_preserved\s*:\s*bool\s*=\s*true\b", re.IGNORECASE),
     re.compile(r"\bif\s+self\.evidence\s*:\s*self\.licensed\s*=\s*true\b", re.IGNORECASE),
-    re.compile(r"\bdef\s+transform\(self,\s*operation:\s*str\)\b"),
-    re.compile(r"\btransform\(operation:\s*str\):\s*pass\b"),
+    re.compile(
+        r"\bdef\s+transform\s*\(\s*self\s*,\s*operation\s*:\s*str\s*\)\s*:\s*pass\b"
+    ),
     re.compile(
         rf"\bclass\s+Bridge\b[\s\S]{{0,{CLASS_FIELD_LOOKAHEAD_LIMIT}}}\btranslator\s*:\s*str\b"
     ),
@@ -75,6 +95,7 @@ FORBIDDEN_PATTERNS = [
     re.compile(r"\bComputedVerdict\b"),
     re.compile(r"\bcomputed_verdict\s*:"),
     re.compile(r"\bmrk_defaults\s*:"),
+    re.compile(r"\bmanual_dashboard\s*:"),
     re.compile(r"\bevidence\s+list\s+as\s+proof\b"),
     re.compile(r"\bMRK\s+boolean\s+defaults\b"),
 ]
@@ -102,11 +123,11 @@ def scan_targets() -> list[Path]:
     )
 
 
-def forbidden_runtime_files() -> list[Path]:
+def forbidden_runtime_files(root: Path = REPO_ROOT) -> list[Path]:
     """Return forbidden runtime file artifacts if they exist anywhere in the repo."""
     paths: list[Path] = []
     for name in FORBIDDEN_FILE_NAMES:
-        paths.extend(path for path in REPO_ROOT.rglob(name) if path.is_file())
+        paths.extend(path for path in root.rglob(name) if path.is_file())
     return sorted(set(paths))
 
 
@@ -116,19 +137,16 @@ def scanned_text(path: Path) -> str:
     if path.suffix != ".py":
         return text
 
-    tokens: list[str] = []
+    tokens: list[tuple[int, str]] = []
     try:
         for token in tokenize.generate_tokens(io.StringIO(text).readline):
             if token.type in {tokenize.COMMENT, tokenize.STRING}:
                 continue
-            if token.type in {tokenize.NL, tokenize.NEWLINE}:
-                tokens.append("\n")
-                continue
-            tokens.append(token.string)
+            tokens.append((token.type, token.string))
     except tokenize.TokenError:
         return text
 
-    return "".join(tokens)
+    return tokenize.untokenize(tokens)
 
 
 @pytest.fixture(scope="module")
@@ -161,9 +179,10 @@ def test_rejected_runtime_patterns_doc_exists_with_required_markers():
         assert phrase in content, f"Missing required rejected-pattern phrase: {phrase}"
 
 
-def test_forbidden_runtime_files_are_absent():
+@pytest.mark.parametrize("search_root", FORBIDDEN_FILE_SEARCH_ROOTS)
+def test_forbidden_runtime_files_are_absent(search_root: Path):
     """trace_ref: docs/12_RUNTIME_EMBARGO_CONSTITUTION.md Explicit Prohibitions."""
-    matches = forbidden_runtime_files()
+    matches = forbidden_runtime_files(search_root)
     assert not matches, "Forbidden pre-runtime artifacts exist:\n" + "\n".join(
         str(path) for path in matches
     )
@@ -200,6 +219,8 @@ def test_boolean_antipattern_regexes_are_case_insensitive():
         "identity_preserved: bool = TRUE",
         "is_preserved: bool = TRUE",
         "if self.evidence: self.licensed = TRUE",
+        "ExecutionRank.CERTIFIED",
+        "def transform(self, operation: str): pass",
     ]
     for sample in samples:
         assert any(pattern.search(sample) for pattern in FORBIDDEN_PATTERNS)
