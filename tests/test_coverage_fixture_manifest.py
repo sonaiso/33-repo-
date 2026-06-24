@@ -9,8 +9,6 @@ import json
 from pathlib import Path
 
 import pytest
-
-pytest.importorskip("jsonschema")
 from jsonschema import Draft202012Validator
 from jsonschema.exceptions import ValidationError
 

@@ -10,7 +10,7 @@ requires-python = ">=3.11"
 dependencies = []
 
 [project.optional-dependencies]
-dev = ["pytest>=7.4", "pytest-cov"]
+dev = ["pytest>=7.4", "pytest-cov", "jsonschema>=4.0"]
 
 [tool.setuptools.packages.find]
 where = ["src"]
