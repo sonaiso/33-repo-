@@ -5,6 +5,7 @@ trace_ref: docs/18_RUNTIME_EMBARGO_LIFT_PROTOCOL.md
 
 from __future__ import annotations
 
+import importlib.util
 import json
 import re
 from pathlib import Path
@@ -22,6 +23,7 @@ except ImportError:  # pragma: no cover
 
 REPO_ROOT = Path(__file__).parent.parent
 SCHEMA_PATH = REPO_ROOT / "schemas" / "runtime_lift_request.schema.json"
+REJECTED_PATTERNS_DOC_PATH = REPO_ROOT / "docs" / "15_REJECTED_RUNTIME_PATTERNS.md"
 TEMPLATE_PATH = REPO_ROOT / "docs" / "19_RUNTIME_EMBARGO_LIFT_PR_TEMPLATE.md"
 REQUIRED_NEGATIVE_TESTS = [
     "reject-rank-certificate",
@@ -67,6 +69,50 @@ FORBIDDEN_RUNTIME_ARTIFACTS = [
 
 def _load_schema() -> dict[str, Any]:
     return json.loads(SCHEMA_PATH.read_text(encoding="utf-8"))
+
+
+def _schema_forbidden_authorized_artifacts_enum() -> list[str]:
+    schema = _load_schema()
+    for rule in schema.get("allOf", []):
+        artifacts = (
+            rule.get("properties", {})
+            .get("authorized_artifacts", {})
+            .get("not", {})
+            .get("contains", {})
+            .get("enum")
+        )
+        if artifacts is not None:
+            return artifacts
+    raise AssertionError("schema-wide forbidden authorized_artifacts enum is missing")
+
+
+def _embargo_test_forbidden_artifacts() -> set[str]:
+    module_path = REPO_ROOT / "tests" / "test_runtime_antipatterns_embargo.py"
+    spec = importlib.util.spec_from_file_location(
+        "test_runtime_antipatterns_embargo",
+        module_path,
+    )
+    assert spec is not None
+    assert spec.loader is not None
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return {
+        str(path.relative_to(REPO_ROOT)).replace("\\", "/")
+        for path in module.FORBIDDEN_CANONICAL_RUNTIME_ARTIFACTS
+    }
+
+
+def _forbidden_artifact_path_variants(artifact: str) -> list[str]:
+    double_slash = artifact.replace("/", "//", 1) if "/" in artifact else f"safe//{artifact}"
+    backslash = artifact.replace("/", "\\", 1) if "/" in artifact else f"safe\\{artifact}"
+    return [
+        f"./{artifact}",
+        f" {artifact}",
+        f"{artifact} ",
+        double_slash,
+        backslash,
+        f"safe/../{artifact}",
+    ]
 
 
 def _validate_rule(key: str, value: Any, rule: dict[str, Any]) -> None:
@@ -173,6 +219,28 @@ def test_lift_request_template_lists_forbidden_runtime_paths():
     content = TEMPLATE_PATH.read_text(encoding="utf-8")
     for artifact in FORBIDDEN_RUNTIME_ARTIFACTS:
         assert artifact in content
+
+
+def test_rejected_patterns_doc_lists_forbidden_runtime_paths():
+    content = REJECTED_PATTERNS_DOC_PATH.read_text(encoding="utf-8")
+    for artifact in FORBIDDEN_RUNTIME_ARTIFACTS:
+        assert artifact in content
+
+
+def test_forbidden_runtime_artifact_lists_do_not_drift():
+    schema_artifacts = set(_schema_forbidden_authorized_artifacts_enum())
+    test_artifacts = set(FORBIDDEN_RUNTIME_ARTIFACTS)
+    embargo_artifacts = _embargo_test_forbidden_artifacts()
+    assert schema_artifacts == test_artifacts
+    assert embargo_artifacts == test_artifacts
+
+
+def test_forbidden_runtime_artifact_docs_do_not_drift():
+    rejected_patterns_content = REJECTED_PATTERNS_DOC_PATH.read_text(encoding="utf-8")
+    template_content = TEMPLATE_PATH.read_text(encoding="utf-8")
+    for artifact in FORBIDDEN_RUNTIME_ARTIFACTS:
+        assert artifact in rejected_patterns_content
+        assert artifact in template_content
 
 
 def test_schema_is_valid_draft_2020_12_or_valid_dict():
@@ -339,10 +407,16 @@ def test_all_lift_types_reject_forbidden_authorized_artifacts(
     [
         ("authorized_artifacts", "/abs/path.py"),
         ("authorized_artifacts", "../runtime/binding_kernel.py"),
+        ("authorized_artifacts", "./src/runtime/binding_kernel.py"),
+        ("authorized_artifacts", " src/runtime/binding_kernel.py"),
+        ("authorized_artifacts", "src/runtime/binding_kernel.py "),
         ("authorized_artifacts", "src\\windows\\path.py"),
         ("authorized_artifacts", "src//double/slash.py"),
         ("non_scope_artifacts", "/abs/path.py"),
         ("non_scope_artifacts", "../runtime/binding_kernel.py"),
+        ("non_scope_artifacts", "./src/runtime/binding_kernel.py"),
+        ("non_scope_artifacts", " src/runtime/binding_kernel.py"),
+        ("non_scope_artifacts", "src/runtime/binding_kernel.py "),
         ("non_scope_artifacts", "src\\windows\\path.py"),
         ("non_scope_artifacts", "src//double/slash.py"),
     ],
@@ -350,6 +424,24 @@ def test_all_lift_types_reject_forbidden_authorized_artifacts(
 def test_paths_reject_non_canonical_entries(field: str, value: str):
     payload = _valid_request()
     payload[field] = [value]
+    _assert_invalid(payload)
+
+
+@pytest.mark.parametrize("artifact", FORBIDDEN_RUNTIME_ARTIFACTS)
+def test_forbidden_authorized_artifact_path_variants_are_rejected(artifact: str):
+    for variant in _forbidden_artifact_path_variants(artifact):
+        payload = _valid_request()
+        payload["authorized_artifacts"] = [variant]
+        _assert_invalid(payload)
+
+
+@pytest.mark.parametrize("artifact", FORBIDDEN_RUNTIME_ARTIFACTS)
+def test_mixed_authorized_artifacts_reject_any_forbidden_item(artifact: str):
+    payload = _valid_request()
+    payload["authorized_artifacts"] = [
+        "docs/runtime_lift_audit_contract.md",
+        artifact,
+    ]
     _assert_invalid(payload)
 
 
