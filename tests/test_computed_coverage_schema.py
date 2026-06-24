@@ -1,6 +1,6 @@
-"""Schema-only guardrails for computed coverage cases (PR #58).
+"""Schema-only guardrails for computed coverage cases (PR #76).
 
-trace_ref: docs/09_COMPUTED_COVERAGE_CONSTITUTION.md Coverage Computation Law
+trace_ref: docs/09_COMPUTED_COVERAGE_CONSTITUTION.md Coverage Schema-Only Law
 """
 
 from __future__ import annotations
@@ -21,6 +21,7 @@ except ImportError:  # pragma: no cover - fallback for minimal environments
 
 REPO_ROOT = Path(__file__).parent.parent
 SCHEMA_PATH = REPO_ROOT / "schemas" / "coverage_case.schema.json"
+LEDGER_PATH = REPO_ROOT / "docs" / "17_RUNTIME_EMBARGO_READINESS_LEDGER.md"
 
 
 def _load_schema() -> dict[str, Any]:
@@ -132,10 +133,12 @@ def _minimal_valid_case() -> dict[str, Any]:
     return {
         "case_id": "case-001",
         "input_text": "example input",
-        "input_domain": "D1_DAL_ONLY",
-        "input_contract_ref": "docs/07_GATE_BRIDGE_CONSTITUTION.md#contract",
+        "source_domain": "D1_DAL_ONLY",
+        "target_domain": "D2_LAFZI_FORM",
+        "source_contract": "docs/10_DAL_ATOMIC_CONSTITUTION.md",
+        "target_contract": "docs/11_LAFZI_FORM_CONSTITUTION.md",
         "expected_verdict": "EXPECTED_ACCEPTED_CANDIDATE",
-        "required_contracts": ["docs/12_RUNTIME_EMBARGO_CONSTITUTION.md"],
+        "forbidden_outputs": ["computed_verdict"],
         "trace_ref": "docs/09_COMPUTED_COVERAGE_CONSTITUTION.md",
     }
 
@@ -147,12 +150,12 @@ def _assert_invalid(payload: dict[str, Any]) -> None:
 
 
 def test_schema_file_exists():
-    """trace_ref: docs/09_COMPUTED_COVERAGE_CONSTITUTION.md Coverage Computation Law."""
+    """trace_ref: docs/09_COMPUTED_COVERAGE_CONSTITUTION.md Coverage Schema-Only Law."""
     assert SCHEMA_PATH.exists()
 
 
 def test_schema_is_valid_draft_2020_12():
-    """trace_ref: docs/09_COMPUTED_COVERAGE_CONSTITUTION.md Coverage Computation Law."""
+    """trace_ref: docs/09_COMPUTED_COVERAGE_CONSTITUTION.md Coverage Schema-Only Law."""
     schema = _load_schema()
     if Draft202012Validator is not None:
         Draft202012Validator.check_schema(schema)
@@ -161,62 +164,98 @@ def test_schema_is_valid_draft_2020_12():
 
 
 def test_valid_minimal_expected_case_passes():
-    """trace_ref: docs/09_COMPUTED_COVERAGE_CONSTITUTION.md Coverage Computation Law."""
+    """trace_ref: docs/09_COMPUTED_COVERAGE_CONSTITUTION.md Coverage Schema-Only Law."""
     schema = _load_schema()
     _validate_payload(schema, _minimal_valid_case())
 
 
 def test_computed_verdict_is_rejected():
-    """trace_ref: docs/09_COMPUTED_COVERAGE_CONSTITUTION.md Coverage Computation Law."""
+    """trace_ref: docs/09_COMPUTED_COVERAGE_CONSTITUTION.md Coverage Schema-Only Law."""
     case = _minimal_valid_case() | {"computed_verdict": "manual"}
     _assert_invalid(case)
 
 
 def test_computed_verdict_capitalized_is_rejected():
-    """trace_ref: docs/09_COMPUTED_COVERAGE_CONSTITUTION.md Coverage Computation Law."""
+    """trace_ref: docs/09_COMPUTED_COVERAGE_CONSTITUTION.md Coverage Schema-Only Law."""
     case = _minimal_valid_case() | {"ComputedVerdict": "manual"}
     _assert_invalid(case)
 
 
 def test_mrk_defaults_is_rejected():
-    """trace_ref: docs/09_COMPUTED_COVERAGE_CONSTITUTION.md Coverage Computation Law."""
+    """trace_ref: docs/09_COMPUTED_COVERAGE_CONSTITUTION.md Coverage Schema-Only Law."""
     case = _minimal_valid_case() | {"mrk_defaults": {"identity_preserved": True}}
     _assert_invalid(case)
 
 
 def test_domain_proved_true_is_rejected():
-    """trace_ref: docs/09_COMPUTED_COVERAGE_CONSTITUTION.md Coverage Computation Law."""
+    """trace_ref: docs/09_COMPUTED_COVERAGE_CONSTITUTION.md Coverage Schema-Only Law."""
     case = _minimal_valid_case() | {"domain_proved": True}
     _assert_invalid(case)
 
 
+def test_unit_proved_true_is_rejected():
+    """trace_ref: docs/09_COMPUTED_COVERAGE_CONSTITUTION.md Coverage Schema-Only Law."""
+    case = _minimal_valid_case() | {"unit_proved": True}
+    _assert_invalid(case)
+
+
 def test_identity_preserved_true_is_rejected():
-    """trace_ref: docs/09_COMPUTED_COVERAGE_CONSTITUTION.md Coverage Computation Law."""
+    """trace_ref: docs/09_COMPUTED_COVERAGE_CONSTITUTION.md Coverage Schema-Only Law."""
     case = _minimal_valid_case() | {"identity_preserved": True}
     _assert_invalid(case)
 
 
+def test_trace_preserved_true_is_rejected():
+    """trace_ref: docs/09_COMPUTED_COVERAGE_CONSTITUTION.md Coverage Schema-Only Law."""
+    case = _minimal_valid_case() | {"trace_preserved": True}
+    _assert_invalid(case)
+
+
 def test_gate_passed_true_is_rejected():
-    """trace_ref: docs/09_COMPUTED_COVERAGE_CONSTITUTION.md Coverage Computation Law."""
+    """trace_ref: docs/09_COMPUTED_COVERAGE_CONSTITUTION.md Coverage Schema-Only Law."""
     case = _minimal_valid_case() | {"gate_passed": True}
     _assert_invalid(case)
 
 
+def test_is_preserved_true_is_rejected():
+    """trace_ref: docs/09_COMPUTED_COVERAGE_CONSTITUTION.md Coverage Schema-Only Law."""
+    case = _minimal_valid_case() | {"is_preserved": True}
+    _assert_invalid(case)
+
+
 def test_rank_certificate_is_rejected_if_rank_appears():
-    """trace_ref: docs/09_COMPUTED_COVERAGE_CONSTITUTION.md Coverage Computation Law."""
+    """trace_ref: docs/09_COMPUTED_COVERAGE_CONSTITUTION.md Coverage Schema-Only Law."""
     case = _minimal_valid_case() | {"rank": "CERTIFICATE"}
     _assert_invalid(case)
 
 
+def test_rank_rejected_is_rejected_if_rank_appears():
+    """trace_ref: docs/09_COMPUTED_COVERAGE_CONSTITUTION.md Coverage Schema-Only Law."""
+    case = _minimal_valid_case() | {"rank": "REJECTED"}
+    _assert_invalid(case)
+
+
+def test_authoritative_true_is_rejected():
+    """trace_ref: docs/09_COMPUTED_COVERAGE_CONSTITUTION.md Coverage Schema-Only Law."""
+    case = _minimal_valid_case() | {"authoritative": True}
+    _assert_invalid(case)
+
+
+def test_manual_dashboard_is_rejected():
+    """trace_ref: docs/09_COMPUTED_COVERAGE_CONSTITUTION.md Coverage Schema-Only Law."""
+    case = _minimal_valid_case() | {"manual_dashboard": {"total": 1}}
+    _assert_invalid(case)
+
+
 def test_expected_verdict_is_allowed():
-    """trace_ref: docs/09_COMPUTED_COVERAGE_CONSTITUTION.md Coverage Computation Law."""
+    """trace_ref: docs/09_COMPUTED_COVERAGE_CONSTITUTION.md Coverage Schema-Only Law."""
     schema = _load_schema()
     verdict_payloads = {
         "EXPECTED_ACCEPTED_CANDIDATE": {},
         "EXPECTED_BLOCKED": {"expected_failure_family": "EMBARGO_FAMILY"},
         "EXPECTED_RESIDUAL": {"expected_residual_policy": "KEEP_RESIDUALS"},
         "EXPECTED_BRIDGE_REQUIRED": {"required_bridges": ["D1_TO_D2_GATE"]},
-        "EXPECTED_PROOF_REQUIRED": {"expected_failure_family": "EMBARGO_FAMILY"},
+        "EXPECTED_PROOF_REQUIRED": {"required_proof_kinds": ["IdentityProof"]},
     }
     for expected_verdict, extra_fields in verdict_payloads.items():
         payload = _minimal_valid_case() | {"expected_verdict": expected_verdict} | extra_fields
@@ -224,19 +263,28 @@ def test_expected_verdict_is_allowed():
 
 
 def test_expected_blocked_requires_expected_failure_family():
-    """trace_ref: docs/09_COMPUTED_COVERAGE_CONSTITUTION.md Coverage Computation Law."""
+    """trace_ref: docs/09_COMPUTED_COVERAGE_CONSTITUTION.md Coverage Schema-Only Law."""
     case = _minimal_valid_case() | {"expected_verdict": "EXPECTED_BLOCKED"}
     _assert_invalid(case)
 
 
-def test_expected_proof_required_requires_expected_failure_family():
-    """trace_ref: docs/09_COMPUTED_COVERAGE_CONSTITUTION.md Coverage Computation Law."""
+def test_expected_proof_required_requires_required_proof_kinds():
+    """trace_ref: docs/09_COMPUTED_COVERAGE_CONSTITUTION.md Coverage Schema-Only Law."""
     case = _minimal_valid_case() | {"expected_verdict": "EXPECTED_PROOF_REQUIRED"}
     _assert_invalid(case)
 
 
+def test_expected_proof_required_requires_non_empty_required_proof_kinds():
+    """trace_ref: docs/09_COMPUTED_COVERAGE_CONSTITUTION.md Coverage Schema-Only Law."""
+    case = _minimal_valid_case() | {
+        "expected_verdict": "EXPECTED_PROOF_REQUIRED",
+        "required_proof_kinds": [],
+    }
+    _assert_invalid(case)
+
+
 def test_expected_failure_family_requires_non_empty_string_when_required():
-    """trace_ref: docs/09_COMPUTED_COVERAGE_CONSTITUTION.md Coverage Computation Law."""
+    """trace_ref: docs/09_COMPUTED_COVERAGE_CONSTITUTION.md Coverage Schema-Only Law."""
     case = _minimal_valid_case() | {
         "expected_verdict": "EXPECTED_BLOCKED",
         "expected_failure_family": "",
@@ -245,13 +293,13 @@ def test_expected_failure_family_requires_non_empty_string_when_required():
 
 
 def test_expected_residual_requires_expected_residual_policy():
-    """trace_ref: docs/09_COMPUTED_COVERAGE_CONSTITUTION.md Coverage Computation Law."""
+    """trace_ref: docs/09_COMPUTED_COVERAGE_CONSTITUTION.md Coverage Schema-Only Law."""
     case = _minimal_valid_case() | {"expected_verdict": "EXPECTED_RESIDUAL"}
     _assert_invalid(case)
 
 
 def test_expected_bridge_required_requires_non_empty_required_bridges():
-    """trace_ref: docs/09_COMPUTED_COVERAGE_CONSTITUTION.md Coverage Computation Law."""
+    """trace_ref: docs/09_COMPUTED_COVERAGE_CONSTITUTION.md Coverage Schema-Only Law."""
     missing_bridges_case = _minimal_valid_case() | {"expected_verdict": "EXPECTED_BRIDGE_REQUIRED"}
     _assert_invalid(missing_bridges_case)
 
@@ -262,7 +310,7 @@ def test_expected_bridge_required_requires_non_empty_required_bridges():
 def test_high_domains_are_allowed_as_labels_only_without_runtime_artifacts():
     """trace_ref: docs/12_RUNTIME_EMBARGO_CONSTITUTION.md Explicit Prohibitions."""
     schema = _load_schema()
-    case = _minimal_valid_case() | {"input_domain": "D6_HUKM"}
+    case = _minimal_valid_case() | {"target_domain": "D6_HUKM"}
     _validate_payload(schema, case)
     assert "labels only" in schema["description"]
     assert "docs/12_RUNTIME_EMBARGO_CONSTITUTION.md" in schema["description"]
@@ -278,41 +326,48 @@ def test_coverage_matrix_v0_1_yaml_does_not_exist():
     assert not forbidden.exists()
 
 
+def test_runtime_embargo_ledger_keeps_coverage_runtime_unauthorized():
+    """trace_ref: docs/12_RUNTIME_EMBARGO_CONSTITUTION.md Explicit Prohibitions."""
+    content = LEDGER_PATH.read_text(encoding="utf-8")
+    assert "| coverage_matrix_v0.1.yaml allowed | NOT AUTHORIZED |" in content
+    assert "Coverage matrix runtime is not authorized." in content
+
+
 def test_fallback_validator_accepts_minimal_valid_case(monkeypatch: pytest.MonkeyPatch):
-    """trace_ref: docs/09_COMPUTED_COVERAGE_CONSTITUTION.md Coverage Computation Law."""
+    """trace_ref: docs/09_COMPUTED_COVERAGE_CONSTITUTION.md Coverage Schema-Only Law."""
     monkeypatch.setattr("tests.test_computed_coverage_schema.Draft202012Validator", None)
     schema = _load_schema()
     _validate_payload(schema, _minimal_valid_case())
 
 
 def test_fallback_validator_rejects_forbidden_fields(monkeypatch: pytest.MonkeyPatch):
-    """trace_ref: docs/09_COMPUTED_COVERAGE_CONSTITUTION.md Coverage Computation Law."""
+    """trace_ref: docs/09_COMPUTED_COVERAGE_CONSTITUTION.md Coverage Schema-Only Law."""
     monkeypatch.setattr("tests.test_computed_coverage_schema.Draft202012Validator", None)
     _assert_invalid(_minimal_valid_case() | {"computed_verdict": "manual"})
 
 
 def test_fallback_requires_failure_family_for_expected_blocked(monkeypatch: pytest.MonkeyPatch):
-    """trace_ref: docs/09_COMPUTED_COVERAGE_CONSTITUTION.md Coverage Computation Law."""
+    """trace_ref: docs/09_COMPUTED_COVERAGE_CONSTITUTION.md Coverage Schema-Only Law."""
     monkeypatch.setattr("tests.test_computed_coverage_schema.Draft202012Validator", None)
     _assert_invalid(_minimal_valid_case() | {"expected_verdict": "EXPECTED_BLOCKED"})
 
 
-def test_fallback_requires_failure_family_for_expected_proof_required(
+def test_fallback_requires_proof_kinds_for_expected_proof_required(
     monkeypatch: pytest.MonkeyPatch,
 ):
-    """trace_ref: docs/09_COMPUTED_COVERAGE_CONSTITUTION.md Coverage Computation Law."""
+    """trace_ref: docs/09_COMPUTED_COVERAGE_CONSTITUTION.md Coverage Schema-Only Law."""
     monkeypatch.setattr("tests.test_computed_coverage_schema.Draft202012Validator", None)
     _assert_invalid(_minimal_valid_case() | {"expected_verdict": "EXPECTED_PROOF_REQUIRED"})
 
 
 def test_fallback_requires_residual_policy_for_expected_residual(monkeypatch: pytest.MonkeyPatch):
-    """trace_ref: docs/09_COMPUTED_COVERAGE_CONSTITUTION.md Coverage Computation Law."""
+    """trace_ref: docs/09_COMPUTED_COVERAGE_CONSTITUTION.md Coverage Schema-Only Law."""
     monkeypatch.setattr("tests.test_computed_coverage_schema.Draft202012Validator", None)
     _assert_invalid(_minimal_valid_case() | {"expected_verdict": "EXPECTED_RESIDUAL"})
 
 
 def test_fallback_requires_bridges_for_expected_bridge_required(monkeypatch: pytest.MonkeyPatch):
-    """trace_ref: docs/09_COMPUTED_COVERAGE_CONSTITUTION.md Coverage Computation Law."""
+    """trace_ref: docs/09_COMPUTED_COVERAGE_CONSTITUTION.md Coverage Schema-Only Law."""
     monkeypatch.setattr("tests.test_computed_coverage_schema.Draft202012Validator", None)
     _assert_invalid(_minimal_valid_case() | {"expected_verdict": "EXPECTED_BRIDGE_REQUIRED"})
 
@@ -320,12 +375,26 @@ def test_fallback_requires_bridges_for_expected_bridge_required(monkeypatch: pyt
 def test_fallback_rejects_empty_bridges_for_expected_bridge_required(
     monkeypatch: pytest.MonkeyPatch,
 ):
-    """trace_ref: docs/09_COMPUTED_COVERAGE_CONSTITUTION.md Coverage Computation Law."""
+    """trace_ref: docs/09_COMPUTED_COVERAGE_CONSTITUTION.md Coverage Schema-Only Law."""
     monkeypatch.setattr("tests.test_computed_coverage_schema.Draft202012Validator", None)
     _assert_invalid(
         _minimal_valid_case()
         | {
             "expected_verdict": "EXPECTED_BRIDGE_REQUIRED",
             "required_bridges": [],
+        }
+    )
+
+
+def test_fallback_rejects_empty_proof_kinds_for_expected_proof_required(
+    monkeypatch: pytest.MonkeyPatch,
+):
+    """trace_ref: docs/09_COMPUTED_COVERAGE_CONSTITUTION.md Coverage Schema-Only Law."""
+    monkeypatch.setattr("tests.test_computed_coverage_schema.Draft202012Validator", None)
+    _assert_invalid(
+        _minimal_valid_case()
+        | {
+            "expected_verdict": "EXPECTED_PROOF_REQUIRED",
+            "required_proof_kinds": [],
         }
     )
