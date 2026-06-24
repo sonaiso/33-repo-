@@ -68,6 +68,38 @@
 
 ---
 
+## Runtime Embargo Chain Reconciliation ✅ CURRENT
+
+**Authority**: `docs/12_RUNTIME_EMBARGO_CONSTITUTION.md`, `docs/13_FAILURE_ALIGNMENT_CONSTITUTION.md`, `docs/15_REJECTED_RUNTIME_PATTERNS.md`, and `docs/17_RUNTIME_EMBARGO_READINESS_LEDGER.md`.
+
+**Goal**: Reconcile the runtime embargo guard chain after PR #72–PR #74 without opening runtime authority.
+
+### Completed chain state
+
+- [x] PR #72 derived `REQUIRED_DOC_PHRASES` from `FORBIDDEN_CANONICAL_RUNTIME_ARTIFACTS`.
+- [x] PR #73 restored generic artifact-name checks for `binding_kernel.py` and `decision_engine.py`.
+- [x] PR #74 blocked legacy `l_protocol` runtime relocation paths.
+- [x] Euclidean Learning remains `AUDIT_SANDBOX_ONLY`.
+- [x] Euclidean Layer to Domain map remains audit-only.
+- [x] Rejected runtime patterns guard remains synchronized with the rejected-patterns document.
+
+### Current PR #75 objective
+
+- [x] Reconcile runtime embargo chain state in `docs/17_RUNTIME_EMBARGO_READINESS_LEDGER.md`.
+- [x] State DONE / PARTIAL / BLOCKED prerequisites without authorizing runtime.
+- [x] Preserve the next authorized track as Computed Coverage Schema Only or LAFZI-C2 Contract Refinement.
+
+### Still blocked
+
+- [ ] `binding_kernel.py`
+- [ ] `decision_engine.py`
+- [ ] `coverage_matrix_v0.1.yaml`
+- [ ] Runtime predicates/translators
+- [ ] Runtime domain opening
+- [ ] Kernel/decision authority
+
+---
+
 ## Phase 2 — L2 Closure 🔒 LOCKED
 
 **Blocked by**: Phase 1 (L1 must be fully closed).

@@ -60,6 +60,11 @@ L0 (Object Language)  →  L1 (Formal Description)  →  L2 (Logical)  →  L3 (
 
 See `docs/15_PROJECT_ROADMAP.md` for the full roadmap.
 
+Runtime Embargo chain status is reconciled in `docs/17_RUNTIME_EMBARGO_READINESS_LEDGER.md`.
+PR #72 derived rejected-pattern document phrases from the forbidden artifact list, PR #73 preserved generic artifact-name checks, and PR #74 blocked legacy `l_protocol` relocation paths.
+Runtime Embargo remains active: `binding_kernel.py`, `decision_engine.py`, `coverage_matrix_v0.1.yaml`, runtime predicates/translators, runtime domain opening, and kernel/decision authority remain blocked.
+Next authorized track is contract/schema-only: Computed Coverage Schema Only or LAFZI-C2 Contract Refinement.
+
 ---
 
 ## Mandatory Entity Fields (Rule 2)
