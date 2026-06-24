@@ -10,6 +10,8 @@ Origin: docs/00_MAQOOL_CONSTITUTION.md (all sections)
 """
 from __future__ import annotations
 
+import inspect
+
 import pytest
 
 from taaqqul_slot_geometry.constitution.failure_taxonomy import FailureCode
@@ -232,6 +234,51 @@ class TestTraceVerification(ConstitutionalRuntimeTest):
             weight_pattern="faala", root_letters=("k", "t", "b"),
         )
         assert ConstitutionalEngine.verify_identity_preserved(trace) is True
+
+    def test_trace_steps_have_identity_proof_refs(self) -> None:
+        """Trace identity results must be proof-reference backed.
+        Origin: §5 Rule 7."""
+        engine = ConstitutionalEngine()
+        _, trace = engine.full_pipeline(
+            consonant="k", vowel="fatha",
+            weight_pattern="faala", root_letters=("k", "t", "b"),
+        )
+        for step in trace:
+            assert step.identity_preserved is True
+            assert step.identity_proof_ref.startswith("proof:")
+
+    def test_trace_step_requires_identity_proof_ref(self) -> None:
+        """A recorded identity bool alone is insufficient.
+        Origin: §5 Rule 7."""
+        with pytest.raises(TypeError):
+            TraceStep(
+                step_number=1,
+                step_name="consonant+vowel → PhonemeUnit",
+                constitutional_ref="docs/00_MAQOOL_CONSTITUTION.md §3 (MCE-1)",
+                input_type="str",
+                output_type="PhonemeUnit",
+                identity_preserved=True,
+            )
+
+    def test_trace_step_rejects_empty_identity_proof_ref(self) -> None:
+        """TraceStep rejects missing proof-object references.
+        Origin: §5 Rule 7."""
+        with pytest.raises(ValueError, match=FailureCode.M_CX_01.value):
+            TraceStep(
+                step_number=1,
+                step_name="consonant+vowel → PhonemeUnit",
+                constitutional_ref="docs/00_MAQOOL_CONSTITUTION.md §3 (MCE-1)",
+                input_type="str",
+                output_type="PhonemeUnit",
+                identity_preserved=True,
+                identity_proof_ref="",
+            )
+
+    def test_trace_step_identity_preserved_has_no_default(self) -> None:
+        """identity_preserved remains recorded state without default proof value.
+        Origin: §5 Rule 7."""
+        parameter = inspect.signature(TraceStep).parameters["identity_preserved"]
+        assert parameter.default is inspect.Parameter.empty
 
     def test_trace_steps_have_constitutional_refs(self) -> None:
         """Every trace step has a non-empty constitutional_ref.

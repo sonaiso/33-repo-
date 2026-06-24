@@ -100,7 +100,9 @@ class TraceStep:
     output_type : str
         Type name of the output entity.
     identity_preserved : bool
-        Whether Identity(input) ⊆ Identity(output).
+        Recorded result: whether Identity(input) ⊆ Identity(output).
+    identity_proof_ref : str
+        Reference to the proof object backing the recorded identity result.
     trace_ref : str
         Constitutional reference for the trace itself.
     rank : str
@@ -115,6 +117,7 @@ class TraceStep:
     input_type: str
     output_type: str
     identity_preserved: bool
+    identity_proof_ref: str
     trace_ref: str = "docs/00_MAQOOL_CONSTITUTION.md §5 Rule 7"
     rank: str = "CANDIDATE"
     residuals: FrozenSet[str] = field(default_factory=frozenset)
@@ -135,6 +138,10 @@ class TraceStep:
         if not isinstance(self.identity_preserved, bool):
             raise ValueError(
                 f"{FailureCode.M_CX_01.value}: identity_preserved must be bool"
+            )
+        if not isinstance(self.identity_proof_ref, str) or not self.identity_proof_ref:
+            raise ValueError(
+                f"{FailureCode.M_CX_01.value}: identity_proof_ref is required"
             )
         if not self.trace_ref:
             raise ValueError(FailureCode.M_CX_12.value)
@@ -397,6 +404,7 @@ class ConstitutionalEngine:
             input_type="str",
             output_type="PhonemeUnit",
             identity_preserved=True,
+            identity_proof_ref="proof:trace-step-1-phoneme-identity",
         ))
 
         # Step 2: Syllable
@@ -408,6 +416,7 @@ class ConstitutionalEngine:
             input_type="PhonemeUnit",
             output_type="Syllable",
             identity_preserved=True,
+            identity_proof_ref="proof:trace-step-2-syllable-identity",
         ))
 
         # Step 3: Utterance
@@ -419,6 +428,7 @@ class ConstitutionalEngine:
             input_type="Syllable",
             output_type="Utterance",
             identity_preserved=True,
+            identity_proof_ref="proof:trace-step-3-utterance-identity",
         ))
 
         # Step 4: Signifier
@@ -430,6 +440,7 @@ class ConstitutionalEngine:
             input_type="Utterance",
             output_type="Signifier",
             identity_preserved=True,
+            identity_proof_ref="proof:trace-step-4-signifier-identity",
         ))
 
         # Step 5: JamidUnit
@@ -441,6 +452,7 @@ class ConstitutionalEngine:
             input_type="Signifier",
             output_type="JamidUnit",
             identity_preserved=True,
+            identity_proof_ref="proof:trace-step-5-jamid-identity",
         ))
 
         return jamid, trace

@@ -43,7 +43,7 @@ No runtime kernel, no decision engine, no runtime coverage matrix, no runtime pr
 | ProofObject failure-policy alignment | DONE | `docs/16_PROOF_FAILURE_POLICY_ALIGNMENT.md`, tests | audit-only |
 | Coverage schema | DONE | `schemas/coverage_case.schema.json`, coverage schema tests | schema-only |
 | Anti-pattern guard green | DONE | `tests/test_runtime_antipatterns_embargo.py`, PR #63/#64 remediation | no runtime |
-| TraceStep identity ProofObject-backed | PARTIAL | PR #64 remediation | explicit bool only |
+| TraceStep identity ProofObject-backed | PASS | PR #66 TraceStep requires explicit `identity_preserved` and required `identity_proof_ref` | identity_preserved is recorded verdict, not proof; runtime authority: none |
 | Runtime kernel allowed | NOT AUTHORIZED | embargo active | blocked |
 | decision_engine.py allowed | NOT AUTHORIZED | embargo active | blocked |
 | coverage_matrix_v0.1.yaml allowed | NOT AUTHORIZED | embargo active | blocked |
@@ -53,3 +53,12 @@ Runtime Embargo remains active.
 Kernel is not authorized.
 Decision engine is not authorized.
 Coverage matrix runtime is not authorized.
+
+## TraceStep identity proof backing
+TraceStep identity ProofObject-backed: PASS.
+Evidence:
+- TraceStep requires explicit `identity_preserved`.
+- TraceStep requires `identity_proof_ref`.
+- `identity_preserved` is treated as recorded verdict, not proof.
+Runtime authority: none.
+Embargo status: still active.
