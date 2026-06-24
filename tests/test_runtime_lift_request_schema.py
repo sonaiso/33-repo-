@@ -46,8 +46,13 @@ def _validate_rule(key: str, value: Any, rule: dict[str, Any]) -> None:
             raise ValueError(f"{key} must be array")
         if "minItems" in rule and len(value) < rule["minItems"]:
             raise ValueError(f"{key} must satisfy minItems")
-        if rule.get("uniqueItems") and len(value) != len(set(value)):
-            raise ValueError(f"{key} must contain unique items")
+        if rule.get("uniqueItems"):
+            try:
+                unique_count = len(set(value))
+            except TypeError as exc:
+                raise ValueError(f"{key} items must be hashable for uniqueness") from exc
+            if len(value) != unique_count:
+                raise ValueError(f"{key} must contain unique items")
         item_rule = rule.get("items", {})
         for item in value:
             _validate_rule(key, item, item_rule)
@@ -140,6 +145,10 @@ def test_lift_request_cannot_use_glob_artifacts():
     _assert_invalid(_valid_request() | {"authorized_artifacts": ["src/**/*.py"]})
 
 
+def test_non_scope_artifacts_cannot_use_glob_artifacts():
+    _assert_invalid(_valid_request() | {"non_scope_artifacts": ["src/**/*.py"]})
+
+
 def test_lift_request_cannot_be_blanket_lift():
     _assert_invalid(_valid_request() | {"blanket_lift": True})
 
@@ -178,4 +187,7 @@ def test_rank_policy_cannot_allow_certificate():
 def test_binding_kernel_remains_forbidden_without_explicit_lift_authorization():
     payload = _valid_request()
     assert "src/taaqqul_slot_geometry/runtime/binding_kernel.py" in payload["non_scope_artifacts"]
+
+
+def test_binding_kernel_file_not_created():
     assert not (REPO_ROOT / "src" / "taaqqul_slot_geometry" / "runtime" / "binding_kernel.py").exists()
