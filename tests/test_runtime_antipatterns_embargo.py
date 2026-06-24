@@ -25,6 +25,11 @@ FORBIDDEN_CANONICAL_RUNTIME_ARTIFACTS = (
     REPO_ROOT / "data" / "coverage_matrix_v0.1.yaml",
     REPO_ROOT / "schemas" / "coverage_matrix_v0.1.yaml",
     REPO_ROOT / "tests" / "test_binding_constraints.py",
+    REPO_ROOT / "l_protocol" / "contracts" / "binding_instructions.py",
+    REPO_ROOT / "l_protocol" / "engine" / "binding_kernel.py",
+    REPO_ROOT / "l_protocol" / "engine" / "decision_engine.py",
+    REPO_ROOT / "l_protocol" / "coverage_matrix_v0.1.yaml",
+    REPO_ROOT / "l_protocol" / "tests" / "test_binding_constraints.py",
 )
 CLASS_FIELD_LOOKAHEAD_LIMIT = 400
 
