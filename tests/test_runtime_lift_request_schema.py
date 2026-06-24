@@ -242,7 +242,7 @@ def test_schema_runtime_requires_domain_opening_none():
     )
 
 
-def test_bridge_evaluator_cannot_open_relation_domain_yet():
+def test_bridge_evaluator_cannot_open_domain():
     _assert_invalid(
         _valid_request()
         | {
@@ -295,23 +295,6 @@ def test_rank_policy_cannot_allow_certificate():
     FORBIDDEN_RUNTIME_ARTIFACTS,
 )
 def test_schema_runtime_rejects_all_rejected_runtime_artifact_paths(artifact: str):
-    payload = _valid_request()
-    payload["lift_type"] = "LIFT_TYPE_SCHEMA_RUNTIME"
-    payload["authorized_artifacts"] = [artifact]
-    _assert_invalid(payload)
-
-
-@pytest.mark.parametrize(
-    "artifact",
-    [
-        "l_protocol/engine/binding_kernel.py",
-        "l_protocol/engine/decision_engine.py",
-        "l_protocol/contracts/binding_instructions.py",
-        "l_protocol/coverage_matrix_v0.1.yaml",
-        "l_protocol/tests/test_binding_constraints.py",
-    ],
-)
-def test_l_protocol_legacy_runtime_artifacts_are_rejected(artifact: str):
     payload = _valid_request()
     payload["lift_type"] = "LIFT_TYPE_SCHEMA_RUNTIME"
     payload["authorized_artifacts"] = [artifact]
