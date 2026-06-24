@@ -66,40 +66,28 @@
       }
     },
     {
-      "if": {
-        "properties": {
-          "lift_type": {
-            "const": "LIFT_TYPE_SCHEMA_RUNTIME"
-          }
-        }
-      },
-      "then": {
-        "properties": {
-          "domain_opening": {
-            "const": "none"
-          },
-          "authorized_artifacts": {
-            "not": {
-              "contains": {
-                "enum": [
-                  "src/taaqqul_slot_geometry/L1/binding_kernel.py",
-                  "src/taaqqul_slot_geometry/L1/decision_engine.py",
-                  "src/taaqqul_slot_geometry/runtime/binding_kernel.py",
-                  "src/taaqqul_slot_geometry/runtime/decision_engine.py",
-                  "src/taaqqul_slot_geometry/core/binding_kernel.py",
-                  "src/taaqqul_slot_geometry/core/decision_engine.py",
-                  "coverage_matrix_v0.1.yaml",
-                  "docs/coverage_matrix_v0.1.yaml",
-                  "data/coverage_matrix_v0.1.yaml",
-                  "schemas/coverage_matrix_v0.1.yaml",
-                  "tests/test_binding_constraints.py",
-                  "l_protocol/engine/binding_kernel.py",
-                  "l_protocol/engine/decision_engine.py",
-                  "l_protocol/contracts/binding_instructions.py",
-                  "l_protocol/coverage_matrix_v0.1.yaml",
-                  "l_protocol/tests/test_binding_constraints.py"
-                ]
-              }
+      "properties": {
+        "authorized_artifacts": {
+          "not": {
+            "contains": {
+              "enum": [
+                "src/taaqqul_slot_geometry/L1/binding_kernel.py",
+                "src/taaqqul_slot_geometry/L1/decision_engine.py",
+                "src/taaqqul_slot_geometry/runtime/binding_kernel.py",
+                "src/taaqqul_slot_geometry/runtime/decision_engine.py",
+                "src/taaqqul_slot_geometry/core/binding_kernel.py",
+                "src/taaqqul_slot_geometry/core/decision_engine.py",
+                "coverage_matrix_v0.1.yaml",
+                "docs/coverage_matrix_v0.1.yaml",
+                "data/coverage_matrix_v0.1.yaml",
+                "schemas/coverage_matrix_v0.1.yaml",
+                "tests/test_binding_constraints.py",
+                "l_protocol/engine/binding_kernel.py",
+                "l_protocol/engine/decision_engine.py",
+                "l_protocol/contracts/binding_instructions.py",
+                "l_protocol/coverage_matrix_v0.1.yaml",
+                "l_protocol/tests/test_binding_constraints.py"
+              ]
             }
           }
         }

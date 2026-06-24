@@ -31,6 +31,20 @@ REQUIRED_NEGATIVE_TESTS = [
     "reject-domain-open-without-bridge",
     "reject-manual-computed-verdict",
 ]
+LIFT_TYPES = [
+    "LIFT_TYPE_SCHEMA_RUNTIME",
+    "LIFT_TYPE_PROOF_EVALUATOR",
+    "LIFT_TYPE_BRIDGE_EVALUATOR",
+    "LIFT_TYPE_COVERAGE_RUNNER",
+    "LIFT_TYPE_KERNEL",
+]
+NON_NONE_DOMAIN_OPENINGS = [
+    "D3_LEXICAL_MADLUL",
+    "D4_RELATION",
+    "D5_IFADAH",
+    "D6_HUKM",
+    "D7_TANZIL",
+]
 FORBIDDEN_RUNTIME_ARTIFACTS = [
     "src/taaqqul_slot_geometry/L1/binding_kernel.py",
     "src/taaqqul_slot_geometry/L1/decision_engine.py",
@@ -282,6 +296,18 @@ def test_kernel_lift_cannot_open_domain():
     )
 
 
+@pytest.mark.parametrize("lift_type", LIFT_TYPES)
+@pytest.mark.parametrize("domain_opening", NON_NONE_DOMAIN_OPENINGS)
+def test_all_lift_types_require_domain_opening_none(
+    lift_type: str,
+    domain_opening: str,
+):
+    payload = _valid_request()
+    payload["lift_type"] = lift_type
+    payload["domain_opening"] = domain_opening
+    _assert_invalid(payload)
+
+
 def test_domain_opening_rejects_implicit_value():
     _assert_invalid(_valid_request() | {"domain_opening": "implicit_domain"})
 
@@ -291,12 +317,19 @@ def test_rank_policy_cannot_allow_certificate():
 
 
 @pytest.mark.parametrize(
+    "lift_type",
+    LIFT_TYPES,
+)
+@pytest.mark.parametrize(
     "artifact",
     FORBIDDEN_RUNTIME_ARTIFACTS,
 )
-def test_schema_runtime_rejects_all_rejected_runtime_artifact_paths(artifact: str):
+def test_all_lift_types_reject_forbidden_authorized_artifacts(
+    lift_type: str,
+    artifact: str,
+):
     payload = _valid_request()
-    payload["lift_type"] = "LIFT_TYPE_SCHEMA_RUNTIME"
+    payload["lift_type"] = lift_type
     payload["authorized_artifacts"] = [artifact]
     _assert_invalid(payload)
 
