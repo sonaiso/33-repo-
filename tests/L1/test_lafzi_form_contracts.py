@@ -27,6 +27,7 @@ from taaqqul_slot_geometry.L1.lafzi_form import (
     TriliteralJamidFormCandidate,
     WordFormCandidate,
 )
+from taaqqul_slot_geometry.core.rank import Rank
 
 
 def _root_payload() -> dict:
@@ -140,9 +141,23 @@ def test_lafzi_entities_keep_candidate_rank(entity_cls, payload_factory):
 
 
 @pytest.mark.parametrize("entity_cls,payload_factory", ALL_ENTITIES)
+def test_lafzi_entities_accept_explicit_candidate_string_rank(entity_cls, payload_factory):
+    entity = entity_cls(**payload_factory(), rank="CANDIDATE")
+    assert entity.rank == "CANDIDATE"
+
+
+@pytest.mark.parametrize("entity_cls,payload_factory", ALL_ENTITIES)
+def test_lafzi_entities_accept_rank_enum_as_string_subtype(entity_cls, payload_factory):
+    entity = entity_cls(**payload_factory(), rank=Rank.CANDIDATE)
+    assert entity.rank == "CANDIDATE"
+
+
+@pytest.mark.parametrize("entity_cls,payload_factory", ALL_ENTITIES)
 def test_lafzi_entities_reject_rank_promotion(entity_cls, payload_factory):
     with pytest.raises(ValueError, match=FailureCode.M_01_16.value):
         entity_cls(**payload_factory(), rank="CERTIFIED")  # type: ignore[arg-type]
+    with pytest.raises(ValueError, match=FailureCode.M_01_16.value):
+        entity_cls(**payload_factory(), rank="Rank.CANDIDATE")  # type: ignore[arg-type]
 
 
 @pytest.mark.parametrize("entity_cls,payload_factory", ALL_ENTITIES)
