@@ -46,6 +46,8 @@ def _validate_rule(key: str, value: Any, rule: dict[str, Any]) -> None:
                 raise ValueError(f"{key} array items must be strings")
             if "minLength" in item_rule and len(item) < item_rule["minLength"]:
                 raise ValueError(f"{key} array items must satisfy minLength")
+            if "enum" in item_rule and item not in item_rule["enum"]:
+                raise ValueError(f"{key} array items must be one of enum values")
 
     if "enum" in rule and value not in rule["enum"]:
         raise ValueError(f"{key} must be one of enum values")
@@ -283,6 +285,15 @@ def test_expected_proof_required_requires_non_empty_required_proof_kinds():
     _assert_invalid(case)
 
 
+def test_expected_proof_required_rejects_unknown_proof_kind():
+    """trace_ref: docs/09_COMPUTED_COVERAGE_CONSTITUTION.md Coverage Schema-Only Law."""
+    case = _minimal_valid_case() | {
+        "expected_verdict": "EXPECTED_PROOF_REQUIRED",
+        "required_proof_kinds": ["AdHocProof"],
+    }
+    _assert_invalid(case)
+
+
 def test_expected_failure_family_requires_non_empty_string_when_required():
     """trace_ref: docs/09_COMPUTED_COVERAGE_CONSTITUTION.md Coverage Schema-Only Law."""
     case = _minimal_valid_case() | {
@@ -418,5 +429,19 @@ def test_fallback_rejects_empty_proof_kinds_for_expected_proof_required(
         | {
             "expected_verdict": "EXPECTED_PROOF_REQUIRED",
             "required_proof_kinds": [],
+        }
+    )
+
+
+def test_fallback_rejects_unknown_proof_kind_for_expected_proof_required(
+    monkeypatch: pytest.MonkeyPatch,
+):
+    """trace_ref: docs/09_COMPUTED_COVERAGE_CONSTITUTION.md Coverage Schema-Only Law."""
+    monkeypatch.setattr("tests.test_computed_coverage_schema.Draft202012Validator", None)
+    _assert_invalid(
+        _minimal_valid_case()
+        | {
+            "expected_verdict": "EXPECTED_PROOF_REQUIRED",
+            "required_proof_kinds": ["AdHocProof"],
         }
     )

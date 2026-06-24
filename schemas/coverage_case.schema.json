@@ -52,10 +52,12 @@
     },
     "source_contract": {
       "type": "string",
+      "description": "Constitutional document or contract reference governing the source-domain label under Runtime Embargo.",
       "minLength": 1
     },
     "target_contract": {
       "type": "string",
+      "description": "Constitutional document or contract reference governing the target-domain label under Runtime Embargo.",
       "minLength": 1
     },
     "expected_verdict": {
@@ -80,6 +82,14 @@
       "type": "array",
       "items": {
         "type": "string",
+        "enum": [
+          "MRKProof",
+          "IdentityProof",
+          "GateProof",
+          "BridgeProof",
+          "EvidenceProof",
+          "CoverageProof"
+        ],
         "minLength": 1
       }
     },
@@ -263,6 +273,14 @@
             "type": "array",
             "items": {
               "type": "string",
+              "enum": [
+                "MRKProof",
+                "IdentityProof",
+                "GateProof",
+                "BridgeProof",
+                "EvidenceProof",
+                "CoverageProof"
+              ],
               "minLength": 1
             },
             "minItems": 1
