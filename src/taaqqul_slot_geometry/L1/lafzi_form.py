@@ -27,7 +27,11 @@ LAFZI_FORM_FORBIDDEN_OUTPUTS: Tuple[str, ...] = (
     "TANZIL",
 )
 LAFZI_FORM_FORBIDDEN_OUTPUTS_SET = frozenset(LAFZI_FORM_FORBIDDEN_OUTPUTS)
-TRACE_REF = "docs/11_LAFZI_FORM_CONSTITUTION.md §Entry constraints"
+TRACE_REF = "docs/11_LAFZI_FORM_CONSTITUTION.md §LAFZI-C2 Contract Refinement"
+SOURCE_CONTRACT_REF = "SurfaceSkeletonCandidate"
+FORM_CONTRACT_STAGE = "LAFZI_C2"
+FORM_ONLY_STATUS = "FORM_ONLY"
+NO_ADDITION = "NO_ADDITION"
 
 
 def _validate_common(
@@ -37,7 +41,10 @@ def _validate_common(
     domain_id: DomainID,
     source_domain_id: DomainID,
     source_surface_ref: str,
+    source_contract_ref: str,
     required_bridge_ref: str,
+    form_contract_stage: str,
+    form_only_status: str,
     forbidden_outputs: Tuple[str, ...],
     proof_object_ref: str,
     proof_trace_ref: str,
@@ -52,13 +59,29 @@ def _validate_common(
         raise ValueError(FailureCode.M_00_09.value)
     if not source_surface_ref:
         raise ValueError(FailureCode.M_00_22.value)
+    if source_contract_ref != SOURCE_CONTRACT_REF:
+        raise ValueError(FailureCode.M_00_22.value)
     if required_bridge_ref != "DalToLafziBridgeSpec":
+        raise ValueError(FailureCode.M_00_22.value)
+    if form_contract_stage != FORM_CONTRACT_STAGE:
+        raise ValueError(FailureCode.M_00_22.value)
+    if form_only_status != FORM_ONLY_STATUS:
         raise ValueError(FailureCode.M_00_22.value)
     if not forbidden_outputs:
         raise ValueError(FailureCode.M_00_22.value)
     if not set(forbidden_outputs).issuperset(LAFZI_FORM_FORBIDDEN_OUTPUTS_SET):
         raise ValueError(FailureCode.M_00_22.value)
     if not proof_object_ref and not proof_trace_ref:
+        raise ValueError(FailureCode.M_00_22.value)
+
+
+def _validate_arity(arity: int, allowed: FrozenSet[int]) -> None:
+    if arity not in allowed:
+        raise ValueError(FailureCode.M_00_22.value)
+
+
+def _validate_no_addition(addition_status: str) -> None:
+    if addition_status != NO_ADDITION:
         raise ValueError(FailureCode.M_00_22.value)
 
 
@@ -70,7 +93,11 @@ class RootFormCandidate:
     lexical_root_ref: str = ""
     proof_object_ref: str = ""
     proof_trace_ref: str = ""
+    source_contract_ref: str = SOURCE_CONTRACT_REF
     required_bridge_ref: str = "DalToLafziBridgeSpec"
+    form_contract_stage: str = FORM_CONTRACT_STAGE
+    form_only_status: str = FORM_ONLY_STATUS
+    arity: int = 3
     source_domain_id: DomainID = DomainID.D1_DAL_ONLY
     domain_id: DomainID = DomainID.D2_LAFZI_FORM
     forbidden_outputs: Tuple[str, ...] = LAFZI_FORM_FORBIDDEN_OUTPUTS
@@ -83,13 +110,17 @@ class RootFormCandidate:
             raise ValueError(FailureCode.M_00_22.value)
         if self.lexical_root_ref:
             raise ValueError(FailureCode.M_00_22.value)
+        _validate_arity(self.arity, frozenset({3, 4}))
         _validate_common(
             trace_ref=self.trace_ref,
             rank=self.rank,
             domain_id=self.domain_id,
             source_domain_id=self.source_domain_id,
             source_surface_ref=self.source_surface_ref,
+            source_contract_ref=self.source_contract_ref,
             required_bridge_ref=self.required_bridge_ref,
+            form_contract_stage=self.form_contract_stage,
+            form_only_status=self.form_only_status,
             forbidden_outputs=self.forbidden_outputs,
             proof_object_ref=self.proof_object_ref,
             proof_trace_ref=self.proof_trace_ref,
@@ -104,7 +135,10 @@ class PatternFormCandidate:
     lexical_meaning_ref: str = ""
     proof_object_ref: str = ""
     proof_trace_ref: str = ""
+    source_contract_ref: str = SOURCE_CONTRACT_REF
     required_bridge_ref: str = "DalToLafziBridgeSpec"
+    form_contract_stage: str = FORM_CONTRACT_STAGE
+    form_only_status: str = FORM_ONLY_STATUS
     source_domain_id: DomainID = DomainID.D1_DAL_ONLY
     domain_id: DomainID = DomainID.D2_LAFZI_FORM
     forbidden_outputs: Tuple[str, ...] = LAFZI_FORM_FORBIDDEN_OUTPUTS
@@ -123,7 +157,10 @@ class PatternFormCandidate:
             domain_id=self.domain_id,
             source_domain_id=self.source_domain_id,
             source_surface_ref=self.source_surface_ref,
+            source_contract_ref=self.source_contract_ref,
             required_bridge_ref=self.required_bridge_ref,
+            form_contract_stage=self.form_contract_stage,
+            form_only_status=self.form_only_status,
             forbidden_outputs=self.forbidden_outputs,
             proof_object_ref=self.proof_object_ref,
             proof_trace_ref=self.proof_trace_ref,
@@ -137,7 +174,10 @@ class WordFormCandidate:
     source_surface_ref: str
     proof_object_ref: str = ""
     proof_trace_ref: str = ""
+    source_contract_ref: str = SOURCE_CONTRACT_REF
     required_bridge_ref: str = "DalToLafziBridgeSpec"
+    form_contract_stage: str = FORM_CONTRACT_STAGE
+    form_only_status: str = FORM_ONLY_STATUS
     source_domain_id: DomainID = DomainID.D1_DAL_ONLY
     domain_id: DomainID = DomainID.D2_LAFZI_FORM
     forbidden_outputs: Tuple[str, ...] = LAFZI_FORM_FORBIDDEN_OUTPUTS
@@ -154,7 +194,10 @@ class WordFormCandidate:
             domain_id=self.domain_id,
             source_domain_id=self.source_domain_id,
             source_surface_ref=self.source_surface_ref,
+            source_contract_ref=self.source_contract_ref,
             required_bridge_ref=self.required_bridge_ref,
+            form_contract_stage=self.form_contract_stage,
+            form_only_status=self.form_only_status,
             forbidden_outputs=self.forbidden_outputs,
             proof_object_ref=self.proof_object_ref,
             proof_trace_ref=self.proof_trace_ref,
@@ -170,7 +213,12 @@ class BareTriliteralVerbFormCandidate:
     isnad_ref: str = ""
     proof_object_ref: str = ""
     proof_trace_ref: str = ""
+    addition_status: str = NO_ADDITION
+    source_contract_ref: str = SOURCE_CONTRACT_REF
     required_bridge_ref: str = "DalToLafziBridgeSpec"
+    form_contract_stage: str = FORM_CONTRACT_STAGE
+    form_only_status: str = FORM_ONLY_STATUS
+    arity: int = 3
     source_domain_id: DomainID = DomainID.D1_DAL_ONLY
     domain_id: DomainID = DomainID.D2_LAFZI_FORM
     forbidden_outputs: Tuple[str, ...] = LAFZI_FORM_FORBIDDEN_OUTPUTS
@@ -183,13 +231,18 @@ class BareTriliteralVerbFormCandidate:
             raise ValueError(FailureCode.M_00_22.value)
         if self.transitivity_profile_ref or self.isnad_ref:
             raise ValueError(FailureCode.M_00_22.value)
+        _validate_arity(self.arity, frozenset({3}))
+        _validate_no_addition(self.addition_status)
         _validate_common(
             trace_ref=self.trace_ref,
             rank=self.rank,
             domain_id=self.domain_id,
             source_domain_id=self.source_domain_id,
             source_surface_ref=self.source_surface_ref,
+            source_contract_ref=self.source_contract_ref,
             required_bridge_ref=self.required_bridge_ref,
+            form_contract_stage=self.form_contract_stage,
+            form_only_status=self.form_only_status,
             forbidden_outputs=self.forbidden_outputs,
             proof_object_ref=self.proof_object_ref,
             proof_trace_ref=self.proof_trace_ref,
@@ -205,7 +258,12 @@ class BareQuadriliteralVerbFormCandidate:
     isnad_ref: str = ""
     proof_object_ref: str = ""
     proof_trace_ref: str = ""
+    addition_status: str = NO_ADDITION
+    source_contract_ref: str = SOURCE_CONTRACT_REF
     required_bridge_ref: str = "DalToLafziBridgeSpec"
+    form_contract_stage: str = FORM_CONTRACT_STAGE
+    form_only_status: str = FORM_ONLY_STATUS
+    arity: int = 4
     source_domain_id: DomainID = DomainID.D1_DAL_ONLY
     domain_id: DomainID = DomainID.D2_LAFZI_FORM
     forbidden_outputs: Tuple[str, ...] = LAFZI_FORM_FORBIDDEN_OUTPUTS
@@ -218,13 +276,18 @@ class BareQuadriliteralVerbFormCandidate:
             raise ValueError(FailureCode.M_00_22.value)
         if self.transitivity_profile_ref or self.isnad_ref:
             raise ValueError(FailureCode.M_00_22.value)
+        _validate_arity(self.arity, frozenset({4}))
+        _validate_no_addition(self.addition_status)
         _validate_common(
             trace_ref=self.trace_ref,
             rank=self.rank,
             domain_id=self.domain_id,
             source_domain_id=self.source_domain_id,
             source_surface_ref=self.source_surface_ref,
+            source_contract_ref=self.source_contract_ref,
             required_bridge_ref=self.required_bridge_ref,
+            form_contract_stage=self.form_contract_stage,
+            form_only_status=self.form_only_status,
             forbidden_outputs=self.forbidden_outputs,
             proof_object_ref=self.proof_object_ref,
             proof_trace_ref=self.proof_trace_ref,
@@ -238,7 +301,12 @@ class TriliteralJamidFormCandidate:
     source_surface_ref: str
     proof_object_ref: str = ""
     proof_trace_ref: str = ""
+    addition_status: str = NO_ADDITION
+    source_contract_ref: str = SOURCE_CONTRACT_REF
     required_bridge_ref: str = "DalToLafziBridgeSpec"
+    form_contract_stage: str = FORM_CONTRACT_STAGE
+    form_only_status: str = FORM_ONLY_STATUS
+    arity: int = 3
     source_domain_id: DomainID = DomainID.D1_DAL_ONLY
     domain_id: DomainID = DomainID.D2_LAFZI_FORM
     forbidden_outputs: Tuple[str, ...] = LAFZI_FORM_FORBIDDEN_OUTPUTS
@@ -249,13 +317,18 @@ class TriliteralJamidFormCandidate:
     def __post_init__(self) -> None:
         if not self.candidate_id or not self.jamid_form:
             raise ValueError(FailureCode.M_00_22.value)
+        _validate_arity(self.arity, frozenset({3}))
+        _validate_no_addition(self.addition_status)
         _validate_common(
             trace_ref=self.trace_ref,
             rank=self.rank,
             domain_id=self.domain_id,
             source_domain_id=self.source_domain_id,
             source_surface_ref=self.source_surface_ref,
+            source_contract_ref=self.source_contract_ref,
             required_bridge_ref=self.required_bridge_ref,
+            form_contract_stage=self.form_contract_stage,
+            form_only_status=self.form_only_status,
             forbidden_outputs=self.forbidden_outputs,
             proof_object_ref=self.proof_object_ref,
             proof_trace_ref=self.proof_trace_ref,
@@ -269,7 +342,12 @@ class QuadriliteralJamidFormCandidate:
     source_surface_ref: str
     proof_object_ref: str = ""
     proof_trace_ref: str = ""
+    addition_status: str = NO_ADDITION
+    source_contract_ref: str = SOURCE_CONTRACT_REF
     required_bridge_ref: str = "DalToLafziBridgeSpec"
+    form_contract_stage: str = FORM_CONTRACT_STAGE
+    form_only_status: str = FORM_ONLY_STATUS
+    arity: int = 4
     source_domain_id: DomainID = DomainID.D1_DAL_ONLY
     domain_id: DomainID = DomainID.D2_LAFZI_FORM
     forbidden_outputs: Tuple[str, ...] = LAFZI_FORM_FORBIDDEN_OUTPUTS
@@ -280,13 +358,18 @@ class QuadriliteralJamidFormCandidate:
     def __post_init__(self) -> None:
         if not self.candidate_id or not self.jamid_form:
             raise ValueError(FailureCode.M_00_22.value)
+        _validate_arity(self.arity, frozenset({4}))
+        _validate_no_addition(self.addition_status)
         _validate_common(
             trace_ref=self.trace_ref,
             rank=self.rank,
             domain_id=self.domain_id,
             source_domain_id=self.source_domain_id,
             source_surface_ref=self.source_surface_ref,
+            source_contract_ref=self.source_contract_ref,
             required_bridge_ref=self.required_bridge_ref,
+            form_contract_stage=self.form_contract_stage,
+            form_only_status=self.form_only_status,
             forbidden_outputs=self.forbidden_outputs,
             proof_object_ref=self.proof_object_ref,
             proof_trace_ref=self.proof_trace_ref,
@@ -301,7 +384,10 @@ class MasdarFormCandidate:
     masdar_meaning_ref: str = ""
     proof_object_ref: str = ""
     proof_trace_ref: str = ""
+    source_contract_ref: str = SOURCE_CONTRACT_REF
     required_bridge_ref: str = "DalToLafziBridgeSpec"
+    form_contract_stage: str = FORM_CONTRACT_STAGE
+    form_only_status: str = FORM_ONLY_STATUS
     source_domain_id: DomainID = DomainID.D1_DAL_ONLY
     domain_id: DomainID = DomainID.D2_LAFZI_FORM
     forbidden_outputs: Tuple[str, ...] = LAFZI_FORM_FORBIDDEN_OUTPUTS
@@ -320,7 +406,10 @@ class MasdarFormCandidate:
             domain_id=self.domain_id,
             source_domain_id=self.source_domain_id,
             source_surface_ref=self.source_surface_ref,
+            source_contract_ref=self.source_contract_ref,
             required_bridge_ref=self.required_bridge_ref,
+            form_contract_stage=self.form_contract_stage,
+            form_only_status=self.form_only_status,
             forbidden_outputs=self.forbidden_outputs,
             proof_object_ref=self.proof_object_ref,
             proof_trace_ref=self.proof_trace_ref,
@@ -335,7 +424,10 @@ class ToolFormCandidate:
     tool_meaning_ref: str = ""
     proof_object_ref: str = ""
     proof_trace_ref: str = ""
+    source_contract_ref: str = SOURCE_CONTRACT_REF
     required_bridge_ref: str = "DalToLafziBridgeSpec"
+    form_contract_stage: str = FORM_CONTRACT_STAGE
+    form_only_status: str = FORM_ONLY_STATUS
     source_domain_id: DomainID = DomainID.D1_DAL_ONLY
     domain_id: DomainID = DomainID.D2_LAFZI_FORM
     forbidden_outputs: Tuple[str, ...] = LAFZI_FORM_FORBIDDEN_OUTPUTS
@@ -354,7 +446,10 @@ class ToolFormCandidate:
             domain_id=self.domain_id,
             source_domain_id=self.source_domain_id,
             source_surface_ref=self.source_surface_ref,
+            source_contract_ref=self.source_contract_ref,
             required_bridge_ref=self.required_bridge_ref,
+            form_contract_stage=self.form_contract_stage,
+            form_only_status=self.form_only_status,
             forbidden_outputs=self.forbidden_outputs,
             proof_object_ref=self.proof_object_ref,
             proof_trace_ref=self.proof_trace_ref,
@@ -368,7 +463,10 @@ class MabniNounFormCandidate:
     source_surface_ref: str
     proof_object_ref: str = ""
     proof_trace_ref: str = ""
+    source_contract_ref: str = SOURCE_CONTRACT_REF
     required_bridge_ref: str = "DalToLafziBridgeSpec"
+    form_contract_stage: str = FORM_CONTRACT_STAGE
+    form_only_status: str = FORM_ONLY_STATUS
     source_domain_id: DomainID = DomainID.D1_DAL_ONLY
     domain_id: DomainID = DomainID.D2_LAFZI_FORM
     forbidden_outputs: Tuple[str, ...] = LAFZI_FORM_FORBIDDEN_OUTPUTS
@@ -385,7 +483,10 @@ class MabniNounFormCandidate:
             domain_id=self.domain_id,
             source_domain_id=self.source_domain_id,
             source_surface_ref=self.source_surface_ref,
+            source_contract_ref=self.source_contract_ref,
             required_bridge_ref=self.required_bridge_ref,
+            form_contract_stage=self.form_contract_stage,
+            form_only_status=self.form_only_status,
             forbidden_outputs=self.forbidden_outputs,
             proof_object_ref=self.proof_object_ref,
             proof_trace_ref=self.proof_trace_ref,
@@ -395,12 +496,16 @@ class MabniNounFormCandidate:
 __all__ = [
     "BareQuadriliteralVerbFormCandidate",
     "BareTriliteralVerbFormCandidate",
+    "FORM_CONTRACT_STAGE",
+    "FORM_ONLY_STATUS",
     "LAFZI_FORM_FORBIDDEN_OUTPUTS",
     "MabniNounFormCandidate",
     "MasdarFormCandidate",
+    "NO_ADDITION",
     "PatternFormCandidate",
     "QuadriliteralJamidFormCandidate",
     "RootFormCandidate",
+    "SOURCE_CONTRACT_REF",
     "ToolFormCandidate",
     "TriliteralJamidFormCandidate",
     "WordFormCandidate",
