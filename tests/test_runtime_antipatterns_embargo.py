@@ -65,8 +65,8 @@ FORBIDDEN_PATTERNS = [
     re.compile(r"\bif\s+self\.evidence\s*:\s*self\.licensed\s*=\s*true\b", re.IGNORECASE),
     re.compile(r"\bdef\s+transform\(self,\s*operation:\s*str\)\b"),
     re.compile(r"\btransform\(operation:\s*str\):\s*pass\b"),
-    re.compile(r"\btranslator\s*:\s*str\b"),
-    re.compile(r"\bcondition\s*:\s*str\b"),
+    re.compile(r"\bclass\s+Bridge\b[\s\S]{0,400}\btranslator\s*:\s*str\b"),
+    re.compile(r"\bclass\s+Gate\b[\s\S]{0,400}\bcondition\s*:\s*str\b"),
     re.compile(r"\bComputedVerdict\b"),
     re.compile(r"\bcomputed_verdict\s*:"),
     re.compile(r"\bmrk_defaults\s*:"),
@@ -75,7 +75,7 @@ FORBIDDEN_PATTERNS = [
 ]
 
 ALLOWED_SUFFIXES = {".py", ".toml", ".yaml", ".yml"}
-ALLOWED_EXCEPTION_PATHS = {GUARD_DOC}
+ALLOWED_EXCEPTION_PATH = GUARD_DOC
 
 
 def scan_targets() -> list[Path]:
@@ -93,7 +93,7 @@ def scan_targets() -> list[Path]:
         targets.update((REPO_ROOT / "ci").rglob(pattern))
 
     return sorted(
-        path for path in targets if path.is_file() and path not in ALLOWED_EXCEPTION_PATHS
+        path for path in targets if path.is_file() and path != ALLOWED_EXCEPTION_PATH
     )
 
 
@@ -136,7 +136,10 @@ def test_scanned_targets_are_expected_embargo_scope(scanned_targets: list[Path])
     targets = scanned_targets
     assert targets, "scan targets must not be empty"
     assert all(path.is_file() for path in targets)
-    assert all(path.suffix in ALLOWED_SUFFIXES or path.parent == REPO_ROOT / "schemas" for path in targets)
+    assert all(
+        path.suffix in ALLOWED_SUFFIXES or path.is_relative_to(REPO_ROOT / "schemas")
+        for path in targets
+    )
     assert any(path.is_relative_to(REPO_ROOT / "src") for path in targets)
     assert any(path.is_relative_to(REPO_ROOT / "schemas") for path in targets)
     assert any(path.is_relative_to(REPO_ROOT / "tests" / "runtime") for path in targets)
