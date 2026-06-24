@@ -3,6 +3,11 @@
   "runtime_status": "EMBARGOED",
   "valid_fixtures": [
     {
+      "file": "valid_accepted_candidate_lafzi_case.json",
+      "input_domain": "D2_LAFZI_FORM",
+      "expected_verdict": "EXPECTED_ACCEPTED_CANDIDATE"
+    },
+    {
       "file": "valid_blocked_ifadah_case.json",
       "input_domain": "D5_IFADAH",
       "expected_verdict": "EXPECTED_BLOCKED",
@@ -15,15 +20,39 @@
       "expected_failure_family": "FAMILY_PROOF_REQUIRED"
     },
     {
+      "file": "valid_bridge_required_dal_only_case.json",
+      "input_domain": "D1_DAL_ONLY",
+      "expected_verdict": "EXPECTED_BRIDGE_REQUIRED"
+    },
+    {
+      "file": "valid_bridge_required_lafzi_form_case.json",
+      "input_domain": "D2_LAFZI_FORM",
+      "expected_verdict": "EXPECTED_BRIDGE_REQUIRED"
+    },
+    {
+      "file": "valid_bridge_required_lexical_madlul_case.json",
+      "input_domain": "D3_LEXICAL_MADLUL",
+      "expected_verdict": "EXPECTED_BRIDGE_REQUIRED"
+    },
+    {
       "file": "valid_bridge_required_tanzil_case.json",
       "input_domain": "D7_TANZIL",
       "expected_verdict": "EXPECTED_BRIDGE_REQUIRED"
+    },
+    {
+      "file": "valid_residual_relation_case.json",
+      "input_domain": "D4_RELATION",
+      "expected_verdict": "EXPECTED_RESIDUAL"
     }
   ],
   "invalid_fixtures": [
     {
       "file": "invalid_accepted_ifadah_case.json",
       "must_fail_reason": "LOCKED_DOMAIN_ACCEPTED_FORBIDDEN"
+    },
+    {
+      "file": "invalid_boolean_proof_case.json",
+      "must_fail_reason": "BOOLEAN_PROOF_FORBIDDEN"
     },
     {
       "file": "invalid_computed_verdict_case.json",

@@ -28,6 +28,7 @@ INVALID_REASON_HINTS = {
     "LOCKED_DOMAIN_ACCEPTED_FORBIDDEN": "EXPECTED_ACCEPTED_CANDIDATE",
     "COMPUTED_VERDICT_FORBIDDEN": "computed_verdict",
     "MRK_DEFAULTS_FORBIDDEN": "mrk_defaults",
+    "BOOLEAN_PROOF_FORBIDDEN": "domain_proved",
     "RANK_CERTIFICATE_FORBIDDEN": "Rank.CERTIFICATE",
 }
 
@@ -106,6 +107,35 @@ def test_manifest_classification_prefix_rules():
     assert all(entry["file"].startswith("invalid_") for entry in invalid_entries)
 
 
+def test_manifest_covers_all_schema_expected_verdict_classes():
+    manifest = _load_manifest()
+    schema = _load_schema()
+    expected_verdicts = set(schema["properties"]["expected_verdict"]["enum"])
+    observed_verdicts = {
+        entry["expected_verdict"]
+        for section in ("valid_fixtures", "invalid_fixtures")
+        for entry in _manifest_entries(manifest, section)
+        if "expected_verdict" in entry
+    }
+    assert expected_verdicts <= observed_verdicts
+
+
+def test_manifest_quarantines_required_forbidden_patterns():
+    manifest = _load_manifest()
+    required_reasons = {
+        "COMPUTED_VERDICT_FORBIDDEN",
+        "MRK_DEFAULTS_FORBIDDEN",
+        "BOOLEAN_PROOF_FORBIDDEN",
+        "RANK_CERTIFICATE_FORBIDDEN",
+    }
+    observed_reasons = {
+        entry["must_fail_reason"]
+        for entry in _manifest_entries(manifest, "invalid_fixtures")
+        if "must_fail_reason" in entry
+    }
+    assert required_reasons <= observed_reasons
+
+
 def test_valid_manifest_fixtures_match_declared_domain_and_verdict_and_pass_schema():
     manifest = _load_manifest()
     schema = _load_schema()
@@ -139,6 +169,44 @@ def test_locked_domain_never_accepted_in_manifest_valid_cases():
     for entry in _manifest_entries(manifest, "valid_fixtures"):
         if entry["input_domain"] in LOCKED_DOMAINS:
             assert entry["expected_verdict"] != "EXPECTED_ACCEPTED_CANDIDATE"
+
+
+def test_manifest_covers_bridge_required_transition_guards():
+    manifest = _load_manifest()
+    required_transition_bridges = {
+        "D1_DAL_ONLY": "D1_DAL_ONLY_TO_D2_LAFZI_FORM_BRIDGE",
+        "D2_LAFZI_FORM": "D2_LAFZI_FORM_TO_D3_LEXICAL_MADLUL_BRIDGE",
+        "D3_LEXICAL_MADLUL": "RELATION_BRIDGE",
+    }
+    bridge_entries = [
+        entry
+        for entry in _manifest_entries(manifest, "valid_fixtures")
+        if entry.get("expected_verdict") == "EXPECTED_BRIDGE_REQUIRED"
+    ]
+    observed_by_domain = {entry["input_domain"]: entry["file"] for entry in bridge_entries}
+
+    for input_domain, bridge_name in required_transition_bridges.items():
+        assert input_domain in observed_by_domain, (
+            f"missing EXPECTED_BRIDGE_REQUIRED fixture coverage for {input_domain}"
+        )
+        file_name = observed_by_domain[input_domain]
+        payload = _fixture_payload(file_name)
+        required_bridges = payload.get("required_bridges", [])
+        assert bridge_name in required_bridges
+
+
+def test_manifest_covers_residual_with_explicit_policy():
+    manifest = _load_manifest()
+    residual_entries = [
+        entry
+        for entry in _manifest_entries(manifest, "valid_fixtures")
+        if entry.get("expected_verdict") == "EXPECTED_RESIDUAL"
+    ]
+    assert residual_entries
+    for entry in residual_entries:
+        payload = _fixture_payload(entry["file"])
+        assert isinstance(payload.get("expected_residual_policy"), str)
+        assert payload["expected_residual_policy"]
 
 
 def test_locked_domain_accepted_case_quarantined_as_invalid():

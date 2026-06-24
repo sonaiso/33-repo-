@@ -1,0 +1,14 @@
+{
+  "case_id": "fixture-valid-bridge-required-dal-only-001",
+  "input_text": "dal only to lafzi requires bridge",
+  "input_domain": "D1_DAL_ONLY",
+  "expected_verdict": "EXPECTED_BRIDGE_REQUIRED",
+  "required_contracts": [
+    "docs/10_DAL_ATOMIC_CONSTITUTION.md",
+    "docs/18_COMPUTED_COVERAGE_SCHEMA_CONSTITUTION.md"
+  ],
+  "required_bridges": [
+    "D1_DAL_ONLY_TO_D2_LAFZI_FORM_BRIDGE"
+  ],
+  "trace_ref": "docs/18_COMPUTED_COVERAGE_SCHEMA_CONSTITUTION.md"
+}
