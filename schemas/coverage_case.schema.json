@@ -23,7 +23,16 @@
     },
     "input_domain": {
       "type": "string",
-      "minLength": 1
+      "enum": [
+        "D0_TRACE",
+        "D1_DAL_ONLY",
+        "D2_LAFZI_FORM",
+        "D3_LEXICAL_MADLUL",
+        "D4_RELATION",
+        "D5_IFADAH",
+        "D6_HUKM",
+        "D7_TANZIL"
+      ]
     },
     "expected_verdict": {
       "type": "string",
@@ -53,11 +62,13 @@
     },
     "expected_failure_family": {
       "type": "string",
-      "minLength": 1
+      "minLength": 1,
+      "pattern": "^[A-Z][A-Z0-9_]*$"
     },
     "expected_residual_policy": {
       "type": "string",
-      "minLength": 1
+      "minLength": 1,
+      "pattern": "^[A-Z][A-Z0-9_]*$"
     },
     "trace_ref": {
       "type": "string",

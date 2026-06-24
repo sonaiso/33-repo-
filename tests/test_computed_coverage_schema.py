@@ -6,6 +6,7 @@ trace_ref: docs/18_COMPUTED_COVERAGE_SCHEMA_CONSTITUTION.md
 from __future__ import annotations
 
 import json
+import re
 from pathlib import Path
 from typing import Any
 
@@ -50,6 +51,8 @@ def _validate_rule(key: str, value: Any, rule: dict[str, Any]) -> None:
         raise ValueError(f"{key} must be one of enum values")
     if "const" in rule and value != rule["const"]:
         raise ValueError(f"{key} must match const value")
+    if "pattern" in rule and isinstance(value, str) and not re.fullmatch(rule["pattern"], value):
+        raise ValueError(f"{key} must satisfy pattern")
 
 
 def _fallback_validate(schema: dict[str, Any], payload: dict[str, Any]) -> None:
@@ -162,6 +165,29 @@ def test_schema_accepts_valid_expected_accepted_case():
     _validate_payload(schema, _minimal_valid_case())
 
 
+@pytest.mark.parametrize(
+    "domain",
+    [
+        "D0_TRACE",
+        "D1_DAL_ONLY",
+        "D2_LAFZI_FORM",
+        "D3_LEXICAL_MADLUL",
+        "D4_RELATION",
+        "D5_IFADAH",
+        "D6_HUKM",
+        "D7_TANZIL",
+    ],
+)
+def test_schema_accepts_canonical_input_domains(domain: str):
+    schema = _load_schema()
+    payload = _minimal_valid_case() | {"input_domain": domain}
+    _validate_payload(schema, payload)
+
+
+def test_schema_rejects_unknown_input_domain():
+    _assert_invalid(_minimal_valid_case() | {"input_domain": "RELATION_RUNTIME"})
+
+
 def test_schema_accepts_valid_expected_blocked_only_with_failure_family():
     schema = _load_schema()
     payload = _minimal_valid_case() | {
@@ -188,6 +214,17 @@ def test_schema_rejects_expected_proof_required_without_failure_family():
     _assert_invalid(_minimal_valid_case() | {"expected_verdict": "EXPECTED_PROOF_REQUIRED"})
 
 
+@pytest.mark.parametrize("invalid_family", ["PROOF/MRK", "rank family", "family_lower", "meaning-leak!"])
+def test_schema_rejects_non_schema_safe_expected_failure_family(invalid_family: str):
+    _assert_invalid(
+        _minimal_valid_case()
+        | {
+            "expected_verdict": "EXPECTED_BLOCKED",
+            "expected_failure_family": invalid_family,
+        }
+    )
+
+
 def test_schema_accepts_expected_residual_only_with_residual_policy():
     schema = _load_schema()
     payload = _minimal_valid_case() | {
@@ -199,6 +236,17 @@ def test_schema_accepts_expected_residual_only_with_residual_policy():
 
 def test_schema_rejects_expected_residual_without_residual_policy():
     _assert_invalid(_minimal_valid_case() | {"expected_verdict": "EXPECTED_RESIDUAL"})
+
+
+@pytest.mark.parametrize("invalid_policy", ["POLICY/ONE", "policy one", "policy_lower", "policy!"])
+def test_schema_rejects_non_schema_safe_expected_residual_policy(invalid_policy: str):
+    _assert_invalid(
+        _minimal_valid_case()
+        | {
+            "expected_verdict": "EXPECTED_RESIDUAL",
+            "expected_residual_policy": invalid_policy,
+        }
+    )
 
 
 def test_schema_accepts_expected_bridge_required_only_with_non_empty_required_bridges():
