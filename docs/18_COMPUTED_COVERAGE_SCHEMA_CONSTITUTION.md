@@ -69,6 +69,7 @@ Forbidden fields/claims:
 
 ## Fixture manifest quarantine contract
 - Manifest path: `tests/fixtures/coverage_cases/manifest.json`.
+- Fixture case files referenced by the manifest are the PR #81 locked-domain fixture corpus carried forward unchanged in this PR.
 - Every coverage fixture in `tests/fixtures/coverage_cases/*.json` (except `manifest.json`) must be listed exactly once.
 - `valid_fixtures` entries must start with `valid_` and pass `schemas/coverage_case.schema.json`.
 - `invalid_fixtures` entries must start with `invalid_` and fail `schemas/coverage_case.schema.json`.

@@ -10,18 +10,28 @@ from pathlib import Path
 
 import pytest
 
-try:
-    from jsonschema.exceptions import ValidationError
-except ImportError:  # pragma: no cover
-    ValidationError = ValueError
+pytest.importorskip("jsonschema")
+from jsonschema import Draft202012Validator
+from jsonschema.exceptions import ValidationError
 
-from tests.test_computed_coverage_schema import _load_schema, _validate_payload
-
+from taaqqul_slot_geometry.L1.domain_ids import DomainID
 
 REPO_ROOT = Path(__file__).parent.parent
 FIXTURES_DIR = REPO_ROOT / "tests" / "fixtures" / "coverage_cases"
 MANIFEST_PATH = FIXTURES_DIR / "manifest.json"
-LOCKED_DOMAINS = {"D5_IFADAH", "D6_HUKM", "D7_TANZIL"}
+SCHEMA_PATH = REPO_ROOT / "schemas" / "coverage_case.schema.json"
+LOCKED_DOMAINS = {DomainID.D5_IFADAH.value, DomainID.D6_HUKM.value, DomainID.D7_TANZIL.value}
+EXPECTED_FIXTURE_POLICY = "SCHEMA_ONLY_AUDIT_FIXTURES"
+EXPECTED_RUNTIME_STATUS = "EMBARGOED"
+EXPECTED_TRACE_REF = "docs/18_COMPUTED_COVERAGE_SCHEMA_CONSTITUTION.md"
+FORBIDDEN_RANK_VALUES = {"CERTIFICATE", "Rank.CERTIFICATE"}
+# Map manifest must_fail_reason labels to expected JSON Schema error-message hints.
+INVALID_REASON_HINTS = {
+    "LOCKED_DOMAIN_ACCEPTED_FORBIDDEN": "EXPECTED_ACCEPTED_CANDIDATE",
+    "COMPUTED_VERDICT_FORBIDDEN": "computed_verdict",
+    "MRK_DEFAULTS_FORBIDDEN": "mrk_defaults",
+    "RANK_CERTIFICATE_FORBIDDEN": "Rank.CERTIFICATE",
+}
 
 
 def _load_json(path: Path) -> dict[str, object]:
@@ -32,24 +42,49 @@ def _load_manifest() -> dict[str, object]:
     return _load_json(MANIFEST_PATH)
 
 
+def _load_schema() -> dict[str, object]:
+    return _load_json(SCHEMA_PATH)
+
+
+def _validate_payload(schema: dict[str, object], payload: dict[str, object]) -> None:
+    Draft202012Validator(schema).validate(payload)
+
+
 def _all_fixture_files() -> set[str]:
     return {path.name for path in FIXTURES_DIR.glob("*.json") if path.name != "manifest.json"}
 
 
 def _manifest_entries(manifest: dict[str, object], key: str) -> list[dict[str, object]]:
-    return manifest.get(key, [])  # type: ignore[return-value]
+    entries = manifest.get(key, [])
+    if not isinstance(entries, list):
+        raise ValueError(f"{key} must be a list")
+    for entry in entries:
+        if not isinstance(entry, dict):
+            raise ValueError(f"{key} entries must be objects")
+    return entries
 
 
 def _fixture_payload(file_name: str) -> dict[str, object]:
     return _load_json(FIXTURES_DIR / file_name)
 
 
+def _invalid_reason_map(manifest: dict[str, object]) -> dict[str, str]:
+    result: dict[str, str] = {}
+    for entry in _manifest_entries(manifest, "invalid_fixtures"):
+        file_name = entry.get("file")
+        reason = entry.get("must_fail_reason")
+        if not isinstance(file_name, str) or not isinstance(reason, str):
+            raise ValueError("invalid_fixtures entries must include string file and must_fail_reason")
+        result[file_name] = reason
+    return result
+
+
 def test_manifest_exists_and_has_embargo_metadata():
     manifest = _load_manifest()
     assert MANIFEST_PATH.exists()
-    assert manifest["fixture_policy"] == "SCHEMA_ONLY_AUDIT_FIXTURES"
-    assert manifest["runtime_status"] == "EMBARGOED"
-    assert manifest["trace_ref"] == "docs/18_COMPUTED_COVERAGE_SCHEMA_CONSTITUTION.md"
+    assert manifest["fixture_policy"] == EXPECTED_FIXTURE_POLICY
+    assert manifest["runtime_status"] == EXPECTED_RUNTIME_STATUS
+    assert manifest["trace_ref"] == EXPECTED_TRACE_REF
 
 
 def test_manifest_lists_every_fixture_exactly_once():
@@ -92,8 +127,12 @@ def test_invalid_manifest_fixtures_fail_schema():
 
     for entry in _manifest_entries(manifest, "invalid_fixtures"):
         payload = _fixture_payload(entry["file"])
-        with pytest.raises((ValidationError, ValueError)):
+        with pytest.raises(ValidationError) as exc_info:
             _validate_payload(schema, payload)
+        expected_reason = entry["must_fail_reason"]
+        assert isinstance(expected_reason, str)
+        hint = INVALID_REASON_HINTS[expected_reason]
+        assert hint in str(exc_info.value)
 
 
 def test_locked_domain_never_accepted_in_manifest_valid_cases():
@@ -106,9 +145,7 @@ def test_locked_domain_never_accepted_in_manifest_valid_cases():
 
 def test_locked_domain_accepted_case_quarantined_as_invalid():
     manifest = _load_manifest()
-    invalid_entries = {
-        entry["file"]: entry["must_fail_reason"] for entry in _manifest_entries(manifest, "invalid_fixtures")
-    }
+    invalid_entries = _invalid_reason_map(manifest)
 
     for file_name in _all_fixture_files():
         payload = _fixture_payload(file_name)
@@ -121,9 +158,7 @@ def test_locked_domain_accepted_case_quarantined_as_invalid():
 
 def test_forbidden_fields_or_rank_values_are_quarantined_in_invalid_manifest_entries():
     manifest = _load_manifest()
-    invalid_entries = {
-        entry["file"]: entry["must_fail_reason"] for entry in _manifest_entries(manifest, "invalid_fixtures")
-    }
+    invalid_entries = _invalid_reason_map(manifest)
 
     for file_name in _all_fixture_files():
         payload = _fixture_payload(file_name)
@@ -132,7 +167,7 @@ def test_forbidden_fields_or_rank_values_are_quarantined_in_invalid_manifest_ent
             forbidden_reason = "COMPUTED_VERDICT_FORBIDDEN"
         elif "mrk_defaults" in payload:
             forbidden_reason = "MRK_DEFAULTS_FORBIDDEN"
-        elif payload.get("rank") in {"CERTIFICATE", "Rank.CERTIFICATE"}:
+        elif payload.get("rank") in FORBIDDEN_RANK_VALUES:
             forbidden_reason = "RANK_CERTIFICATE_FORBIDDEN"
 
         if forbidden_reason is not None:
@@ -146,4 +181,4 @@ def test_valid_manifest_entries_do_not_include_forbidden_fields_or_rank_values()
         payload = _fixture_payload(entry["file"])
         assert "computed_verdict" not in payload
         assert "mrk_defaults" not in payload
-        assert payload.get("rank") not in {"CERTIFICATE", "Rank.CERTIFICATE"}
+        assert payload.get("rank") not in FORBIDDEN_RANK_VALUES
