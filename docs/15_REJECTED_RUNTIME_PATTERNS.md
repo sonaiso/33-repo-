@@ -149,7 +149,7 @@ Required:
 
 ## Enforcement Law
 
-A rejected pattern may appear only inside this documentation file (`docs/15_REJECTED_RUNTIME_PATTERNS.md`) as a quoted anti-pattern, or inside guard tests that tokenize away quoted Python strings before scanning.
+A rejected pattern may appear only inside this documentation file (`docs/15_REJECTED_RUNTIME_PATTERNS.md`) as a quoted anti-pattern, or inside guard tests whose scanner explicitly removes Python comments and string literals before matching executable code.
 It may not appear as executable source, schema authority, runtime configuration, or runtime-facing behavior.
 
 ## Files changed
