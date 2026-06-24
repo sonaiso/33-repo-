@@ -31,6 +31,24 @@ REQUIRED_NEGATIVE_TESTS = [
     "reject-domain-open-without-bridge",
     "reject-manual-computed-verdict",
 ]
+FORBIDDEN_RUNTIME_ARTIFACTS = [
+    "src/taaqqul_slot_geometry/L1/binding_kernel.py",
+    "src/taaqqul_slot_geometry/L1/decision_engine.py",
+    "src/taaqqul_slot_geometry/runtime/binding_kernel.py",
+    "src/taaqqul_slot_geometry/runtime/decision_engine.py",
+    "src/taaqqul_slot_geometry/core/binding_kernel.py",
+    "src/taaqqul_slot_geometry/core/decision_engine.py",
+    "coverage_matrix_v0.1.yaml",
+    "docs/coverage_matrix_v0.1.yaml",
+    "data/coverage_matrix_v0.1.yaml",
+    "schemas/coverage_matrix_v0.1.yaml",
+    "tests/test_binding_constraints.py",
+    "l_protocol/engine/binding_kernel.py",
+    "l_protocol/engine/decision_engine.py",
+    "l_protocol/contracts/binding_instructions.py",
+    "l_protocol/coverage_matrix_v0.1.yaml",
+    "l_protocol/tests/test_binding_constraints.py",
+]
 
 
 def _load_schema() -> dict[str, Any]:
@@ -131,6 +149,18 @@ def test_runtime_lift_template_states_non_authorization():
     assert "This template does not authorize runtime." in content
 
 
+def test_lift_request_template_lists_full_required_negative_tests():
+    content = TEMPLATE_PATH.read_text(encoding="utf-8")
+    for test_id in REQUIRED_NEGATIVE_TESTS:
+        assert test_id in content
+
+
+def test_lift_request_template_lists_forbidden_runtime_paths():
+    content = TEMPLATE_PATH.read_text(encoding="utf-8")
+    for artifact in FORBIDDEN_RUNTIME_ARTIFACTS:
+        assert artifact in content
+
+
 def test_schema_is_valid_draft_2020_12_or_valid_dict():
     schema = _load_schema()
     if Draft202012Validator is not None:
@@ -212,13 +242,44 @@ def test_schema_runtime_requires_domain_opening_none():
     )
 
 
-def test_bridge_evaluator_allows_explicit_domain_opening():
-    schema = _load_schema()
-    payload = _valid_request() | {
-        "lift_type": "LIFT_TYPE_BRIDGE_EVALUATOR",
-        "domain_opening": "D4_RELATION",
-    }
-    _validate_payload(schema, payload)
+def test_bridge_evaluator_cannot_open_domain():
+    _assert_invalid(
+        _valid_request()
+        | {
+            "lift_type": "LIFT_TYPE_BRIDGE_EVALUATOR",
+            "domain_opening": "D4_RELATION",
+        }
+    )
+
+
+def test_proof_evaluator_cannot_open_domain():
+    _assert_invalid(
+        _valid_request()
+        | {
+            "lift_type": "LIFT_TYPE_PROOF_EVALUATOR",
+            "domain_opening": "D3_LEXICAL_MADLUL",
+        }
+    )
+
+
+def test_coverage_runner_cannot_open_domain():
+    _assert_invalid(
+        _valid_request()
+        | {
+            "lift_type": "LIFT_TYPE_COVERAGE_RUNNER",
+            "domain_opening": "D5_IFADAH",
+        }
+    )
+
+
+def test_kernel_lift_cannot_open_domain():
+    _assert_invalid(
+        _valid_request()
+        | {
+            "lift_type": "LIFT_TYPE_KERNEL",
+            "domain_opening": "D6_HUKM",
+        }
+    )
 
 
 def test_domain_opening_rejects_implicit_value():
@@ -231,13 +292,9 @@ def test_rank_policy_cannot_allow_certificate():
 
 @pytest.mark.parametrize(
     "artifact",
-    [
-        "src/taaqqul_slot_geometry/runtime/binding_kernel.py",
-        "src/taaqqul_slot_geometry/core/decision_engine.py",
-        "coverage_matrix_v0.1.yaml",
-    ],
+    FORBIDDEN_RUNTIME_ARTIFACTS,
 )
-def test_schema_runtime_rejects_forbidden_runtime_artifacts(artifact: str):
+def test_schema_runtime_rejects_all_rejected_runtime_artifact_paths(artifact: str):
     payload = _valid_request()
     payload["lift_type"] = "LIFT_TYPE_SCHEMA_RUNTIME"
     payload["authorized_artifacts"] = [artifact]

@@ -43,11 +43,36 @@ List exact repo-relative canonical file paths only.
 ## 3) Explicit Non-Authorized Artifacts
 List runtime artifacts that remain forbidden in this PR.
 
+Minimum forbidden runtime paths:
+- `src/taaqqul_slot_geometry/L1/binding_kernel.py`
+- `src/taaqqul_slot_geometry/L1/decision_engine.py`
+- `src/taaqqul_slot_geometry/runtime/binding_kernel.py`
+- `src/taaqqul_slot_geometry/runtime/decision_engine.py`
+- `src/taaqqul_slot_geometry/core/binding_kernel.py`
+- `src/taaqqul_slot_geometry/core/decision_engine.py`
+- `coverage_matrix_v0.1.yaml`
+- `docs/coverage_matrix_v0.1.yaml`
+- `data/coverage_matrix_v0.1.yaml`
+- `schemas/coverage_matrix_v0.1.yaml`
+- `tests/test_binding_constraints.py`
+- `l_protocol/engine/binding_kernel.py`
+- `l_protocol/engine/decision_engine.py`
+- `l_protocol/contracts/binding_instructions.py`
+- `l_protocol/coverage_matrix_v0.1.yaml`
+- `l_protocol/tests/test_binding_constraints.py`
+
 ## 4) Runtime Boundary
 State exactly what runtime surface is requested. If none, say `none`.
 
 ## 5) Domain Boundary
 State `none` or exactly one domain identifier being opened by this lift request.
+
+Current embargo rule: `domain_opening` must be `none` for all current lift types:
+- `LIFT_TYPE_SCHEMA_RUNTIME`
+- `LIFT_TYPE_PROOF_EVALUATOR`
+- `LIFT_TYPE_BRIDGE_EVALUATOR`
+- `LIFT_TYPE_COVERAGE_RUNNER`
+- `LIFT_TYPE_KERNEL`
 
 ## 6) Proof Objects Required
 List mandatory ProofObject contracts and trace references.
