@@ -65,9 +65,14 @@ These canonical-path prohibitions do not authorize runtime, a kernel, a decision
 runtime predicates, translators, or runtime-domain opening.
 Forbidden artifact lists must remain schema/test/doc consistent.
 Canonical forbidden-path source of truth: `data/forbidden_runtime_artifacts.json` (audit-only).
+Canonical forbidden-pattern source of truth: `data/forbidden_runtime_patterns.json` (audit-only).
 Path-normalization variants are rejected before any forbidden artifact can be authorized.
 
 ## Rejected Rank Patterns
+
+These rejected anti-pattern signatures are centralized in `data/forbidden_runtime_patterns.json`.
+That registry is audit-only, does not authorize runtime, and does not weaken the separate
+forbidden artifact path registry in `data/forbidden_runtime_artifacts.json`.
 
 Forbidden:
 
@@ -188,6 +193,8 @@ The guard scanner must detect both single-line and multi-line forms of rejected 
 ## Files changed
 
 - `docs/15_REJECTED_RUNTIME_PATTERNS.md`
+- `data/forbidden_runtime_patterns.json`
+- `tests/forbidden_runtime_patterns.py`
 - `tests/test_runtime_antipatterns_embargo.py`
 
 ## Tests run

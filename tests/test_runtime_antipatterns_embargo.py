@@ -3,13 +3,20 @@
 from __future__ import annotations
 
 import io
-import re
+import json
 import tokenize
+from bisect import bisect_right
 from pathlib import Path
 
 import pytest
 
 from tests.forbidden_runtime_artifacts import load_forbidden_runtime_artifact_paths
+from tests.forbidden_runtime_patterns import (
+    CANONICAL_FORBIDDEN_RUNTIME_PATTERNS_PATH,
+    ForbiddenRuntimePattern,
+    compile_forbidden_runtime_patterns,
+    load_forbidden_runtime_patterns,
+)
 
 REPO_ROOT = Path(__file__).parent.parent
 GUARD_DOC = REPO_ROOT / "docs" / "15_REJECTED_RUNTIME_PATTERNS.md"
@@ -20,6 +27,32 @@ FORBIDDEN_CANONICAL_RUNTIME_ARTIFACTS = tuple(
 )
 CLASS_FIELD_LOOKAHEAD_LIMIT = 400
 RETURN_TYPE_LOOKAHEAD_LIMIT = 120
+REQUIRED_PATTERN_IDS = {
+    "BINDING_DECISION_ENGINE_FORBIDDEN",
+    "RANK_CERTIFICATE_FORBIDDEN",
+    "RANK_REJECTED_FORBIDDEN",
+    "EXECUTION_RANK_CERTIFIED_FORBIDDEN",
+    "MRK_BOOLEAN_DEFAULT_DOMAIN_PROVED",
+    "MRK_BOOLEAN_DEFAULT_UNIT_PROVED",
+    "MRK_BOOLEAN_DEFAULT_IDENTITY_PRESERVED",
+    "MRK_BOOLEAN_DEFAULT_TRACE_PRESERVED",
+    "MRK_BOOLEAN_DEFAULT_GATE_PASSED",
+    "IS_PRESERVED_TRUE_FIELD_FORBIDDEN",
+    "IDENTITY_PRESERVED_TRUE_FIELD_FORBIDDEN",
+    "EVIDENCE_LIST_INLINE_LICENSE_FORBIDDEN",
+    "EVIDENCE_LIST_MULTILINE_LICENSE_FORBIDDEN",
+    "TEXT_ONLY_BRIDGE_TRANSLATOR_FORBIDDEN",
+    "TEXT_ONLY_GATE_CONDITION_FORBIDDEN",
+    "COMPUTED_VERDICT_CLASS_FORBIDDEN",
+    "COMPUTED_VERDICT_FIELD_FORBIDDEN",
+    "MRK_DEFAULTS_FIELD_FORBIDDEN",
+    "MANUAL_DASHBOARD_FIELD_FORBIDDEN",
+    "EVIDENCE_LIST_AS_PROOF_PHRASE_FORBIDDEN",
+    "MRK_BOOLEAN_DEFAULTS_PHRASE_FORBIDDEN",
+    "TRANSFORM_PASS_INLINE_FORBIDDEN",
+    "TRANSFORM_PASS_ANNOTATED_FORBIDDEN",
+    "TRANSFORM_PASS_MULTILINE_ANNOTATED_FORBIDDEN",
+}
 
 REQUIRED_DOC_PHRASES = [
     "Rejected Runtime Anti-Patterns",
@@ -79,57 +112,18 @@ REQUIRED_DOC_PHRASES = [
     "No runtime domain opening.",
     "Forbidden artifact lists must remain schema/test/doc consistent.",
     "Canonical forbidden-path source of truth: `data/forbidden_runtime_artifacts.json` (audit-only).",
+    "Canonical forbidden-pattern source of truth: `data/forbidden_runtime_patterns.json` (audit-only).",
     "Path-normalization variants are rejected before any forbidden artifact can be authorized.",
     "The guard scanner must detect both single-line and multi-line forms of rejected evidence and transform anti-patterns.",
 ]
 
-FORBIDDEN_PATTERNS = [
-    re.compile(r"\bBindingDecisionEngine\b"),
-    re.compile(r"\bRank\.CERTIFICATE\b"),
-    re.compile(r"\bRank\.REJECTED\b"),
-    re.compile(r"\bExecutionRank\.CERTIFIED\b"),
-    re.compile(r"\bdomain_proved\s*:\s*true\b", re.IGNORECASE),
-    re.compile(r"\bunit_proved\s*:\s*true\b", re.IGNORECASE),
-    re.compile(r"\bidentity_preserved\s*:\s*true\b", re.IGNORECASE),
-    re.compile(r"\btrace_preserved\s*:\s*true\b", re.IGNORECASE),
-    re.compile(r"\bgate_passed\s*:\s*true\b", re.IGNORECASE),
-    re.compile(r"\bis_preserved\s*:\s*bool\s*=\s*true\b", re.IGNORECASE),
-    re.compile(r"\bidentity_preserved\s*:\s*bool\s*=\s*true\b", re.IGNORECASE),
-    re.compile(r"\bif\s+self\.evidence\s*:\s*self\.licensed\s*=\s*true\b", re.IGNORECASE),
-    re.compile(
-        r"\bif\s+self\.evidence\s*:\s*(?:\r?\n[ \t]*)+self\.licensed\s*=\s*true\b",
-        re.IGNORECASE,
-    ),
-    re.compile(
-        rf"\bclass\s+Bridge\b[\s\S]{{0,{CLASS_FIELD_LOOKAHEAD_LIMIT}}}\btranslator\s*:\s*str\b"
-    ),
-    re.compile(
-        rf"\bclass\s+Gate\b[\s\S]{{0,{CLASS_FIELD_LOOKAHEAD_LIMIT}}}\bcondition\s*:\s*str\b"
-    ),
-    re.compile(r"\bComputedVerdict\b"),
-    re.compile(r"\bcomputed_verdict\s*:"),
-    re.compile(r"\bmrk_defaults\s*:"),
-    re.compile(r"\bmanual_dashboard\s*:"),
-    re.compile(r"\bevidence\s+list\s+as\s+proof\b"),
-    re.compile(r"\bMRK\s+boolean\s+defaults\b"),
-]
-
-TRANSFORM_ANTIPATTERN_PATTERNS = [
-    re.compile(
-        r"\bdef\s+transform\s*\(\s*self\s*,\s*operation\s*:\s*str\s*\)\s*:\s*"
-        r"(?:\r?\n[ \t]*)*pass\b"
-    ),
-    re.compile(
-        r"\bdef\s+transform\s*\(\s*self\s*,\s*operation\s*:\s*str\s*\)\s*->\s*"
-        r"[^:\n]+\s*:\s*(?:\r?\n[ \t]*)*pass\b"
-    ),
-    re.compile(
-        r"\bdef\s+transform\s*\(\s*self\s*,\s*operation\s*:\s*str\s*\)\s*->\s*"
-        rf"\([\s\S]{{0,{RETURN_TYPE_LOOKAHEAD_LIMIT}}}?\)\s*:\s*(?:\r?\n[ \t]*)*pass\b"
-    ),
-]
-
-FORBIDDEN_PATTERNS.extend(TRANSFORM_ANTIPATTERN_PATTERNS)
+FORBIDDEN_PATTERN_RECORDS = load_forbidden_runtime_patterns()
+FORBIDDEN_PATTERNS = compile_forbidden_runtime_patterns(FORBIDDEN_PATTERN_RECORDS)
+TRANSFORM_ANTIPATTERN_PATTERNS = tuple(
+    pattern
+    for pattern in FORBIDDEN_PATTERNS
+    if pattern.id.startswith("TRANSFORM_PASS_")
+)
 
 ALLOWED_SUFFIXES = {".py", ".toml", ".yaml", ".yml"}
 ALLOWED_EXCEPTION_PATH = GUARD_DOC
@@ -180,6 +174,22 @@ def scanned_text(path: Path) -> str:
     return tokenize.untokenize(tokens)
 
 
+def line_starts(text: str) -> tuple[int, ...]:
+    """Return zero-based offsets for the first character of each scan-text line."""
+    offsets = [0]
+    for idx, char in enumerate(text):
+        if char == "\n":
+            offsets.append(idx + 1)
+    return tuple(offsets)
+
+
+def line_number_at(offsets: tuple[int, ...], position: int) -> int:
+    """Return the one-based line number where a zero-based text position occurs."""
+    # The number of line starts less than or equal to position is the
+    # corresponding one-based line number.
+    return bisect_right(offsets, position)
+
+
 @pytest.fixture(scope="module")
 def scanned_targets() -> list[Path]:
     return scan_targets()
@@ -210,6 +220,154 @@ def test_rejected_runtime_patterns_doc_exists_with_required_markers():
         assert phrase in content, f"Missing required rejected-pattern phrase: {phrase}"
 
 
+def test_forbidden_runtime_pattern_registry_is_canonical_and_valid():
+    """trace_ref: docs/12_RUNTIME_EMBARGO_CONSTITUTION.md Embargo Rule."""
+    assert CANONICAL_FORBIDDEN_RUNTIME_PATTERNS_PATH.exists()
+    records = FORBIDDEN_PATTERN_RECORDS
+    assert records, "forbidden runtime pattern registry must not be empty"
+    assert {record.id for record in records}.issuperset(REQUIRED_PATTERN_IDS)
+    assert len({record.id for record in records}) == len(records)
+    assert len({(record.mode, record.pattern) for record in records}) == len(records)
+
+    for record in records:
+        assert record.mode in {"regex", "literal"}
+        assert record.description
+        assert record.allowed_in
+        if "transform" in record.description.lower():
+            assert record.id.startswith("TRANSFORM_PASS_")
+        for allowed_path in record.allowed_in:
+            assert not allowed_path.startswith(("/", "./", "../"))
+            assert "\\" not in allowed_path
+            assert "//" not in allowed_path
+            assert not allowed_path.endswith("/")
+            assert "/./" not in allowed_path
+            assert "/../" not in allowed_path
+
+
+def test_forbidden_runtime_pattern_loader_reports_missing_file(tmp_path: Path):
+    """trace_ref: docs/12_RUNTIME_EMBARGO_CONSTITUTION.md Embargo Rule."""
+    missing = tmp_path / "missing.json"
+    with pytest.raises(RuntimeError, match="Missing canonical forbidden runtime pattern list"):
+        load_forbidden_runtime_patterns(missing)
+
+
+def test_forbidden_runtime_pattern_loader_reports_invalid_json(tmp_path: Path):
+    """trace_ref: docs/12_RUNTIME_EMBARGO_CONSTITUTION.md Embargo Rule."""
+    invalid = tmp_path / "patterns.json"
+    invalid.write_text("{", encoding="utf-8")
+    with pytest.raises(RuntimeError, match="Invalid JSON in canonical forbidden runtime pattern list"):
+        load_forbidden_runtime_patterns(invalid)
+
+
+def test_forbidden_runtime_pattern_loader_rejects_invalid_payloads(tmp_path: Path):
+    """trace_ref: docs/12_RUNTIME_EMBARGO_CONSTITUTION.md Embargo Rule."""
+    invalid_payloads = [
+        ("not-a-list", {"id": "X"}),
+        ("not-an-object", ["X"]),
+        ("missing-field", [{"id": "X"}]),
+        (
+            "invalid-mode",
+            [
+                {
+                    "id": "INVALID_MODE",
+                    "pattern": "x",
+                    "mode": "glob",
+                    "description": "invalid mode",
+                    "allowed_in": ["docs/15_REJECTED_RUNTIME_PATTERNS.md"],
+                }
+            ],
+        ),
+        (
+            "invalid-regex",
+            [
+                {
+                    "id": "INVALID_REGEX",
+                    "pattern": "[",
+                    "mode": "regex",
+                    "description": "invalid regex",
+                    "allowed_in": ["docs/15_REJECTED_RUNTIME_PATTERNS.md"],
+                }
+            ],
+        ),
+        (
+            "duplicate-allowed-in",
+            [
+                {
+                    "id": "DUPLICATE_ALLOWED_IN",
+                    "pattern": "x",
+                    "mode": "literal",
+                    "description": "duplicate allowed paths",
+                    "allowed_in": [
+                        "docs/15_REJECTED_RUNTIME_PATTERNS.md",
+                        "docs/15_REJECTED_RUNTIME_PATTERNS.md",
+                    ],
+                }
+            ],
+        ),
+        (
+            "duplicate-id",
+            [
+                {
+                    "id": "DUPLICATE_ID",
+                    "pattern": "x",
+                    "mode": "literal",
+                    "description": "first",
+                    "allowed_in": ["docs/15_REJECTED_RUNTIME_PATTERNS.md"],
+                },
+                {
+                    "id": "DUPLICATE_ID",
+                    "pattern": "y",
+                    "mode": "literal",
+                    "description": "second",
+                    "allowed_in": ["docs/15_REJECTED_RUNTIME_PATTERNS.md"],
+                },
+            ],
+        ),
+        (
+            "duplicate-pattern-mode",
+            [
+                {
+                    "id": "DUPLICATE_PATTERN_A",
+                    "pattern": "x",
+                    "mode": "literal",
+                    "description": "first",
+                    "allowed_in": ["docs/15_REJECTED_RUNTIME_PATTERNS.md"],
+                },
+                {
+                    "id": "DUPLICATE_PATTERN_B",
+                    "pattern": "x",
+                    "mode": "literal",
+                    "description": "second",
+                    "allowed_in": ["docs/15_REJECTED_RUNTIME_PATTERNS.md"],
+                },
+            ],
+        ),
+    ]
+
+    for name, payload in invalid_payloads:
+        path = tmp_path / f"{name}.json"
+        path.write_text(json.dumps(payload), encoding="utf-8")
+        with pytest.raises((RuntimeError, ValueError)):
+            load_forbidden_runtime_patterns(path)
+
+
+def test_forbidden_runtime_pattern_loader_supports_literal_mode():
+    """trace_ref: docs/12_RUNTIME_EMBARGO_CONSTITUTION.md Embargo Rule."""
+    compiled = compile_forbidden_runtime_patterns(
+        (
+            ForbiddenRuntimePattern(
+                id="LITERAL_DOT_PATTERN",
+                pattern="Rank.CERTIFICATE",
+                mode="literal",
+                description="literal matching escapes regex metacharacters",
+                allowed_in=("docs/15_REJECTED_RUNTIME_PATTERNS.md",),
+            ),
+        )
+    )
+    assert compiled[0].matcher.search("Rank.CERTIFICATE")
+    assert not compiled[0].matcher.search("RankXCERTIFICATE")
+
+
 def test_forbidden_runtime_files_are_absent():
     """trace_ref: docs/12_RUNTIME_EMBARGO_CONSTITUTION.md Explicit Prohibitions."""
     matches = forbidden_runtime_files()
@@ -225,13 +383,14 @@ def test_source_and_config_files_block_rejected_runtime_anti_patterns(
     violations: list[str] = []
     for path in scanned_targets:
         text = scanned_text(path)
+        offsets = line_starts(text)
         file_violations: list[str] = []
         for pattern in FORBIDDEN_PATTERNS:
-            for match in pattern.finditer(text):
-                line_number = text.count("\n", 0, match.start()) + 1
+            for match in pattern.matcher.finditer(text):
+                line_number = line_number_at(offsets, match.start())
                 matched_text = match.group(0)
                 file_violations.append(
-                    f"pattern '{pattern.pattern}' matched '{matched_text}' at line {line_number}"
+                    f"pattern {pattern.id} matched '{matched_text}' at line {line_number}"
                 )
         if file_violations:
             violations.append(f"{path}: " + ", ".join(file_violations))
@@ -258,7 +417,7 @@ def test_antipattern_regexes_match_case_and_multiline_variants():
         "def transform(self, operation: str) -> (\n    SlotGeometry\n):\n    pass",
     ]
     for sample in samples:
-        assert any(pattern.search(sample) for pattern in FORBIDDEN_PATTERNS)
+        assert any(pattern.matcher.search(sample) for pattern in FORBIDDEN_PATTERNS)
 
 
 def test_python_comments_and_strings_are_ignored_for_antipattern_scan(tmp_path: Path):
@@ -278,6 +437,17 @@ def test_python_comments_and_strings_are_ignored_for_antipattern_scan(tmp_path: 
     assert "identity_preserved" not in stripped
 
 
+def test_line_number_lookup_handles_line_starts_and_mid_line_positions():
+    """trace_ref: docs/12_RUNTIME_EMBARGO_CONSTITUTION.md Embargo Rule."""
+    offsets = line_starts("a\nbc\ndef")
+    assert offsets == (0, 2, 5)
+    assert line_number_at(offsets, 0) == 1
+    assert line_number_at(offsets, 1) == 1
+    assert line_number_at(offsets, 2) == 2
+    assert line_number_at(offsets, 4) == 2
+    assert line_number_at(offsets, 5) == 3
+
+
 def test_transform_antipattern_regexes_cover_annotation_variants():
     samples = [
         "def transform(self, operation: str): pass",
@@ -286,4 +456,7 @@ def test_transform_antipattern_regexes_cover_annotation_variants():
         "def transform(self, operation: str) -> (\n    SlotGeometry\n):\n    pass",
     ]
     for sample in samples:
-        assert any(pattern.search(sample) for pattern in TRANSFORM_ANTIPATTERN_PATTERNS)
+        assert any(
+            pattern.matcher.search(sample)
+            for pattern in TRANSFORM_ANTIPATTERN_PATTERNS
+        )
