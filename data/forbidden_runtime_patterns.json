@@ -135,6 +135,60 @@
     ]
   },
   {
+    "id": "RUNTIME_PREDICATE_CLASS_FORBIDDEN",
+    "pattern": "\\bclass\\s+RuntimePredicate\\b",
+    "mode": "regex",
+    "description": "Blocks runtime predicate authority before explicit embargo lift.",
+    "allowed_in": [
+      "docs/15_REJECTED_RUNTIME_PATTERNS.md"
+    ]
+  },
+  {
+    "id": "RUNTIME_TRANSLATOR_CLASS_FORBIDDEN",
+    "pattern": "\\bclass\\s+RuntimeTranslator\\b",
+    "mode": "regex",
+    "description": "Blocks runtime translator authority before explicit embargo lift.",
+    "allowed_in": [
+      "docs/15_REJECTED_RUNTIME_PATTERNS.md"
+    ]
+  },
+  {
+    "id": "RUNTIME_PREDICATE_FIELD_FORBIDDEN",
+    "pattern": "\\bruntime_predicate\\s*:",
+    "mode": "regex",
+    "description": "Blocks runtime predicate fields in source or configuration before explicit embargo lift.",
+    "allowed_in": [
+      "docs/15_REJECTED_RUNTIME_PATTERNS.md"
+    ]
+  },
+  {
+    "id": "RUNTIME_TRANSLATOR_FIELD_FORBIDDEN",
+    "pattern": "\\bruntime_translator\\s*:",
+    "mode": "regex",
+    "description": "Blocks runtime translator fields in source or configuration before explicit embargo lift.",
+    "allowed_in": [
+      "docs/15_REJECTED_RUNTIME_PATTERNS.md"
+    ]
+  },
+  {
+    "id": "RUNTIME_DOMAIN_OPENING_CLASS_FORBIDDEN",
+    "pattern": "\\bRuntimeDomainOpening\\b",
+    "mode": "regex",
+    "description": "Blocks runtime domain opening authority objects before explicit embargo lift.",
+    "allowed_in": [
+      "docs/15_REJECTED_RUNTIME_PATTERNS.md"
+    ]
+  },
+  {
+    "id": "OPEN_RUNTIME_DOMAIN_CALL_FORBIDDEN",
+    "pattern": "\\bopen_runtime_domain\\s*\\(",
+    "mode": "regex",
+    "description": "Blocks runtime domain opening calls before explicit embargo lift.",
+    "allowed_in": [
+      "docs/15_REJECTED_RUNTIME_PATTERNS.md"
+    ]
+  },
+  {
     "id": "COMPUTED_VERDICT_CLASS_FORBIDDEN",
     "pattern": "\\bComputedVerdict\\b",
     "mode": "regex",

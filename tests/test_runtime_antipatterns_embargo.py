@@ -43,6 +43,12 @@ REQUIRED_PATTERN_IDS = {
     "EVIDENCE_LIST_MULTILINE_LICENSE_FORBIDDEN",
     "TEXT_ONLY_BRIDGE_TRANSLATOR_FORBIDDEN",
     "TEXT_ONLY_GATE_CONDITION_FORBIDDEN",
+    "RUNTIME_PREDICATE_CLASS_FORBIDDEN",
+    "RUNTIME_TRANSLATOR_CLASS_FORBIDDEN",
+    "RUNTIME_PREDICATE_FIELD_FORBIDDEN",
+    "RUNTIME_TRANSLATOR_FIELD_FORBIDDEN",
+    "RUNTIME_DOMAIN_OPENING_CLASS_FORBIDDEN",
+    "OPEN_RUNTIME_DOMAIN_CALL_FORBIDDEN",
     "COMPUTED_VERDICT_CLASS_FORBIDDEN",
     "COMPUTED_VERDICT_FIELD_FORBIDDEN",
     "MRK_DEFAULTS_FIELD_FORBIDDEN",
@@ -97,6 +103,12 @@ REQUIRED_DOC_PHRASES = [
     "def transform(self, operation: str): pass",
     "condition: str",
     "translator: str",
+    "RuntimePredicate",
+    "RuntimeTranslator",
+    "runtime_predicate:",
+    "runtime_translator:",
+    "RuntimeDomainOpening",
+    "open_runtime_domain(",
     "ComputedVerdict",
     "computed_verdict",
     "mrk_defaults",
@@ -421,6 +433,12 @@ def test_antipattern_regexes_match_case_and_multiline_variants():
         "def transform(self, operation: str) -> \"SlotGeometry\":\n    pass",
         "def transform(self, operation: str):\n    pass",
         "def transform(self, operation: str) -> (\n    SlotGeometry\n):\n    pass",
+        "class RuntimePredicate:\n    pass",
+        "class RuntimeTranslator:\n    pass",
+        "runtime_predicate: contract",
+        "runtime_translator: contract",
+        "RuntimeDomainOpening",
+        "open_runtime_domain(DomainID.D3_LEXICAL_MADLUL)",
     ]
     for sample in samples:
         assert any(pattern.matcher.search(sample) for pattern in FORBIDDEN_PATTERNS)
@@ -466,3 +484,19 @@ def test_transform_antipattern_regexes_cover_annotation_variants():
             pattern.matcher.search(sample)
             for pattern in TRANSFORM_ANTIPATTERN_PATTERNS
         )
+
+
+def test_runtime_authority_antipatterns_match_representative_variants():
+    compiled_by_id = {pattern.id: pattern.matcher for pattern in FORBIDDEN_PATTERNS}
+    samples = {
+        "RUNTIME_PREDICATE_CLASS_FORBIDDEN": "class RuntimePredicate:\n    pass",
+        "RUNTIME_TRANSLATOR_CLASS_FORBIDDEN": "class RuntimeTranslator:\n    pass",
+        "RUNTIME_PREDICATE_FIELD_FORBIDDEN": "runtime_predicate: contract",
+        "RUNTIME_TRANSLATOR_FIELD_FORBIDDEN": "runtime_translator: contract",
+        "RUNTIME_DOMAIN_OPENING_CLASS_FORBIDDEN": "RuntimeDomainOpening",
+        "OPEN_RUNTIME_DOMAIN_CALL_FORBIDDEN": (
+            "open_runtime_domain(DomainID.D3_LEXICAL_MADLUL)"
+        ),
+    }
+    for pattern_id, sample in samples.items():
+        assert compiled_by_id[pattern_id].search(sample), pattern_id

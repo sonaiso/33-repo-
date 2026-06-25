@@ -150,6 +150,23 @@ Required:
 - `BridgeSpec` with `translator_ref` and `invariant_policy_ref`
 - `ProofObject` required before runtime lift
 
+## Rejected Runtime Predicate/Translator Patterns
+
+Forbidden:
+
+- `RuntimePredicate`
+- `RuntimeTranslator`
+- `runtime_predicate:`
+- `runtime_translator:`
+- `RuntimeDomainOpening`
+- `open_runtime_domain(`
+
+Required:
+
+- Predicate and translator references remain non-runtime contract references only.
+- Runtime domain opening remains forbidden until explicit Runtime Embargo lift.
+- Schema lift requests must keep `domain_opening` constrained to `none` while embargoed.
+
 ## Rejected SGE Pattern
 
 Forbidden:
