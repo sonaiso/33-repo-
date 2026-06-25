@@ -183,6 +183,14 @@ def test_lafzi_entities_require_source_surface(entity_cls, payload_factory):
 
 
 @pytest.mark.parametrize("entity_cls,payload_factory", ALL_ENTITIES)
+def test_lafzi_entities_reject_whitespace_only_source_surface(entity_cls, payload_factory):
+    payload = payload_factory()
+    payload["source_surface_ref"] = "   "
+    with pytest.raises(ValueError, match=FailureCode.M_00_22.value):
+        entity_cls(**payload)
+
+
+@pytest.mark.parametrize("entity_cls,payload_factory", ALL_ENTITIES)
 def test_lafzi_entities_require_source_contract_ref(entity_cls, payload_factory):
     with pytest.raises(ValueError, match=FailureCode.M_00_22.value):
         entity_cls(**payload_factory(), source_contract_ref="OtherSurface")
@@ -198,6 +206,15 @@ def test_lafzi_entities_require_dal_to_lafzi_bridge(entity_cls, payload_factory)
 def test_lafzi_entities_require_proof_ref(entity_cls, payload_factory):
     payload = payload_factory()
     payload["proof_object_ref"] = ""
+    payload["proof_trace_ref"] = ""
+    with pytest.raises(ValueError, match=FailureCode.M_00_22.value):
+        entity_cls(**payload)
+
+
+@pytest.mark.parametrize("entity_cls,payload_factory", ALL_ENTITIES)
+def test_lafzi_entities_reject_whitespace_only_proof_ref(entity_cls, payload_factory):
+    payload = payload_factory()
+    payload["proof_object_ref"] = "   "
     payload["proof_trace_ref"] = ""
     with pytest.raises(ValueError, match=FailureCode.M_00_22.value):
         entity_cls(**payload)

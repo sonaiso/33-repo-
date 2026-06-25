@@ -34,6 +34,10 @@ FORM_ONLY_STATUS = "FORM_ONLY"
 NO_ADDITION = "NO_ADDITION"
 
 
+def _has_content(value: str) -> bool:
+    return isinstance(value, str) and bool(value.strip())
+
+
 def _validate_common(
     *,
     trace_ref: str,
@@ -49,7 +53,7 @@ def _validate_common(
     proof_object_ref: str,
     proof_trace_ref: str,
 ) -> None:
-    if not trace_ref:
+    if not _has_content(trace_ref):
         raise ValueError(FailureCode.M_01_14.value)
     if rank != Rank.CANDIDATE.value:
         raise ValueError(FailureCode.M_01_16.value)
@@ -57,7 +61,7 @@ def _validate_common(
         raise ValueError(FailureCode.M_00_22.value)
     if source_domain_id != DomainID.D1_DAL_ONLY:
         raise ValueError(FailureCode.M_00_09.value)
-    if not source_surface_ref:
+    if not _has_content(source_surface_ref):
         raise ValueError(FailureCode.M_00_22.value)
     if source_contract_ref != SOURCE_CONTRACT_REF:
         raise ValueError(FailureCode.M_00_22.value)
@@ -71,7 +75,7 @@ def _validate_common(
         raise ValueError(FailureCode.M_00_22.value)
     if not set(forbidden_outputs).issuperset(LAFZI_FORM_FORBIDDEN_OUTPUTS_SET):
         raise ValueError(FailureCode.M_00_22.value)
-    if not proof_object_ref and not proof_trace_ref:
+    if not (_has_content(proof_object_ref) or _has_content(proof_trace_ref)):
         raise ValueError(FailureCode.M_00_22.value)
 
 
