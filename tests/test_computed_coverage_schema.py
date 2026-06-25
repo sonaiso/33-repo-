@@ -26,7 +26,7 @@ FIXTURES_DIR = REPO_ROOT / "tests" / "fixtures" / "coverage_cases"
 INVALID_MATRIX_FIXTURES = sorted(
     path.name for path in FIXTURES_DIR.glob("invalid_matrix_*.json")
 )
-SCHEMA_SAFE_VERDICT_EXTRAS: dict[str, dict[str, Any]] = {
+EXPECTED_VERDICT_REQUIRED_FIELDS: dict[str, dict[str, Any]] = {
     "EXPECTED_ACCEPTED_CANDIDATE": {},
     "EXPECTED_BLOCKED": {"expected_failure_family": "FAMILY_EMBARGO"},
     "EXPECTED_RESIDUAL": {"expected_residual_policy": "KEEP_RESIDUALS"},
@@ -184,11 +184,11 @@ def _minimal_valid_case() -> dict[str, Any]:
 
 
 def _valid_case_for_verdict(verdict: str) -> dict[str, Any]:
-    assert verdict in SCHEMA_SAFE_VERDICT_EXTRAS
+    assert verdict in EXPECTED_VERDICT_REQUIRED_FIELDS
     return (
         _minimal_valid_case()
         | {"expected_verdict": verdict}
-        | SCHEMA_SAFE_VERDICT_EXTRAS[verdict]
+        | EXPECTED_VERDICT_REQUIRED_FIELDS[verdict]
     )
 
 
@@ -442,7 +442,7 @@ def test_schema_rejects_required_bridges_for_non_bridge_verdicts(
 
 
 def test_schema_rejects_computed_verdict():
-    _assert_invalid(_minimal_valid_case() | {"computed_verdict": "manual"})
+    _assert_invalid(_minimal_valid_case() | {"computed_verdict": "FORBIDDEN_COMPUTED"})
 
 
 def test_schema_rejects_mrk_defaults():
@@ -504,7 +504,9 @@ def test_expected_verdict_enum_is_supported(verdict: str):
     ],
 )
 def test_schema_rejects_computed_verdict_for_every_expected_verdict(verdict: str):
-    _assert_invalid(_valid_case_for_verdict(verdict) | {"computed_verdict": "manual"})
+    _assert_invalid(
+        _valid_case_for_verdict(verdict) | {"computed_verdict": "FORBIDDEN_COMPUTED"}
+    )
 
 
 def test_fallback_validator_accepts_valid_case(monkeypatch: pytest.MonkeyPatch):
@@ -515,7 +517,7 @@ def test_fallback_validator_accepts_valid_case(monkeypatch: pytest.MonkeyPatch):
 
 def test_fallback_validator_rejects_computed_verdict(monkeypatch: pytest.MonkeyPatch):
     monkeypatch.setattr("tests.test_computed_coverage_schema.Draft202012Validator", None)
-    _assert_invalid(_minimal_valid_case() | {"computed_verdict": "manual"})
+    _assert_invalid(_minimal_valid_case() | {"computed_verdict": "FORBIDDEN_COMPUTED"})
 
 
 def test_fallback_validator_rejects_irrelevant_outcome_field(monkeypatch: pytest.MonkeyPatch):
