@@ -21,6 +21,8 @@ REQUIRED_PATTERN_FIELDS = frozenset(
 )
 VALID_PATTERN_MODES = frozenset({"regex", "literal"})
 PATTERN_ID_REGEX = re.compile(r"^[A-Z][A-Z0-9_]*$")
+ALLOWED_AUDIT_DOCUMENT_PREFIX = "docs/"
+ALLOWED_AUDIT_DOCUMENT_SUFFIX = ".md"
 
 
 class ForbiddenRuntimePattern(NamedTuple):
@@ -70,6 +72,26 @@ def _validate_allowed_in(record_id: str, allowed_in: Any) -> tuple[str, ...]:
             raise ValueError(
                 f"{record_id}.allowed_in must not contain trailing slashes "
                 "or navigation segments"
+            )
+        candidate = REPO_ROOT / path
+        try:
+            candidate.relative_to(REPO_ROOT)
+        except ValueError as exc:
+            raise ValueError(
+                f"{record_id}.allowed_in must stay within the repository"
+            ) from exc
+        if not path.startswith(ALLOWED_AUDIT_DOCUMENT_PREFIX):
+            raise ValueError(
+                f"{record_id}.allowed_in must reference docs audit files"
+            )
+        if not path.endswith(ALLOWED_AUDIT_DOCUMENT_SUFFIX):
+            raise ValueError(
+                f"{record_id}.allowed_in must reference markdown audit files"
+            )
+        if not candidate.is_file():
+            raise ValueError(
+                f"{record_id}.allowed_in must reference existing audit "
+                "documentation files"
             )
     return tuple(allowed_in)
 
@@ -159,3 +181,14 @@ def compile_forbidden_runtime_patterns(
             )
         )
     return tuple(compiled)
+
+
+def allowed_forbidden_runtime_pattern_paths(
+    records: tuple[ForbiddenRuntimePattern, ...] | None = None,
+) -> frozenset[Path]:
+    source_records = records or load_forbidden_runtime_patterns()
+    return frozenset(
+        REPO_ROOT / allowed_path
+        for record in source_records
+        for allowed_path in record.allowed_in
+    )

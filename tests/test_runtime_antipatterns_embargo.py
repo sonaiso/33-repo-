@@ -14,9 +14,11 @@ from tests.forbidden_runtime_artifacts import load_forbidden_runtime_artifact_pa
 from tests.forbidden_runtime_patterns import (
     CANONICAL_FORBIDDEN_RUNTIME_PATTERNS_PATH,
     ForbiddenRuntimePattern,
+    allowed_forbidden_runtime_pattern_paths,
     compile_forbidden_runtime_patterns,
     load_forbidden_runtime_patterns,
 )
+from tests.test_forbidden_runtime_pattern_fixtures import PATTERN_FIXTURES
 
 REPO_ROOT = Path(__file__).parent.parent
 GUARD_DOC = REPO_ROOT / "docs" / "15_REJECTED_RUNTIME_PATTERNS.md"
@@ -134,7 +136,11 @@ REQUIRED_DOC_PHRASES = [
 ]
 
 FORBIDDEN_PATTERN_RECORDS = load_forbidden_runtime_patterns()
+FORBIDDEN_PATTERN_RECORDS_BY_ID = {
+    record.id: record for record in FORBIDDEN_PATTERN_RECORDS
+}
 FORBIDDEN_PATTERNS = compile_forbidden_runtime_patterns(FORBIDDEN_PATTERN_RECORDS)
+FORBIDDEN_PATTERNS_BY_ID = {pattern.id: pattern for pattern in FORBIDDEN_PATTERNS}
 TRANSFORM_ANTIPATTERN_PATTERNS = tuple(
     pattern
     for pattern in FORBIDDEN_PATTERNS
@@ -142,7 +148,9 @@ TRANSFORM_ANTIPATTERN_PATTERNS = tuple(
 )
 
 ALLOWED_SUFFIXES = {".py", ".toml", ".yaml", ".yml"}
-ALLOWED_EXCEPTION_PATH = GUARD_DOC
+ALLOWED_EXCEPTION_PATHS = allowed_forbidden_runtime_pattern_paths(
+    FORBIDDEN_PATTERN_RECORDS
+)
 
 
 def scan_targets() -> list[Path]:
@@ -159,8 +167,44 @@ def scan_targets() -> list[Path]:
         targets.update((REPO_ROOT / "ci").rglob(pattern))
 
     return sorted(
-        path for path in targets if path.is_file() and path != ALLOWED_EXCEPTION_PATH
+        path for path in targets if path.is_file() and path not in ALLOWED_EXCEPTION_PATHS
     )
+
+
+def path_matches_allowed_in(path: Path, allowed_in: tuple[str, ...]) -> bool:
+    """Return whether a repository path is a registered allowed audit context."""
+    try:
+        relative_path = path.relative_to(REPO_ROOT).as_posix()
+    except ValueError:
+        # Paths outside this repository are never registered allowed contexts.
+        return False
+    return relative_path in allowed_in
+
+
+def pattern_violations_for_text(
+    path: Path,
+    text: str,
+    patterns=FORBIDDEN_PATTERNS,
+    records_by_id=FORBIDDEN_PATTERN_RECORDS_BY_ID,
+) -> list[str]:
+    """Return forbidden pattern violations for text outside allowed contexts."""
+    if not patterns:
+        raise ValueError("patterns must not be empty")
+    if not records_by_id:
+        raise ValueError("records_by_id must not be empty")
+    violations: list[str] = []
+    offsets = line_starts(text)
+    for pattern in patterns:
+        record = records_by_id[pattern.id]
+        if path_matches_allowed_in(path, record.allowed_in):
+            continue
+        for match in pattern.matcher.finditer(text):
+            line_number = line_number_at(offsets, match.start())
+            matched_text = match.group(0)
+            violations.append(
+                f"pattern {pattern.id} matched '{matched_text}' at line {line_number}"
+            )
+    return violations
 
 
 def forbidden_runtime_files() -> list[Path]:
@@ -226,6 +270,7 @@ def test_scanned_targets_are_expected_embargo_scope(scanned_targets: list[Path])
     assert any(path.is_relative_to(REPO_ROOT / "ci") for path in targets)
     assert REPO_ROOT / "pyproject.toml" in targets
     assert GUARD_DOC not in targets
+    assert GUARD_DOC in ALLOWED_EXCEPTION_PATHS
 
 
 def test_rejected_runtime_patterns_doc_exists_with_required_markers():
@@ -258,6 +303,37 @@ def test_forbidden_runtime_pattern_registry_is_canonical_and_valid():
             assert not allowed_path.endswith("/")
             assert "/./" not in allowed_path
             assert "/../" not in allowed_path
+    assert ALLOWED_EXCEPTION_PATHS == {GUARD_DOC}
+
+
+def test_allowed_in_paths_are_existing_audit_document_contexts():
+    """trace_ref: docs/12_RUNTIME_EMBARGO_CONSTITUTION.md Embargo Rule."""
+    assert ALLOWED_EXCEPTION_PATHS
+    for allowed_path in ALLOWED_EXCEPTION_PATHS:
+        assert allowed_path.exists()
+        assert allowed_path.is_file()
+        assert allowed_path.is_relative_to(REPO_ROOT / "docs")
+        assert allowed_path.suffix == ".md"
+
+
+def test_registered_allowed_contexts_do_not_report_registered_antipattern_text():
+    """trace_ref: docs/12_RUNTIME_EMBARGO_CONSTITUTION.md Embargo Rule."""
+    for pattern_id, sample in PATTERN_FIXTURES.items():
+        record = FORBIDDEN_PATTERN_RECORDS_BY_ID[pattern_id]
+        assert FORBIDDEN_PATTERNS_BY_ID[pattern_id].matcher.search(sample)
+        for allowed_path in record.allowed_in:
+            path = REPO_ROOT / allowed_path
+            assert not pattern_violations_for_text(path, sample), pattern_id
+
+
+def test_registered_antipattern_text_still_fails_outside_allowed_contexts(
+    tmp_path: Path,
+):
+    """trace_ref: docs/12_RUNTIME_EMBARGO_CONSTITUTION.md Embargo Rule."""
+    outside_path = tmp_path / "synthetic_runtime_antipattern.py"
+    for pattern_id, sample in PATTERN_FIXTURES.items():
+        violations = pattern_violations_for_text(outside_path, sample)
+        assert any(f"pattern {pattern_id} " in violation for violation in violations)
 
 
 def test_forbidden_runtime_pattern_loader_reports_missing_file(tmp_path: Path):
@@ -358,6 +434,173 @@ def test_forbidden_runtime_pattern_loader_rejects_invalid_payloads(tmp_path: Pat
                 },
             ],
         ),
+        (
+            "missing-allowed-in",
+            [
+                {
+                    "id": "MISSING_ALLOWED_IN",
+                    "pattern": "x",
+                    "mode": "literal",
+                    "description": "missing allowed paths",
+                }
+            ],
+        ),
+        (
+            "empty-allowed-in",
+            [
+                {
+                    "id": "EMPTY_ALLOWED_IN",
+                    "pattern": "x",
+                    "mode": "literal",
+                    "description": "empty allowed paths",
+                    "allowed_in": [],
+                }
+            ],
+        ),
+        (
+            "non-string-allowed-in",
+            [
+                {
+                    "id": "NON_STRING_ALLOWED_IN",
+                    "pattern": "x",
+                    "mode": "literal",
+                    "description": "non-string allowed path",
+                    "allowed_in": [1],
+                }
+            ],
+        ),
+        (
+            "empty-string-allowed-in",
+            [
+                {
+                    "id": "EMPTY_STRING_ALLOWED_IN",
+                    "pattern": "x",
+                    "mode": "literal",
+                    "description": "empty-string allowed path",
+                    "allowed_in": [""],
+                }
+            ],
+        ),
+        (
+            "absolute-allowed-in",
+            [
+                {
+                    "id": "ABSOLUTE_ALLOWED_IN",
+                    "pattern": "x",
+                    "mode": "literal",
+                    "description": "absolute allowed path",
+                    "allowed_in": ["/docs/15_REJECTED_RUNTIME_PATTERNS.md"],
+                }
+            ],
+        ),
+        (
+            "relative-dot-allowed-in",
+            [
+                {
+                    "id": "RELATIVE_DOT_ALLOWED_IN",
+                    "pattern": "x",
+                    "mode": "literal",
+                    "description": "relative dot allowed path",
+                    "allowed_in": ["./docs/15_REJECTED_RUNTIME_PATTERNS.md"],
+                }
+            ],
+        ),
+        (
+            "relative-parent-allowed-in",
+            [
+                {
+                    "id": "RELATIVE_PARENT_ALLOWED_IN",
+                    "pattern": "x",
+                    "mode": "literal",
+                    "description": "relative parent allowed path",
+                    "allowed_in": ["../docs/15_REJECTED_RUNTIME_PATTERNS.md"],
+                }
+            ],
+        ),
+        (
+            "backslash-allowed-in",
+            [
+                {
+                    "id": "BACKSLASH_ALLOWED_IN",
+                    "pattern": "x",
+                    "mode": "literal",
+                    "description": "backslash allowed path",
+                    "allowed_in": ["docs\\15_REJECTED_RUNTIME_PATTERNS.md"],
+                }
+            ],
+        ),
+        (
+            "double-slash-allowed-in",
+            [
+                {
+                    "id": "DOUBLE_SLASH_ALLOWED_IN",
+                    "pattern": "x",
+                    "mode": "literal",
+                    "description": "double slash allowed path",
+                    "allowed_in": ["docs//15_REJECTED_RUNTIME_PATTERNS.md"],
+                }
+            ],
+        ),
+        (
+            "trailing-slash-allowed-in",
+            [
+                {
+                    "id": "TRAILING_SLASH_ALLOWED_IN",
+                    "pattern": "x",
+                    "mode": "literal",
+                    "description": "trailing slash allowed path",
+                    "allowed_in": ["docs/15_REJECTED_RUNTIME_PATTERNS.md/"],
+                }
+            ],
+        ),
+        (
+            "dot-segment-allowed-in",
+            [
+                {
+                    "id": "DOT_SEGMENT_ALLOWED_IN",
+                    "pattern": "x",
+                    "mode": "literal",
+                    "description": "dot segment allowed path",
+                    "allowed_in": ["docs/./15_REJECTED_RUNTIME_PATTERNS.md"],
+                }
+            ],
+        ),
+        (
+            "parent-segment-allowed-in",
+            [
+                {
+                    "id": "PARENT_SEGMENT_ALLOWED_IN",
+                    "pattern": "x",
+                    "mode": "literal",
+                    "description": "parent segment allowed path",
+                    "allowed_in": ["docs/../docs/15_REJECTED_RUNTIME_PATTERNS.md"],
+                }
+            ],
+        ),
+        (
+            "directory-wide-allowed-in",
+            [
+                {
+                    "id": "DIRECTORY_WIDE_ALLOWED_IN",
+                    "pattern": "x",
+                    "mode": "literal",
+                    "description": "directory allowed path",
+                    "allowed_in": ["docs"],
+                }
+            ],
+        ),
+        (
+            "stale-allowed-in",
+            [
+                {
+                    "id": "STALE_ALLOWED_IN",
+                    "pattern": "x",
+                    "mode": "literal",
+                    "description": "stale allowed path",
+                    "allowed_in": ["docs/DOES_NOT_EXIST.md"],
+                }
+            ],
+        ),
     ]
 
     for name, payload in invalid_payloads:
@@ -398,16 +641,7 @@ def test_source_and_config_files_block_rejected_runtime_anti_patterns(
     """trace_ref: docs/12_RUNTIME_EMBARGO_CONSTITUTION.md Embargo Rule."""
     violations: list[str] = []
     for path in scanned_targets:
-        text = scanned_text(path)
-        offsets = line_starts(text)
-        file_violations: list[str] = []
-        for pattern in FORBIDDEN_PATTERNS:
-            for match in pattern.matcher.finditer(text):
-                line_number = line_number_at(offsets, match.start())
-                matched_text = match.group(0)
-                file_violations.append(
-                    f"pattern {pattern.id} matched '{matched_text}' at line {line_number}"
-                )
+        file_violations = pattern_violations_for_text(path, scanned_text(path))
         if file_violations:
             violations.append(f"{path}: " + ", ".join(file_violations))
 

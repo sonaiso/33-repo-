@@ -19,7 +19,7 @@ bounded next-safe-step selection.
 ## Current Constitutional State
 
 - L0 is closed.
-- L1 is open.
+- L1 work is contract/audit bounded.
 - L2 and L3 are locked.
 - B0–B9 are internal L1 checkpoints only.
 - Runtime remains embargoed.
@@ -28,6 +28,9 @@ bounded next-safe-step selection.
 - Domain boundary map is audit-only.
 - FailureAlignment is audit-only.
 - No runtime kernel is authorized.
+- Computed coverage is schema/fixture based only.
+- PR #103 added the `expected_verdict` fixture matrix; marker phrase: expected_verdict fixture matrix; do not regress it.
+- computed_verdict cannot be supplied by fixture data.
 
 ## Forbidden Actions
 
@@ -77,6 +80,7 @@ Each PR must state:
 - Files changed
 - Tests run
 - Constitutional invariants preserved
+- Why this is audit-only
 
 Every new entity must preserve:
 
@@ -112,14 +116,19 @@ After each PR, verify:
 
 If any invariant fails, stop and report `BLOCKED`.
 
-## Current Roadmap After PR #54
+## Current Roadmap After PR #103
 
 Source of truth: `docs/15_PROJECT_ROADMAP.md`.
+Operational companion: `docs/20_AGENT_AUTONOMY_RUNBOOK.md`.
 
-Next required sequence:
+Next-safe-step priority queue:
 
-1. Expand FailureAlignment canonical families — audit-only.
-2. Add rejected runtime anti-pattern guards.
-3. Add computed coverage schema — schema only, no runtime.
-4. Add ProofObject failure-policy alignment — no kernel.
-5. Only after explicit Runtime Embargo lift may any minimal kernel be proposed.
+1. Fix weak or missing tests around computed coverage verdict fixtures.
+2. Add negative fixture coverage for allowed contexts so forbidden patterns do not false-positive in authorized documentation.
+3. Add schema tests proving `computed_verdict` is rejected for every verdict fixture type.
+4. Add manifest tests proving every `expected_verdict` has one positive fixture, at least one unrelated-field negative fixture, and at least one `computed_verdict` rejection fixture.
+5. Add canonical family audit fields for `failure_alignment.csv` if absent: `canonical_family`, `domain_scope`, `proof_obligation`, `residual_policy`, `forbidden_runtime_use`; keep all rows `is_executable_row=false` and `executable_mapping=AUDIT_ONLY`.
+6. Add or refine agent autonomy instructions/runbook so future Copilot sessions choose the next safe step.
+7. Add anti-pattern regression guards for rank promotion, Boolean-as-proof defaults, evidence list as proof, runtime engine names, forbidden runtime artifact names, and coverage matrix artifacts.
+
+Choose one highest-priority safe gap only, prefer docs/schema/data/tests, and stop before runtime/kernel/domain opening.
