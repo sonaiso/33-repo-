@@ -41,10 +41,16 @@ CANONICAL_FAMILIES = {
     "RELATION_PREREQUISITE",
     "HUKM_PREREQUISITE",
     "TANZIL_PREREQUISITE",
-    "L0_SPECIFIC",
-    "L1_SPECIFIC",
-    "L2_SPECIFIC",
-    "L3_SPECIFIC",
+    "L0_SOUND_STRUCTURE",
+    "L0_SIGNIFICATION_STRUCTURE",
+    "WAQF_WASL_STRUCTURE",
+    "L1_CLOSURE_PREREQUISITE",
+    "L1_FORMAL_AXIOMS",
+    "L2_CLOSURE_PREREQUISITE",
+    "L2_QIYAS_STRUCTURE",
+    "L2_PROOF_CHAIN",
+    "L3_READINESS_PREREQUISITE",
+    "L3_VERDICT_BOUNDARY",
     "SCHEMA",
     "BRIDGE",
     "PURITY",
@@ -54,6 +60,8 @@ CANONICAL_FAMILIES = {
     "MANAT",
 }
 
+LEGACY_GENERIC_FAMILIES = {"L0_SPECIFIC", "L1_SPECIFIC", "L2_SPECIFIC", "L3_SPECIFIC"}
+
 TRACE_CODES = {"M_01_14", "M_00_11", "M_CX_12", "M_02_11", "M_03_07"}
 RANK_CODES = {"M_01_16", "M_CX_09", "M_00_10", "M_00_12", "M_01_15", "M_02_12", "M_03_08"}
 
@@ -62,6 +70,16 @@ REQUIRED_FAMILY_BY_CODE = {
     "M_WW_07": "MEANING_LEAK",
     "M_WW_08": "IFADAH_LEAK",
     "M_WW_03": "RELATION_PREREQUISITE",
+    "M_00_01": "L0_SOUND_STRUCTURE",
+    "M_00_22": "L0_SIGNIFICATION_STRUCTURE",
+    "M_WW_01": "WAQF_WASL_STRUCTURE",
+    "M_01_01": "L1_CLOSURE_PREREQUISITE",
+    "M_01_02": "L1_FORMAL_AXIOMS",
+    "M_02_01": "L2_CLOSURE_PREREQUISITE",
+    "M_02_02": "L2_QIYAS_STRUCTURE",
+    "M_02_07": "L2_PROOF_CHAIN",
+    "M_03_01": "L3_READINESS_PREREQUISITE",
+    "M_03_09": "L3_VERDICT_BOUNDARY",
 }
 
 
@@ -135,6 +153,15 @@ def test_every_row_has_canonical_family_in_closed_set(alignment_rows: list[dict[
         assert family, f"row {row['row_id']} is missing canonical_family"
         assert family in CANONICAL_FAMILIES, (
             f"row {row['row_id']} uses non-closed canonical_family: {family}"
+        )
+
+
+def test_legacy_generic_layer_families_are_not_used(alignment_rows: list[dict[str, str]]):
+    """trace_ref: docs/13_FAILURE_ALIGNMENT_CONSTITUTION.md Canonical Family Set."""
+    for row in alignment_rows:
+        family = (row["canonical_family"] or "").strip()
+        assert family not in LEGACY_GENERIC_FAMILIES, (
+            f"row {row['row_id']} must use expanded canonical_family, got legacy: {family}"
         )
 
 
