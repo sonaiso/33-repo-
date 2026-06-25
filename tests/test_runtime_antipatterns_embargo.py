@@ -4,8 +4,8 @@ from __future__ import annotations
 
 import io
 import json
-import re
 import tokenize
+from bisect import bisect_right
 from pathlib import Path
 
 import pytest
@@ -172,6 +172,16 @@ def scanned_text(path: Path) -> str:
         return text
 
     return tokenize.untokenize(tokens)
+
+
+def line_starts(text: str) -> tuple[int, ...]:
+    """Return zero-based offsets for line starts in scan text."""
+    return (0, *(index + 1 for index, character in enumerate(text) if character == "\n"))
+
+
+def line_number_at(offsets: tuple[int, ...], position: int) -> int:
+    """Return one-based line number for a zero-based text position."""
+    return bisect_right(offsets, position)
 
 
 @pytest.fixture(scope="module")
@@ -367,10 +377,11 @@ def test_source_and_config_files_block_rejected_runtime_anti_patterns(
     violations: list[str] = []
     for path in scanned_targets:
         text = scanned_text(path)
+        offsets = line_starts(text)
         file_violations: list[str] = []
         for pattern in FORBIDDEN_PATTERNS:
             for match in pattern.matcher.finditer(text):
-                line_number = text.count("\n", 0, match.start()) + 1
+                line_number = line_number_at(offsets, match.start())
                 matched_text = match.group(0)
                 file_violations.append(
                     f"pattern {pattern.id} matched '{matched_text}' at line {line_number}"

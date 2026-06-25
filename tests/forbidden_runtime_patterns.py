@@ -7,6 +7,7 @@ from __future__ import annotations
 
 import json
 import re
+from functools import cache
 from pathlib import Path
 from typing import Any, NamedTuple
 
@@ -56,7 +57,7 @@ def _validate_allowed_in(record_id: str, allowed_in: Any) -> tuple[str, ...]:
     if len(allowed_in) != len(set(allowed_in)):
         raise ValueError(f"{record_id}.allowed_in must contain unique paths")
     for path in allowed_in:
-        if path.startswith(("/", "./")) or "\\" in path or "//" in path:
+        if path.startswith(("/", "./", "../")) or "\\" in path or "//" in path:
             raise ValueError(
                 f"{record_id}.allowed_in must not contain absolute, relative, "
                 "backslash, or empty-segment paths"
@@ -112,6 +113,7 @@ def _validate_record(record: Any, index: int) -> ForbiddenRuntimePattern:
     )
 
 
+@cache
 def load_forbidden_runtime_patterns(
     path: Path = CANONICAL_FORBIDDEN_RUNTIME_PATTERNS_PATH,
 ) -> tuple[ForbiddenRuntimePattern, ...]:
@@ -134,6 +136,7 @@ def load_forbidden_runtime_patterns(
     return records
 
 
+@cache
 def compile_forbidden_runtime_patterns(
     patterns: tuple[ForbiddenRuntimePattern, ...] | None = None,
 ) -> tuple[CompiledForbiddenRuntimePattern, ...]:
