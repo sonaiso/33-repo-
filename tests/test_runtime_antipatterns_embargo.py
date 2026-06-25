@@ -172,10 +172,11 @@ def scan_targets() -> list[Path]:
 
 
 def path_matches_allowed_in(path: Path, allowed_in: tuple[str, ...]) -> bool:
-    """Return whether a path is a registered allowed audit context."""
+    """Return whether a repository path is a registered allowed audit context."""
     try:
         relative_path = path.relative_to(REPO_ROOT).as_posix()
     except ValueError:
+        # Paths outside this repository are never registered allowed contexts.
         return False
     return relative_path in allowed_in
 
@@ -315,9 +316,11 @@ def test_registered_allowed_contexts_do_not_report_registered_antipattern_text()
             assert not pattern_violations_for_text(path, sample), pattern_id
 
 
-def test_registered_antipattern_text_still_fails_outside_allowed_contexts():
+def test_registered_antipattern_text_still_fails_outside_allowed_contexts(
+    tmp_path: Path,
+):
     """trace_ref: docs/12_RUNTIME_EMBARGO_CONSTITUTION.md Embargo Rule."""
-    outside_path = REPO_ROOT / "tests" / "synthetic_runtime_antipattern.py"
+    outside_path = tmp_path / "synthetic_runtime_antipattern.py"
     for pattern_id, sample in PATTERN_FIXTURES.items():
         violations = pattern_violations_for_text(outside_path, sample)
         assert any(f"pattern {pattern_id} " in violation for violation in violations)

@@ -73,9 +73,9 @@ def _validate_allowed_in(record_id: str, allowed_in: Any) -> tuple[str, ...]:
                 f"{record_id}.allowed_in must not contain trailing slashes "
                 "or navigation segments"
             )
-        candidate = (REPO_ROOT / path).resolve()
+        candidate = REPO_ROOT / path
         try:
-            candidate.relative_to(REPO_ROOT.resolve())
+            candidate.relative_to(REPO_ROOT)
         except ValueError as exc:
             raise ValueError(
                 f"{record_id}.allowed_in must stay within the repository"
@@ -84,6 +84,7 @@ def _validate_allowed_in(record_id: str, allowed_in: Any) -> tuple[str, ...]:
             not path.startswith(ALLOWED_AUDIT_DOCUMENT_PREFIX)
             or not path.endswith(ALLOWED_AUDIT_DOCUMENT_SUFFIX)
             or not candidate.is_file()
+            or candidate.is_symlink()
         ):
             raise ValueError(
                 f"{record_id}.allowed_in must reference existing audit "
