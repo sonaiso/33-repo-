@@ -46,6 +46,10 @@ PR_BODY_FIELDS = (
     "Constitutional invariants preserved",
 )
 
+ARABIC_NEXT_SAFE_STEP_PROMPT = (
+    "إذا أردت، أبدأ الآن بالخطوة التالية الضيقة الآمنة (PR واحد فقط) وفق خيارك التالي."
+)
+
 
 def _read_text(path: Path) -> str:
     return path.read_text(encoding="utf-8")
@@ -96,3 +100,9 @@ def test_agent_autonomy_runbook_declares_stop_conditions():
     assert "blocked" in content
     assert "runtime authorization" in content
     assert "rank promotion" in content
+
+
+def test_agent_autonomy_runbook_includes_explicit_arabic_next_safe_step_prompt():
+    """trace_ref: docs/00B_AGENT_BINDING_CONSTITUTION.md Role Boundaries."""
+    content = _read_text(AGENT_AUTONOMY_RUNBOOK)
+    assert ARABIC_NEXT_SAFE_STEP_PROMPT in content

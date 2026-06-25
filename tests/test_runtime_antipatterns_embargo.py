@@ -49,6 +49,8 @@ REQUIRED_PATTERN_IDS = {
     "MANUAL_DASHBOARD_FIELD_FORBIDDEN",
     "EVIDENCE_LIST_AS_PROOF_PHRASE_FORBIDDEN",
     "MRK_BOOLEAN_DEFAULTS_PHRASE_FORBIDDEN",
+    "DAL_ONLY_FORBIDDEN_OUTPUT_CONTRACT_FORBIDDEN",
+    "LAFZI_FORM_FORBIDDEN_OUTPUT_CONTRACT_FORBIDDEN",
     "TRANSFORM_PASS_INLINE_FORBIDDEN",
     "TRANSFORM_PASS_ANNOTATED_FORBIDDEN",
     "TRANSFORM_PASS_MULTILINE_ANNOTATED_FORBIDDEN",
@@ -115,6 +117,8 @@ REQUIRED_DOC_PHRASES = [
     "Canonical forbidden-pattern source of truth: `data/forbidden_runtime_patterns.json` (audit-only).",
     "Path-normalization variants are rejected before any forbidden artifact can be authorized.",
     "The guard scanner must detect both single-line and multi-line forms of rejected evidence and transform anti-patterns.",
+    "DAL_ONLY to produce root, weight, word, tool, meaning, isnad, ifadah, hukm, or tanzil.",
+    "LAFZI_FORM to produce lexical meaning, usage, isnad, ifadah, hukm, or tanzil.",
 ]
 
 FORBIDDEN_PATTERN_RECORDS = load_forbidden_runtime_patterns()
@@ -411,6 +415,8 @@ def test_antipattern_regexes_match_case_and_multiline_variants():
         "if self.evidence:\n    self.licensed = TRUE",
         "if self.evidence:\n\n    self.licensed = TRUE",
         "ExecutionRank.CERTIFIED",
+        "DAL_ONLY produces root",
+        "LAFZI_FORM outputs lexical meaning",
         "def transform(self, operation: str): pass",
         "def transform(self, operation: str) -> \"SlotGeometry\":\n    pass",
         "def transform(self, operation: str):\n    pass",

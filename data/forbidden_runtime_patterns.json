@@ -189,6 +189,24 @@
     ]
   },
   {
+    "id": "DAL_ONLY_FORBIDDEN_OUTPUT_CONTRACT_FORBIDDEN",
+    "pattern": "\\bDAL_ONLY\\b[^\\n]*\\b(?:produce|produces|produced|output|outputs|yield|yields|derive|derives)\\b[^\\n]*\\b(?:root|weight|word|tool|meaning|isnad|ifadah|hukm|tanzil)\\b",
+    "mode": "regex",
+    "description": "Blocks DAL_ONLY from being declared as producing forbidden pre-runtime outputs.",
+    "allowed_in": [
+      "docs/15_REJECTED_RUNTIME_PATTERNS.md"
+    ]
+  },
+  {
+    "id": "LAFZI_FORM_FORBIDDEN_OUTPUT_CONTRACT_FORBIDDEN",
+    "pattern": "\\bLAFZI_FORM\\b[^\\n]*\\b(?:produce|produces|produced|output|outputs|yield|yields|derive|derives)\\b[^\\n]*\\b(?:lexical\\s+meaning|usage|isnad|ifadah|hukm|tanzil)\\b",
+    "mode": "regex",
+    "description": "Blocks LAFZI_FORM from being declared as producing forbidden pre-runtime outputs.",
+    "allowed_in": [
+      "docs/15_REJECTED_RUNTIME_PATTERNS.md"
+    ]
+  },
+  {
     "id": "TRANSFORM_PASS_INLINE_FORBIDDEN",
     "pattern": "\\bdef\\s+transform\\s*\\(\\s*self\\s*,\\s*operation\\s*:\\s*str\\s*\\)\\s*:\\s*(?:\\r?\\n[ \\t]*)*pass\\b",
     "mode": "regex",

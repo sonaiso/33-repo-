@@ -167,6 +167,19 @@ Required:
 - `GateProof`
 - `BridgeProof` if crossing domain
 
+## Rejected Pre-Runtime Domain Output Leakage Patterns
+
+Forbidden:
+
+- DAL_ONLY to produce root, weight, word, tool, meaning, isnad, ifadah, hukm, or tanzil.
+- LAFZI_FORM to produce lexical meaning, usage, isnad, ifadah, hukm, or tanzil.
+
+Required:
+
+- DAL_ONLY remains carrier/separation-only under pre-runtime contract law.
+- LAFZI_FORM remains form-contract-only under pre-runtime contract law.
+- No lexical or verdict-bearing outputs are authorized before explicit runtime lift.
+
 ## Rejected Coverage Patterns
 
 Forbidden:
