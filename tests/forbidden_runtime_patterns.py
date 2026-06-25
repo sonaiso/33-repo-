@@ -40,13 +40,11 @@ def _load_json_payload(path: Path = CANONICAL_FORBIDDEN_RUNTIME_PATTERNS_PATH) -
         return json.loads(path.read_text(encoding="utf-8"))
     except OSError as exc:
         raise RuntimeError(
-            "Missing canonical forbidden runtime pattern list: "
-            "data/forbidden_runtime_patterns.json"
+            f"Missing canonical forbidden runtime pattern list: {path}"
         ) from exc
     except json.JSONDecodeError as exc:
         raise RuntimeError(
-            "Invalid JSON in canonical forbidden runtime pattern list: "
-            "data/forbidden_runtime_patterns.json"
+            f"Invalid JSON in canonical forbidden runtime pattern list: {path}"
         ) from exc
 
 
@@ -59,9 +57,15 @@ def _validate_allowed_in(record_id: str, allowed_in: Any) -> tuple[str, ...]:
         raise ValueError(f"{record_id}.allowed_in must contain unique paths")
     for path in allowed_in:
         if path.startswith(("/", "./")) or "\\" in path or "//" in path:
-            raise ValueError(f"{record_id}.allowed_in must contain canonical paths")
+            raise ValueError(
+                f"{record_id}.allowed_in must not contain absolute, relative, "
+                "backslash, or empty-segment paths"
+            )
         if path.endswith("/") or "/./" in path or "/../" in path or path.startswith("../"):
-            raise ValueError(f"{record_id}.allowed_in must contain canonical paths")
+            raise ValueError(
+                f"{record_id}.allowed_in must not contain trailing slashes "
+                "or navigation segments"
+            )
     return tuple(allowed_in)
 
 
@@ -83,8 +87,10 @@ def _validate_record(record: Any, index: int) -> ForbiddenRuntimePattern:
 
     if not isinstance(record_id, str) or not PATTERN_ID_REGEX.fullmatch(record_id):
         raise ValueError(f"record {index}.id must be non-empty uppercase snake-case")
-    if not isinstance(pattern, str) or not pattern:
-        raise ValueError(f"{record_id}.pattern must be a non-empty string")
+    if not isinstance(pattern, str):
+        raise ValueError(f"{record_id}.pattern must be a string")
+    if not pattern:
+        raise ValueError(f"{record_id}.pattern must be non-empty")
     if mode not in VALID_PATTERN_MODES:
         raise ValueError(f"{record_id}.mode must be one of: literal, regex")
     if not isinstance(description, str) or not description:

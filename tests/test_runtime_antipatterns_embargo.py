@@ -217,6 +217,8 @@ def test_forbidden_runtime_pattern_registry_is_canonical_and_valid():
         assert record.mode in {"regex", "literal"}
         assert record.description
         assert record.allowed_in
+        if "transform" in record.description.lower():
+            assert record.id.startswith("TRANSFORM_PASS_")
         for allowed_path in record.allowed_in:
             assert not allowed_path.startswith(("/", "./", "../"))
             assert "\\" not in allowed_path
