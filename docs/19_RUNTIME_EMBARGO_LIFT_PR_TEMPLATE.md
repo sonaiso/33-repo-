@@ -50,6 +50,7 @@ List exact repo-relative canonical file paths only.
 List runtime artifacts that remain forbidden in this PR.
 
 Minimum forbidden runtime paths:
+Source-of-truth (audit-only): `data/forbidden_runtime_artifacts.json`
 - `src/taaqqul_slot_geometry/L1/binding_kernel.py`
 - `src/taaqqul_slot_geometry/L1/decision_engine.py`
 - `src/taaqqul_slot_geometry/runtime/binding_kernel.py`

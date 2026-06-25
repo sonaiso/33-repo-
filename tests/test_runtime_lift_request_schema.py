@@ -12,6 +12,7 @@ from typing import Any
 
 import pytest
 
+from tests.forbidden_runtime_artifacts import load_forbidden_runtime_artifact_paths
 from tests.test_runtime_antipatterns_embargo import (
     FORBIDDEN_RUNTIME_ARTIFACT_PATHS as EMBARGO_FORBIDDEN_RUNTIME_ARTIFACTS,
 )
@@ -50,24 +51,7 @@ NON_NONE_DOMAIN_OPENINGS = [
     "D6_HUKM",
     "D7_TANZIL",
 ]
-FORBIDDEN_RUNTIME_ARTIFACTS = [
-    "src/taaqqul_slot_geometry/L1/binding_kernel.py",
-    "src/taaqqul_slot_geometry/L1/decision_engine.py",
-    "src/taaqqul_slot_geometry/runtime/binding_kernel.py",
-    "src/taaqqul_slot_geometry/runtime/decision_engine.py",
-    "src/taaqqul_slot_geometry/core/binding_kernel.py",
-    "src/taaqqul_slot_geometry/core/decision_engine.py",
-    "coverage_matrix_v0.1.yaml",
-    "docs/coverage_matrix_v0.1.yaml",
-    "data/coverage_matrix_v0.1.yaml",
-    "schemas/coverage_matrix_v0.1.yaml",
-    "tests/test_binding_constraints.py",
-    "l_protocol/engine/binding_kernel.py",
-    "l_protocol/engine/decision_engine.py",
-    "l_protocol/contracts/binding_instructions.py",
-    "l_protocol/coverage_matrix_v0.1.yaml",
-    "l_protocol/tests/test_binding_constraints.py",
-]
+FORBIDDEN_RUNTIME_ARTIFACTS = list(load_forbidden_runtime_artifact_paths())
 
 
 def _load_schema() -> dict[str, Any]:
@@ -238,6 +222,7 @@ def test_lift_request_template_lists_full_required_negative_tests():
 
 def test_lift_request_template_lists_forbidden_runtime_paths():
     content = TEMPLATE_PATH.read_text(encoding="utf-8")
+    assert "data/forbidden_runtime_artifacts.json" in content
     for artifact in FORBIDDEN_RUNTIME_ARTIFACTS:
         assert artifact in content
 
