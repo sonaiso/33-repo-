@@ -93,6 +93,9 @@ Must include explicit rejection tests for:
 - domain opening without bridge
 - manually supplied computed verdict
 
+Canonical forbidden anti-pattern signatures are audit-only and governed by
+`data/forbidden_runtime_patterns.json`; this reference does not authorize runtime.
+
 Minimum required negative-test identifiers:
 - `reject-rank-certificate`
 - `reject-rank-rejected`
