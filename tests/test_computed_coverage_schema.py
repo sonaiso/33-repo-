@@ -184,6 +184,7 @@ def _minimal_valid_case() -> dict[str, Any]:
 
 
 def _valid_case_for_verdict(verdict: str) -> dict[str, Any]:
+    assert verdict in SCHEMA_SAFE_VERDICT_EXTRAS
     return (
         _minimal_valid_case()
         | {"expected_verdict": verdict}

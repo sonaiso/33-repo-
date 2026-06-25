@@ -330,6 +330,7 @@ def test_manifest_verdict_matrix_negative_entries_match_fixture_payloads():
 
         assert payload["expected_verdict"] == entry["expected_verdict"]
         assert entry["forbidden_field"] in payload
+        assert payload[entry["forbidden_field"]] not in (None, "", [])
         assert entry["must_fail_reason"] == _invalid_reason_map(manifest)[entry["file"]]
         with pytest.raises(ValidationError):
             _validate_payload(schema, payload)
