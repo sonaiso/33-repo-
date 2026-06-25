@@ -180,7 +180,7 @@ def line_starts(text: str) -> tuple[int, ...]:
     return tuple(
         chain(
             (0,),
-            (idx + 1 for idx, character in enumerate(text) if character == "\n"),
+            (idx + 1 for idx, char in enumerate(text) if char == "\n"),
         )
     )
 

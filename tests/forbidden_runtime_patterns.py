@@ -123,7 +123,10 @@ def load_forbidden_runtime_patterns(
             "data/forbidden_runtime_patterns.json must be a non-empty list"
         )
 
-    records = tuple(_validate_record(record, index) for index, record in enumerate(payload))
+    records = tuple(
+        _validate_record(record, record_index)
+        for record_index, record in enumerate(payload)
+    )
     ids = [record.id for record in records]
     if len(ids) != len(set(ids)):
         raise ValueError("data/forbidden_runtime_patterns.json must contain unique ids")
