@@ -132,8 +132,10 @@ def _fallback_validate(schema: dict[str, Any], payload: dict[str, Any]) -> None:
             continue
 
         then_clause = conditional.get("then", {})
-        then_not = then_clause.get("not", {})
-        forbidden_then_fields = then_not.get("required", [])
+        forbidden_then_fields = then_clause.get("not", {}).get("required", [])
+        # JSON Schema `not: {required: [...]}` fails only when every listed
+        # field is present; the current coverage schema uses single-field
+        # forbidden outcome declarations.
         if forbidden_then_fields and all(field in payload for field in forbidden_then_fields):
             raise ValueError(
                 "Forbidden conditional fields present: "
