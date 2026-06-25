@@ -80,11 +80,12 @@ def test_agent_autonomy_runbook_preserves_constitutional_markers():
 def test_agent_autonomy_runbook_has_required_sections_and_pr_fields():
     """trace_ref: docs/00B_AGENT_BINDING_CONSTITUTION.md Role Boundaries."""
     content = _read_text(AGENT_AUTONOMY_RUNBOOK)
+    required_pr_body = content.split("## Required PR body shape", maxsplit=1)[1]
 
     for section in RUNBOOK_REQUIRED_SECTIONS:
         assert section in content
     for field in PR_BODY_FIELDS:
-        assert f"- {field}" in content
+        assert field in required_pr_body
 
 
 def test_agent_autonomy_runbook_declares_stop_conditions():

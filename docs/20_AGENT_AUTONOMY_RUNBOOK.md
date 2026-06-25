@@ -32,7 +32,7 @@ It does not allow FailureAlignment artifacts to replace `FailureCode`.
 - L2 and L3 remain locked until explicit authorization.
 - Euclidean Learning is `AUDIT_SANDBOX_ONLY`.
 - FailureAlignment is `AUDIT_ONLY`.
-- All constitutional entities remain `rank = "CANDIDATE"` unless a future authorized constitution explicitly changes that rule.
+- All constitutional entities remain permanently constrained to `rank = "CANDIDATE"` under the current constitutional law.
 
 ## Hard prohibitions
 
@@ -112,7 +112,8 @@ pytest tests/test_kpi_indicators.py -v
 python -m ci.constitutional_guard --source-dir src
 ```
 
-Focused tests may be run first, but they do not replace the required validation list unless the agent clearly states why full validation could not run.
+Focused tests may be run first, but they do not replace the required validation list.
+If the execution environment prevents a required command from running, the agent must state the exact command, failure output, and constitutional blocker before finishing.
 
 ## Constitutional invariants preserved
 
