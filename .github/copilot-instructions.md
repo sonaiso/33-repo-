@@ -13,6 +13,8 @@ The root law is:
 - `docs/14_EUCLIDEAN_LEARNING_DOMAIN_BOUNDARY.md`
 
 You must not treat instructions as suggestions. They are binding constraints.
+Use `docs/20_AGENT_AUTONOMY_RUNBOOK.md` as the operational companion for
+bounded next-safe-step selection.
 
 ## Current Constitutional State
 
@@ -65,6 +67,7 @@ Do not allow:
 ## Required Output Shape
 
 Every PR must be scoped to one constitutional objective.
+Autonomous work must produce one narrow PR only, then stop.
 
 Each PR must state:
 
