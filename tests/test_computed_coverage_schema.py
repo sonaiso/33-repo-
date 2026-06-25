@@ -26,6 +26,13 @@ FIXTURES_DIR = REPO_ROOT / "tests" / "fixtures" / "coverage_cases"
 INVALID_MATRIX_FIXTURES = sorted(
     path.name for path in FIXTURES_DIR.glob("invalid_matrix_*.json")
 )
+SCHEMA_SAFE_VERDICT_EXTRAS: dict[str, dict[str, Any]] = {
+    "EXPECTED_ACCEPTED_CANDIDATE": {},
+    "EXPECTED_BLOCKED": {"expected_failure_family": "FAMILY_EMBARGO"},
+    "EXPECTED_RESIDUAL": {"expected_residual_policy": "KEEP_RESIDUALS"},
+    "EXPECTED_BRIDGE_REQUIRED": {"required_bridges": ["DAL_TO_LAFZI_BRIDGE"]},
+    "EXPECTED_PROOF_REQUIRED": {"expected_failure_family": "FAMILY_PROOF_REQUIRED"},
+}
 
 
 def _load_schema() -> dict[str, Any]:
@@ -177,16 +184,11 @@ def _minimal_valid_case() -> dict[str, Any]:
 
 
 def _valid_case_for_verdict(verdict: str) -> dict[str, Any]:
-    payload = _minimal_valid_case() | {"expected_verdict": verdict}
-    if verdict == "EXPECTED_BLOCKED":
-        payload["expected_failure_family"] = "FAMILY_EMBARGO"
-    if verdict == "EXPECTED_PROOF_REQUIRED":
-        payload["expected_failure_family"] = "FAMILY_PROOF_REQUIRED"
-    if verdict == "EXPECTED_RESIDUAL":
-        payload["expected_residual_policy"] = "KEEP_RESIDUALS"
-    if verdict == "EXPECTED_BRIDGE_REQUIRED":
-        payload["required_bridges"] = ["DAL_TO_LAFZI_BRIDGE"]
-    return payload
+    return (
+        _minimal_valid_case()
+        | {"expected_verdict": verdict}
+        | SCHEMA_SAFE_VERDICT_EXTRAS[verdict]
+    )
 
 
 def _assert_invalid(payload: dict[str, Any]) -> None:
