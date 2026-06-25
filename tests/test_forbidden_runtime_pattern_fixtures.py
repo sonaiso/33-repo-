@@ -41,6 +41,12 @@ PATTERN_FIXTURES = {
     "MANUAL_DASHBOARD_FIELD_FORBIDDEN": "manual_dashboard: totals",
     "EVIDENCE_LIST_AS_PROOF_PHRASE_FORBIDDEN": "evidence list as proof",
     "MRK_BOOLEAN_DEFAULTS_PHRASE_FORBIDDEN": "MRK boolean defaults",
+    "DAL_ONLY_FORBIDDEN_OUTPUT_CONTRACT_FORBIDDEN": (
+        "DAL_ONLY produces root"
+    ),
+    "LAFZI_FORM_FORBIDDEN_OUTPUT_CONTRACT_FORBIDDEN": (
+        "LAFZI_FORM outputs lexical meaning"
+    ),
     "TRANSFORM_PASS_INLINE_FORBIDDEN": (
         "def transform(self, operation: str): pass"
     ),
@@ -72,4 +78,3 @@ def test_forbidden_runtime_pattern_fixtures_match_canonical_patterns():
 
     for pattern_id, sample in PATTERN_FIXTURES.items():
         assert compiled_by_id[pattern_id].search(sample), pattern_id
-
