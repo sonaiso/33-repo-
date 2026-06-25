@@ -219,6 +219,12 @@ def test_lafzi_entities_reject_whitespace_only_proof_ref(entity_cls, payload_fac
     with pytest.raises(ValueError, match=FailureCode.M_00_22.value):
         entity_cls(**payload)
 
+    payload = payload_factory()
+    payload["proof_object_ref"] = ""
+    payload["proof_trace_ref"] = "   "
+    with pytest.raises(ValueError, match=FailureCode.M_00_22.value):
+        entity_cls(**payload)
+
 
 @pytest.mark.parametrize("entity_cls,payload_factory", ALL_ENTITIES)
 def test_lafzi_entities_require_non_empty_forbidden_outputs(entity_cls, payload_factory):
