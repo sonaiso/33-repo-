@@ -188,8 +188,10 @@ def pattern_violations_for_text(
     records_by_id=FORBIDDEN_PATTERN_RECORDS_BY_ID,
 ) -> list[str]:
     """Return forbidden pattern violations for text outside allowed contexts."""
-    assert patterns
-    assert records_by_id
+    if not patterns:
+        raise ValueError("patterns must not be empty")
+    if not records_by_id:
+        raise ValueError("records_by_id must not be empty")
     violations: list[str] = []
     offsets = line_starts(text)
     for pattern in patterns:

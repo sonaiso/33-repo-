@@ -80,11 +80,15 @@ def _validate_allowed_in(record_id: str, allowed_in: Any) -> tuple[str, ...]:
             raise ValueError(
                 f"{record_id}.allowed_in must stay within the repository"
             ) from exc
-        if (
-            not path.startswith(ALLOWED_AUDIT_DOCUMENT_PREFIX)
-            or not path.endswith(ALLOWED_AUDIT_DOCUMENT_SUFFIX)
-            or not candidate.is_file()
-        ):
+        if not path.startswith(ALLOWED_AUDIT_DOCUMENT_PREFIX):
+            raise ValueError(
+                f"{record_id}.allowed_in must reference docs audit files"
+            )
+        if not path.endswith(ALLOWED_AUDIT_DOCUMENT_SUFFIX):
+            raise ValueError(
+                f"{record_id}.allowed_in must reference markdown audit files"
+            )
+        if not candidate.is_file():
             raise ValueError(
                 f"{record_id}.allowed_in must reference existing audit "
                 "documentation files"
