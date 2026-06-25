@@ -176,6 +176,17 @@ def _minimal_valid_case() -> dict[str, Any]:
     }
 
 
+def _valid_case_for_verdict(verdict: str) -> dict[str, Any]:
+    payload = _minimal_valid_case() | {"expected_verdict": verdict}
+    if verdict in {"EXPECTED_BLOCKED", "EXPECTED_PROOF_REQUIRED"}:
+        payload["expected_failure_family"] = "FAMILY"
+    if verdict == "EXPECTED_RESIDUAL":
+        payload["expected_residual_policy"] = "KEEP"
+    if verdict == "EXPECTED_BRIDGE_REQUIRED":
+        payload["required_bridges"] = ["BRIDGE"]
+    return payload
+
+
 def _assert_invalid(payload: dict[str, Any]) -> None:
     schema = _load_schema()
     with pytest.raises((ValidationError, ValueError)):
@@ -474,14 +485,21 @@ def test_schema_keeps_coverage_matrix_forbidden_and_absent():
 )
 def test_expected_verdict_enum_is_supported(verdict: str):
     schema = _load_schema()
-    payload = _minimal_valid_case() | {"expected_verdict": verdict}
-    if verdict in {"EXPECTED_BLOCKED", "EXPECTED_PROOF_REQUIRED"}:
-        payload["expected_failure_family"] = "FAMILY"
-    if verdict == "EXPECTED_RESIDUAL":
-        payload["expected_residual_policy"] = "KEEP"
-    if verdict == "EXPECTED_BRIDGE_REQUIRED":
-        payload["required_bridges"] = ["BRIDGE"]
-    _validate_payload(schema, payload)
+    _validate_payload(schema, _valid_case_for_verdict(verdict))
+
+
+@pytest.mark.parametrize(
+    "verdict",
+    [
+        "EXPECTED_ACCEPTED_CANDIDATE",
+        "EXPECTED_BLOCKED",
+        "EXPECTED_RESIDUAL",
+        "EXPECTED_BRIDGE_REQUIRED",
+        "EXPECTED_PROOF_REQUIRED",
+    ],
+)
+def test_schema_rejects_computed_verdict_for_every_expected_verdict(verdict: str):
+    _assert_invalid(_valid_case_for_verdict(verdict) | {"computed_verdict": "manual"})
 
 
 def test_fallback_validator_accepts_valid_case(monkeypatch: pytest.MonkeyPatch):
