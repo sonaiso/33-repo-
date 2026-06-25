@@ -4,167 +4,215 @@
     "pattern": "\\bBindingDecisionEngine\\b",
     "mode": "regex",
     "description": "Blocks pre-embargo decision engine authority.",
-    "allowed_in": ["docs/15_REJECTED_RUNTIME_PATTERNS.md"]
+    "allowed_in": [
+      "docs/15_REJECTED_RUNTIME_PATTERNS.md"
+    ]
   },
   {
     "id": "RANK_CERTIFICATE_FORBIDDEN",
     "pattern": "\\bRank\\.CERTIFICATE\\b",
     "mode": "regex",
     "description": "Blocks certificate rank promotion before runtime authorization.",
-    "allowed_in": ["docs/15_REJECTED_RUNTIME_PATTERNS.md"]
+    "allowed_in": [
+      "docs/15_REJECTED_RUNTIME_PATTERNS.md"
+    ]
   },
   {
     "id": "RANK_REJECTED_FORBIDDEN",
     "pattern": "\\bRank\\.REJECTED\\b",
     "mode": "regex",
     "description": "Blocks rejected rank authority before runtime authorization.",
-    "allowed_in": ["docs/15_REJECTED_RUNTIME_PATTERNS.md"]
+    "allowed_in": [
+      "docs/15_REJECTED_RUNTIME_PATTERNS.md"
+    ]
   },
   {
     "id": "EXECUTION_RANK_CERTIFIED_FORBIDDEN",
     "pattern": "\\bExecutionRank\\.CERTIFIED\\b",
     "mode": "regex",
     "description": "Blocks certified execution authority while runtime remains embargoed.",
-    "allowed_in": ["docs/15_REJECTED_RUNTIME_PATTERNS.md"]
+    "allowed_in": [
+      "docs/15_REJECTED_RUNTIME_PATTERNS.md"
+    ]
   },
   {
     "id": "MRK_BOOLEAN_DEFAULT_DOMAIN_PROVED",
     "pattern": "\\bdomain_proved\\s*:\\s*(?i:true)\\b",
     "mode": "regex",
-    "description": "Blocks Boolean-as-proof domain proof defaults.",
-    "allowed_in": ["docs/15_REJECTED_RUNTIME_PATTERNS.md"]
+    "description": "Blocks case-insensitive textual Boolean-as-proof domain proof defaults in YAML/TOML/config contexts.",
+    "allowed_in": [
+      "docs/15_REJECTED_RUNTIME_PATTERNS.md"
+    ]
   },
   {
     "id": "MRK_BOOLEAN_DEFAULT_UNIT_PROVED",
     "pattern": "\\bunit_proved\\s*:\\s*(?i:true)\\b",
     "mode": "regex",
-    "description": "Blocks Boolean-as-proof unit proof defaults.",
-    "allowed_in": ["docs/15_REJECTED_RUNTIME_PATTERNS.md"]
+    "description": "Blocks case-insensitive textual Boolean-as-proof unit proof defaults in YAML/TOML/config contexts.",
+    "allowed_in": [
+      "docs/15_REJECTED_RUNTIME_PATTERNS.md"
+    ]
   },
   {
     "id": "MRK_BOOLEAN_DEFAULT_IDENTITY_PRESERVED",
     "pattern": "\\bidentity_preserved\\s*:\\s*(?i:true)\\b",
     "mode": "regex",
-    "description": "Blocks Boolean-as-proof identity preservation defaults.",
-    "allowed_in": ["docs/15_REJECTED_RUNTIME_PATTERNS.md"]
+    "description": "Blocks case-insensitive textual Boolean-as-proof identity preservation defaults in YAML/TOML/config contexts.",
+    "allowed_in": [
+      "docs/15_REJECTED_RUNTIME_PATTERNS.md"
+    ]
   },
   {
     "id": "MRK_BOOLEAN_DEFAULT_TRACE_PRESERVED",
     "pattern": "\\btrace_preserved\\s*:\\s*(?i:true)\\b",
     "mode": "regex",
-    "description": "Blocks Boolean-as-proof trace preservation defaults.",
-    "allowed_in": ["docs/15_REJECTED_RUNTIME_PATTERNS.md"]
+    "description": "Blocks case-insensitive textual Boolean-as-proof trace preservation defaults in YAML/TOML/config contexts.",
+    "allowed_in": [
+      "docs/15_REJECTED_RUNTIME_PATTERNS.md"
+    ]
   },
   {
     "id": "MRK_BOOLEAN_DEFAULT_GATE_PASSED",
     "pattern": "\\bgate_passed\\s*:\\s*(?i:true)\\b",
     "mode": "regex",
-    "description": "Blocks Boolean-as-proof gate proof defaults.",
-    "allowed_in": ["docs/15_REJECTED_RUNTIME_PATTERNS.md"]
+    "description": "Blocks case-insensitive textual Boolean-as-proof gate proof defaults in YAML/TOML/config contexts.",
+    "allowed_in": [
+      "docs/15_REJECTED_RUNTIME_PATTERNS.md"
+    ]
   },
   {
     "id": "IS_PRESERVED_TRUE_FIELD_FORBIDDEN",
     "pattern": "\\bis_preserved\\s*:\\s*bool\\s*=\\s*(?i:true)\\b",
     "mode": "regex",
-    "description": "Blocks identity preservation defaulting to true.",
-    "allowed_in": ["docs/15_REJECTED_RUNTIME_PATTERNS.md"]
+    "description": "Blocks case-insensitive textual identity preservation defaults to true.",
+    "allowed_in": [
+      "docs/15_REJECTED_RUNTIME_PATTERNS.md"
+    ]
   },
   {
     "id": "IDENTITY_PRESERVED_TRUE_FIELD_FORBIDDEN",
     "pattern": "\\bidentity_preserved\\s*:\\s*bool\\s*=\\s*(?i:true)\\b",
     "mode": "regex",
-    "description": "Blocks identity preservation field defaulting to true.",
-    "allowed_in": ["docs/15_REJECTED_RUNTIME_PATTERNS.md"]
+    "description": "Blocks case-insensitive textual identity preservation fields defaulting to true.",
+    "allowed_in": [
+      "docs/15_REJECTED_RUNTIME_PATTERNS.md"
+    ]
   },
   {
     "id": "EVIDENCE_LIST_INLINE_LICENSE_FORBIDDEN",
     "pattern": "\\bif\\s+self\\.evidence\\s*:\\s*self\\.licensed\\s*=\\s*(?i:true)\\b",
     "mode": "regex",
-    "description": "Blocks inline evidence-list-as-proof licensing.",
-    "allowed_in": ["docs/15_REJECTED_RUNTIME_PATTERNS.md"]
+    "description": "Blocks case-insensitive textual inline evidence-list-as-proof licensing.",
+    "allowed_in": [
+      "docs/15_REJECTED_RUNTIME_PATTERNS.md"
+    ]
   },
   {
     "id": "EVIDENCE_LIST_MULTILINE_LICENSE_FORBIDDEN",
     "pattern": "\\bif\\s+self\\.evidence\\s*:\\s*(?:\\r?\\n[ \\t]*)+self\\.licensed\\s*=\\s*(?i:true)\\b",
     "mode": "regex",
-    "description": "Blocks multiline evidence-list-as-proof licensing.",
-    "allowed_in": ["docs/15_REJECTED_RUNTIME_PATTERNS.md"]
+    "description": "Blocks case-insensitive textual multiline evidence-list-as-proof licensing.",
+    "allowed_in": [
+      "docs/15_REJECTED_RUNTIME_PATTERNS.md"
+    ]
   },
   {
     "id": "TEXT_ONLY_BRIDGE_TRANSLATOR_FORBIDDEN",
     "pattern": "\\bclass\\s+Bridge\\b[\\s\\S]{0,400}\\btranslator\\s*:\\s*str\\b",
     "mode": "regex",
     "description": "Blocks text-only bridge translator fields as runtime substitutes.",
-    "allowed_in": ["docs/15_REJECTED_RUNTIME_PATTERNS.md"]
+    "allowed_in": [
+      "docs/15_REJECTED_RUNTIME_PATTERNS.md"
+    ]
   },
   {
     "id": "TEXT_ONLY_GATE_CONDITION_FORBIDDEN",
     "pattern": "\\bclass\\s+Gate\\b[\\s\\S]{0,400}\\bcondition\\s*:\\s*str\\b",
     "mode": "regex",
     "description": "Blocks text-only gate condition fields as runtime substitutes.",
-    "allowed_in": ["docs/15_REJECTED_RUNTIME_PATTERNS.md"]
+    "allowed_in": [
+      "docs/15_REJECTED_RUNTIME_PATTERNS.md"
+    ]
   },
   {
     "id": "COMPUTED_VERDICT_CLASS_FORBIDDEN",
     "pattern": "\\bComputedVerdict\\b",
     "mode": "regex",
     "description": "Blocks manual computed verdict artifacts before runtime authorization.",
-    "allowed_in": ["docs/15_REJECTED_RUNTIME_PATTERNS.md"]
+    "allowed_in": [
+      "docs/15_REJECTED_RUNTIME_PATTERNS.md"
+    ]
   },
   {
     "id": "COMPUTED_VERDICT_FIELD_FORBIDDEN",
     "pattern": "\\bcomputed_verdict\\s*:",
     "mode": "regex",
     "description": "Blocks manually supplied computed verdict fields.",
-    "allowed_in": ["docs/15_REJECTED_RUNTIME_PATTERNS.md"]
+    "allowed_in": [
+      "docs/15_REJECTED_RUNTIME_PATTERNS.md"
+    ]
   },
   {
     "id": "MRK_DEFAULTS_FIELD_FORBIDDEN",
     "pattern": "\\bmrk_defaults\\s*:",
     "mode": "regex",
     "description": "Blocks MRK default proof bundles as runtime substitutes.",
-    "allowed_in": ["docs/15_REJECTED_RUNTIME_PATTERNS.md"]
+    "allowed_in": [
+      "docs/15_REJECTED_RUNTIME_PATTERNS.md"
+    ]
   },
   {
     "id": "MANUAL_DASHBOARD_FIELD_FORBIDDEN",
     "pattern": "\\bmanual_dashboard\\s*:",
     "mode": "regex",
     "description": "Blocks manual dashboard totals as computed coverage substitutes.",
-    "allowed_in": ["docs/15_REJECTED_RUNTIME_PATTERNS.md"]
+    "allowed_in": [
+      "docs/15_REJECTED_RUNTIME_PATTERNS.md"
+    ]
   },
   {
     "id": "EVIDENCE_LIST_AS_PROOF_PHRASE_FORBIDDEN",
     "pattern": "\\bevidence\\s+list\\s+as\\s+proof\\b",
     "mode": "regex",
     "description": "Blocks evidence-list-as-proof anti-patterns outside audit documentation.",
-    "allowed_in": ["docs/15_REJECTED_RUNTIME_PATTERNS.md"]
+    "allowed_in": [
+      "docs/15_REJECTED_RUNTIME_PATTERNS.md"
+    ]
   },
   {
     "id": "MRK_BOOLEAN_DEFAULTS_PHRASE_FORBIDDEN",
     "pattern": "\\bMRK\\s+boolean\\s+defaults\\b",
     "mode": "regex",
     "description": "Blocks MRK Boolean defaults outside audit documentation.",
-    "allowed_in": ["docs/15_REJECTED_RUNTIME_PATTERNS.md"]
+    "allowed_in": [
+      "docs/15_REJECTED_RUNTIME_PATTERNS.md"
+    ]
   },
   {
     "id": "TRANSFORM_PASS_INLINE_FORBIDDEN",
     "pattern": "\\bdef\\s+transform\\s*\\(\\s*self\\s*,\\s*operation\\s*:\\s*str\\s*\\)\\s*:\\s*(?:\\r?\\n[ \\t]*)*pass\\b",
     "mode": "regex",
     "description": "Blocks transform operation stubs that replace proof-bearing contracts.",
-    "allowed_in": ["docs/15_REJECTED_RUNTIME_PATTERNS.md"]
+    "allowed_in": [
+      "docs/15_REJECTED_RUNTIME_PATTERNS.md"
+    ]
   },
   {
     "id": "TRANSFORM_PASS_ANNOTATED_FORBIDDEN",
     "pattern": "\\bdef\\s+transform\\s*\\(\\s*self\\s*,\\s*operation\\s*:\\s*str\\s*\\)\\s*->\\s*[^:\\n]+\\s*:\\s*(?:\\r?\\n[ \\t]*)*pass\\b",
     "mode": "regex",
     "description": "Blocks annotated transform operation stubs that replace proof-bearing contracts.",
-    "allowed_in": ["docs/15_REJECTED_RUNTIME_PATTERNS.md"]
+    "allowed_in": [
+      "docs/15_REJECTED_RUNTIME_PATTERNS.md"
+    ]
   },
   {
     "id": "TRANSFORM_PASS_MULTILINE_ANNOTATED_FORBIDDEN",
     "pattern": "\\bdef\\s+transform\\s*\\(\\s*self\\s*,\\s*operation\\s*:\\s*str\\s*\\)\\s*->\\s*\\([\\s\\S]{0,120}?\\)\\s*:\\s*(?:\\r?\\n[ \\t]*)*pass\\b",
     "mode": "regex",
     "description": "Blocks multiline-annotated transform operation stubs that replace proof-bearing contracts.",
-    "allowed_in": ["docs/15_REJECTED_RUNTIME_PATTERNS.md"]
+    "allowed_in": [
+      "docs/15_REJECTED_RUNTIME_PATTERNS.md"
+    ]
   }
 ]

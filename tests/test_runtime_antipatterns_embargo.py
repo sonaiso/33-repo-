@@ -187,8 +187,8 @@ def line_starts(text: str) -> tuple[int, ...]:
 
 def line_number_at(offsets: tuple[int, ...], position: int) -> int:
     """Return the one-based line number where a zero-based text position occurs."""
-    # bisect_right counts line starts at or before position, which is the
-    # corresponding one-based line number.
+    # bisect_right returns the insertion point after any line start equal to
+    # position; that count is the corresponding one-based line number.
     return bisect_right(offsets, position)
 
 

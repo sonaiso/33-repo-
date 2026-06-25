@@ -139,7 +139,6 @@ def load_forbidden_runtime_patterns(
     return records
 
 
-@cache
 def compile_forbidden_runtime_patterns(
     patterns: tuple[ForbiddenRuntimePattern, ...] | None = None,
 ) -> tuple[CompiledForbiddenRuntimePattern, ...]:
