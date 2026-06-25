@@ -35,6 +35,14 @@ PATTERN_FIXTURES = {
         "class Bridge:\n    translator: str"
     ),
     "TEXT_ONLY_GATE_CONDITION_FORBIDDEN": "class Gate:\n    condition: str",
+    "RUNTIME_PREDICATE_CLASS_FORBIDDEN": "class RuntimePredicate:\n    pass",
+    "RUNTIME_TRANSLATOR_CLASS_FORBIDDEN": "class RuntimeTranslator:\n    pass",
+    "RUNTIME_PREDICATE_FIELD_FORBIDDEN": "runtime_predicate: contract",
+    "RUNTIME_TRANSLATOR_FIELD_FORBIDDEN": "runtime_translator: contract",
+    "RUNTIME_DOMAIN_OPENING_CLASS_FORBIDDEN": "RuntimeDomainOpening",
+    "OPEN_RUNTIME_DOMAIN_CALL_FORBIDDEN": (
+        "open_runtime_domain(DomainID.D3_LEXICAL_MADLUL)"
+    ),
     "COMPUTED_VERDICT_CLASS_FORBIDDEN": "result = ComputedVerdict()",
     "COMPUTED_VERDICT_FIELD_FORBIDDEN": "computed_verdict: MUALLAQ",
     "MRK_DEFAULTS_FIELD_FORBIDDEN": "mrk_defaults: {}",
