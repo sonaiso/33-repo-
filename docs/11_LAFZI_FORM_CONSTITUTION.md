@@ -23,9 +23,9 @@ LAFZI_FORM is a pure form layer. It accepts only authorized DAL_ONLY surface can
 
 ## Entry constraints
 - `source_domain_id` must be `D1_DAL_ONLY`.
-- `source_surface_ref` is mandatory.
+- `source_surface_ref` is mandatory and non-blank.
 - `required_bridge_ref` must be `DalToLafziBridgeSpec`.
-- `proof_object_ref` or `proof_trace_ref` is mandatory.
+- `proof_object_ref` or `proof_trace_ref` is mandatory and non-blank.
 - `rank` is locked to `CANDIDATE`.
 
 ## Forbidden outputs

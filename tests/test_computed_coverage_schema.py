@@ -212,6 +212,10 @@ def test_schema_rejects_unknown_input_domain():
     _assert_invalid(_minimal_valid_case() | {"input_domain": "RELATION_RUNTIME"})
 
 
+def test_schema_rejects_non_authority_trace_ref():
+    _assert_invalid(_minimal_valid_case() | {"trace_ref": "docs/11_LAFZI_FORM_CONSTITUTION.md"})
+
+
 @pytest.mark.parametrize(
     "fixture_name",
     [

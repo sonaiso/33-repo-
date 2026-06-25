@@ -72,7 +72,7 @@
     },
     "trace_ref": {
       "type": "string",
-      "minLength": 1
+      "const": "docs/18_COMPUTED_COVERAGE_SCHEMA_CONSTITUTION.md"
     }
   },
   "not": {

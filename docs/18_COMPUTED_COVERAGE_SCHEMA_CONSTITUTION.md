@@ -49,7 +49,7 @@ Allowed fields:
 - `required_bridges`
 - `expected_failure_family`
 - `expected_residual_policy`
-- `trace_ref`
+- `trace_ref` (must equal `docs/18_COMPUTED_COVERAGE_SCHEMA_CONSTITUTION.md`)
 
 Conditional requirements:
 - `EXPECTED_BLOCKED` requires `expected_failure_family`.
