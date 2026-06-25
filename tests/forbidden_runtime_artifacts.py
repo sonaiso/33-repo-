@@ -16,16 +16,26 @@ CANONICAL_FORBIDDEN_RUNTIME_ARTIFACTS_PATH = (
 
 
 def load_forbidden_runtime_artifact_paths() -> tuple[str, ...]:
-    payload = json.loads(
-        CANONICAL_FORBIDDEN_RUNTIME_ARTIFACTS_PATH.read_text(encoding="utf-8")
-    )
+    try:
+        payload = json.loads(
+            CANONICAL_FORBIDDEN_RUNTIME_ARTIFACTS_PATH.read_text(encoding="utf-8")
+        )
+    except OSError as exc:
+        raise RuntimeError(
+            "Missing canonical forbidden runtime artifact list: "
+            "data/forbidden_runtime_artifacts.json"
+        ) from exc
+    except json.JSONDecodeError as exc:
+        raise RuntimeError(
+            "Invalid JSON in canonical forbidden runtime artifact list: "
+            "data/forbidden_runtime_artifacts.json"
+        ) from exc
     if not isinstance(payload, list) or not all(
         isinstance(item, str) and item for item in payload
     ):
         raise ValueError(
-            "data/forbidden_runtime_artifacts.json must be a non-empty string list"
+            "data/forbidden_runtime_artifacts.json must be a list of non-empty strings"
         )
     if len(payload) != len(set(payload)):
         raise ValueError("data/forbidden_runtime_artifacts.json must contain unique paths")
     return tuple(payload)
-

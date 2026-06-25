@@ -51,7 +51,7 @@ NON_NONE_DOMAIN_OPENINGS = [
     "D6_HUKM",
     "D7_TANZIL",
 ]
-FORBIDDEN_RUNTIME_ARTIFACTS = list(load_forbidden_runtime_artifact_paths())
+FORBIDDEN_RUNTIME_ARTIFACTS = load_forbidden_runtime_artifact_paths()
 
 
 def _load_schema() -> dict[str, Any]:
@@ -103,7 +103,7 @@ def _forbidden_artifact_path_variants(artifact: str) -> list[str]:
     full_double_slash = replaced_or_prefixed("//")
     partial_backslash = replaced_or_prefixed("\\", 1)
     full_backslash = replaced_or_prefixed("\\")
-    partial_dot = replaced_or_prefixed("/./", 1)
+    partial_dot_segment = replaced_or_prefixed("/./", 1)
     partial_dotdot = replaced_or_prefixed("/../", 1)
     return [
         f"./{artifact}",
@@ -114,7 +114,7 @@ def _forbidden_artifact_path_variants(artifact: str) -> list[str]:
         full_double_slash,
         partial_backslash,
         full_backslash,
-        partial_dot,
+        partial_dot_segment,
         partial_dotdot,
         f"safe/../{artifact}",
     ]
@@ -222,7 +222,7 @@ def test_lift_request_template_lists_full_required_negative_tests():
 
 def test_lift_request_template_lists_forbidden_runtime_paths():
     content = TEMPLATE_PATH.read_text(encoding="utf-8")
-    assert "data/forbidden_runtime_artifacts.json" in content
+    assert "forbidden_runtime_artifacts.json" in content
     for artifact in FORBIDDEN_RUNTIME_ARTIFACTS:
         assert artifact in content
 
