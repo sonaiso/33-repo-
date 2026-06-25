@@ -1,0 +1,13 @@
+{
+  "case_id": "fixture-valid-matrix-bridge-required-001",
+  "input_text": "matrix bridge required audit case",
+  "input_domain": "D4_RELATION",
+  "expected_verdict": "EXPECTED_BRIDGE_REQUIRED",
+  "required_contracts": [
+    "docs/18_COMPUTED_COVERAGE_SCHEMA_CONSTITUTION.md"
+  ],
+  "required_bridges": [
+    "D4_RELATION_TO_D5_IFADAH_BRIDGE"
+  ],
+  "trace_ref": "docs/18_COMPUTED_COVERAGE_SCHEMA_CONSTITUTION.md"
+}

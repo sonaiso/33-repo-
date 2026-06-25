@@ -23,6 +23,18 @@ EXPECTED_FIXTURE_POLICY = "SCHEMA_ONLY_AUDIT_FIXTURES"
 EXPECTED_RUNTIME_STATUS = "EMBARGOED"
 EXPECTED_TRACE_REF = "docs/18_COMPUTED_COVERAGE_SCHEMA_CONSTITUTION.md"
 FORBIDDEN_RANK_VALUES = {"CERTIFICATE", "Rank.CERTIFICATE"}
+OUTCOME_SPECIFIC_FIELDS = {
+    "expected_failure_family",
+    "expected_residual_policy",
+    "required_bridges",
+}
+VERDICT_REQUIRED_FIELDS = {
+    "EXPECTED_ACCEPTED_CANDIDATE": set(),
+    "EXPECTED_BLOCKED": {"expected_failure_family"},
+    "EXPECTED_PROOF_REQUIRED": {"expected_failure_family"},
+    "EXPECTED_RESIDUAL": {"expected_residual_policy"},
+    "EXPECTED_BRIDGE_REQUIRED": {"required_bridges"},
+}
 # Map manifest must_fail_reason labels to expected JSON Schema error-message hints.
 INVALID_REASON_HINTS = {
     "LOCKED_DOMAIN_ACCEPTED_FORBIDDEN": "EXPECTED_ACCEPTED_CANDIDATE",
@@ -30,6 +42,9 @@ INVALID_REASON_HINTS = {
     "MRK_DEFAULTS_FORBIDDEN": "mrk_defaults",
     "BOOLEAN_PROOF_FORBIDDEN": "domain_proved",
     "RANK_CERTIFICATE_FORBIDDEN": "Rank.CERTIFICATE",
+    "OUTCOME_FAILURE_FAMILY_FORBIDDEN": "expected_failure_family",
+    "OUTCOME_RESIDUAL_POLICY_FORBIDDEN": "expected_residual_policy",
+    "OUTCOME_REQUIRED_BRIDGES_FORBIDDEN": "required_bridges",
 }
 
 
@@ -146,6 +161,10 @@ def test_valid_manifest_fixtures_match_declared_domain_and_verdict_and_pass_sche
         assert payload["expected_verdict"] == entry["expected_verdict"]
         if "expected_failure_family" in entry:
             assert payload["expected_failure_family"] == entry["expected_failure_family"]
+        if "expected_residual_policy" in entry:
+            assert payload["expected_residual_policy"] == entry["expected_residual_policy"]
+        if "required_bridges" in entry:
+            assert payload["required_bridges"] == entry["required_bridges"]
         _validate_payload(schema, payload)
 
 
@@ -248,3 +267,67 @@ def test_valid_manifest_entries_do_not_include_forbidden_fields_or_rank_values()
         assert "computed_verdict" not in payload
         assert "mrk_defaults" not in payload
         assert payload.get("rank") not in FORBIDDEN_RANK_VALUES
+
+
+def test_manifest_verdict_matrix_has_positive_fixture_for_each_verdict():
+    manifest = _load_manifest()
+    schema = _load_schema()
+    expected_verdicts = set(schema["properties"]["expected_verdict"]["enum"])
+    positive_matrix_verdicts = {
+        entry["expected_verdict"]
+        for entry in _manifest_entries(manifest, "valid_fixtures")
+        if entry.get("fixture_matrix") == "VERDICT_POSITIVE"
+    }
+
+    assert positive_matrix_verdicts == expected_verdicts
+
+
+def test_manifest_verdict_matrix_positive_fixtures_use_only_their_required_outcome_fields():
+    manifest = _load_manifest()
+
+    for entry in _manifest_entries(manifest, "valid_fixtures"):
+        if entry.get("fixture_matrix") != "VERDICT_POSITIVE":
+            continue
+        payload = _fixture_payload(entry["file"])
+        verdict = payload["expected_verdict"]
+        observed_outcome_fields = OUTCOME_SPECIFIC_FIELDS & set(payload)
+
+        assert observed_outcome_fields == VERDICT_REQUIRED_FIELDS[verdict]
+
+
+def test_manifest_verdict_matrix_has_negative_fixture_for_each_irrelevant_outcome_field():
+    manifest = _load_manifest()
+    schema = _load_schema()
+    expected_verdicts = set(schema["properties"]["expected_verdict"]["enum"])
+    negative_entries = [
+        entry
+        for entry in _manifest_entries(manifest, "invalid_fixtures")
+        if entry.get("fixture_matrix") == "VERDICT_NEGATIVE"
+        and entry.get("forbidden_field") in OUTCOME_SPECIFIC_FIELDS
+    ]
+
+    observed = {
+        (entry["expected_verdict"], entry["forbidden_field"])
+        for entry in negative_entries
+    }
+    expected = {
+        (verdict, field)
+        for verdict in expected_verdicts
+        for field in OUTCOME_SPECIFIC_FIELDS - VERDICT_REQUIRED_FIELDS[verdict]
+    }
+
+    assert observed == expected
+
+
+def test_manifest_verdict_matrix_has_computed_verdict_negative_fixture_for_each_verdict():
+    manifest = _load_manifest()
+    schema = _load_schema()
+    expected_verdicts = set(schema["properties"]["expected_verdict"]["enum"])
+    computed_verdict_matrix = {
+        entry["expected_verdict"]
+        for entry in _manifest_entries(manifest, "invalid_fixtures")
+        if entry.get("fixture_matrix") == "VERDICT_NEGATIVE"
+        and entry.get("forbidden_field") == "computed_verdict"
+    }
+
+    assert computed_verdict_matrix == expected_verdicts

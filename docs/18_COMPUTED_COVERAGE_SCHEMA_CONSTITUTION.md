@@ -38,6 +38,8 @@ No computed verdict execution.
 - `tests/fixtures/coverage_cases/invalid_computed_verdict_case.json`
 - `tests/fixtures/coverage_cases/invalid_mrk_defaults_case.json`
 - `tests/fixtures/coverage_cases/invalid_rank_certificate_case.json`
+- `tests/fixtures/coverage_cases/valid_matrix_*.json`
+- `tests/fixtures/coverage_cases/invalid_matrix_*.json`
 
 ## Schema contract
 Allowed fields:
@@ -89,6 +91,13 @@ Forbidden fields/claims:
 - Invalid fixtures must include explicit anti-pattern quarantine reasons for `COMPUTED_VERDICT_FORBIDDEN`, `MRK_DEFAULTS_FORBIDDEN`, `BOOLEAN_PROOF_FORBIDDEN`, and `RANK_CERTIFICATE_FORBIDDEN`.
 - Bridge-required coverage must include audit fixtures for `D1_DAL_ONLY → D2_LAFZI_FORM`, `D2_LAFZI_FORM → D3_LEXICAL_MADLUL`, and `D3_LEXICAL_MADLUL → D4_RELATION` with declared bridge requirements.
 - Residual coverage must include at least one fixture with `EXPECTED_RESIDUAL` and explicit `expected_residual_policy`.
+
+## Verdict fixture matrix contract
+- Each schema `expected_verdict` class must have a positive `VERDICT_POSITIVE` fixture.
+- Positive verdict matrix fixtures must include only the outcome-specific fields required for that verdict.
+- Each schema `expected_verdict` class must have negative `VERDICT_NEGATIVE` fixtures for every unrelated outcome-specific field.
+- Each schema `expected_verdict` class must have a negative `VERDICT_NEGATIVE` fixture proving `computed_verdict` remains forbidden.
+- Verdict fixture matrix entries are declarative schema cases only; they do not compute, execute, or authorize runtime verdicts.
 
 ## Tests run
 Required before finish:

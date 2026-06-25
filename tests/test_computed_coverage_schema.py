@@ -23,6 +23,9 @@ except ImportError:  # pragma: no cover
 REPO_ROOT = Path(__file__).parent.parent
 SCHEMA_PATH = REPO_ROOT / "schemas" / "coverage_case.schema.json"
 FIXTURES_DIR = REPO_ROOT / "tests" / "fixtures" / "coverage_cases"
+INVALID_MATRIX_FIXTURES = sorted(
+    path.name for path in FIXTURES_DIR.glob("invalid_matrix_*.json")
+)
 
 
 def _load_schema() -> dict[str, Any]:
@@ -501,3 +504,12 @@ def test_fallback_validator_rejects_irrelevant_outcome_field(monkeypatch: pytest
             "expected_failure_family": "FAMILY_EMBARGO",
         }
     )
+
+
+@pytest.mark.parametrize("fixture_name", INVALID_MATRIX_FIXTURES)
+def test_fallback_validator_rejects_invalid_verdict_matrix_fixtures(
+    monkeypatch: pytest.MonkeyPatch,
+    fixture_name: str,
+):
+    monkeypatch.setattr("tests.test_computed_coverage_schema.Draft202012Validator", None)
+    _assert_invalid(_load_fixture(fixture_name))

@@ -43,6 +43,42 @@
       "file": "valid_residual_relation_case.json",
       "input_domain": "D4_RELATION",
       "expected_verdict": "EXPECTED_RESIDUAL"
+    },
+    {
+      "file": "valid_matrix_accepted_candidate_case.json",
+      "input_domain": "D2_LAFZI_FORM",
+      "expected_verdict": "EXPECTED_ACCEPTED_CANDIDATE",
+      "fixture_matrix": "VERDICT_POSITIVE"
+    },
+    {
+      "file": "valid_matrix_blocked_case.json",
+      "input_domain": "D1_DAL_ONLY",
+      "expected_verdict": "EXPECTED_BLOCKED",
+      "fixture_matrix": "VERDICT_POSITIVE",
+      "expected_failure_family": "FAMILY_EMBARGO"
+    },
+    {
+      "file": "valid_matrix_proof_required_case.json",
+      "input_domain": "D2_LAFZI_FORM",
+      "expected_verdict": "EXPECTED_PROOF_REQUIRED",
+      "fixture_matrix": "VERDICT_POSITIVE",
+      "expected_failure_family": "FAMILY_PROOF_REQUIRED"
+    },
+    {
+      "file": "valid_matrix_residual_case.json",
+      "input_domain": "D3_LEXICAL_MADLUL",
+      "expected_verdict": "EXPECTED_RESIDUAL",
+      "fixture_matrix": "VERDICT_POSITIVE",
+      "expected_residual_policy": "KEEP_RESIDUALS"
+    },
+    {
+      "file": "valid_matrix_bridge_required_case.json",
+      "input_domain": "D4_RELATION",
+      "expected_verdict": "EXPECTED_BRIDGE_REQUIRED",
+      "fixture_matrix": "VERDICT_POSITIVE",
+      "required_bridges": [
+        "D4_RELATION_TO_D5_IFADAH_BRIDGE"
+      ]
     }
   ],
   "invalid_fixtures": [
@@ -65,6 +101,118 @@
     {
       "file": "invalid_rank_certificate_case.json",
       "must_fail_reason": "RANK_CERTIFICATE_FORBIDDEN"
+    },
+    {
+      "file": "invalid_matrix_accepted_candidate_expected_failure_family.json",
+      "expected_verdict": "EXPECTED_ACCEPTED_CANDIDATE",
+      "forbidden_field": "expected_failure_family",
+      "must_fail_reason": "OUTCOME_FAILURE_FAMILY_FORBIDDEN",
+      "fixture_matrix": "VERDICT_NEGATIVE"
+    },
+    {
+      "file": "invalid_matrix_accepted_candidate_expected_residual_policy.json",
+      "expected_verdict": "EXPECTED_ACCEPTED_CANDIDATE",
+      "forbidden_field": "expected_residual_policy",
+      "must_fail_reason": "OUTCOME_RESIDUAL_POLICY_FORBIDDEN",
+      "fixture_matrix": "VERDICT_NEGATIVE"
+    },
+    {
+      "file": "invalid_matrix_accepted_candidate_required_bridges.json",
+      "expected_verdict": "EXPECTED_ACCEPTED_CANDIDATE",
+      "forbidden_field": "required_bridges",
+      "must_fail_reason": "OUTCOME_REQUIRED_BRIDGES_FORBIDDEN",
+      "fixture_matrix": "VERDICT_NEGATIVE"
+    },
+    {
+      "file": "invalid_matrix_accepted_candidate_computed_verdict.json",
+      "expected_verdict": "EXPECTED_ACCEPTED_CANDIDATE",
+      "forbidden_field": "computed_verdict",
+      "must_fail_reason": "COMPUTED_VERDICT_FORBIDDEN",
+      "fixture_matrix": "VERDICT_NEGATIVE"
+    },
+    {
+      "file": "invalid_matrix_blocked_expected_residual_policy.json",
+      "expected_verdict": "EXPECTED_BLOCKED",
+      "forbidden_field": "expected_residual_policy",
+      "must_fail_reason": "OUTCOME_RESIDUAL_POLICY_FORBIDDEN",
+      "fixture_matrix": "VERDICT_NEGATIVE"
+    },
+    {
+      "file": "invalid_matrix_blocked_required_bridges.json",
+      "expected_verdict": "EXPECTED_BLOCKED",
+      "forbidden_field": "required_bridges",
+      "must_fail_reason": "OUTCOME_REQUIRED_BRIDGES_FORBIDDEN",
+      "fixture_matrix": "VERDICT_NEGATIVE"
+    },
+    {
+      "file": "invalid_matrix_blocked_computed_verdict.json",
+      "expected_verdict": "EXPECTED_BLOCKED",
+      "forbidden_field": "computed_verdict",
+      "must_fail_reason": "COMPUTED_VERDICT_FORBIDDEN",
+      "fixture_matrix": "VERDICT_NEGATIVE"
+    },
+    {
+      "file": "invalid_matrix_proof_required_expected_residual_policy.json",
+      "expected_verdict": "EXPECTED_PROOF_REQUIRED",
+      "forbidden_field": "expected_residual_policy",
+      "must_fail_reason": "OUTCOME_RESIDUAL_POLICY_FORBIDDEN",
+      "fixture_matrix": "VERDICT_NEGATIVE"
+    },
+    {
+      "file": "invalid_matrix_proof_required_required_bridges.json",
+      "expected_verdict": "EXPECTED_PROOF_REQUIRED",
+      "forbidden_field": "required_bridges",
+      "must_fail_reason": "OUTCOME_REQUIRED_BRIDGES_FORBIDDEN",
+      "fixture_matrix": "VERDICT_NEGATIVE"
+    },
+    {
+      "file": "invalid_matrix_proof_required_computed_verdict.json",
+      "expected_verdict": "EXPECTED_PROOF_REQUIRED",
+      "forbidden_field": "computed_verdict",
+      "must_fail_reason": "COMPUTED_VERDICT_FORBIDDEN",
+      "fixture_matrix": "VERDICT_NEGATIVE"
+    },
+    {
+      "file": "invalid_matrix_residual_expected_failure_family.json",
+      "expected_verdict": "EXPECTED_RESIDUAL",
+      "forbidden_field": "expected_failure_family",
+      "must_fail_reason": "OUTCOME_FAILURE_FAMILY_FORBIDDEN",
+      "fixture_matrix": "VERDICT_NEGATIVE"
+    },
+    {
+      "file": "invalid_matrix_residual_required_bridges.json",
+      "expected_verdict": "EXPECTED_RESIDUAL",
+      "forbidden_field": "required_bridges",
+      "must_fail_reason": "OUTCOME_REQUIRED_BRIDGES_FORBIDDEN",
+      "fixture_matrix": "VERDICT_NEGATIVE"
+    },
+    {
+      "file": "invalid_matrix_residual_computed_verdict.json",
+      "expected_verdict": "EXPECTED_RESIDUAL",
+      "forbidden_field": "computed_verdict",
+      "must_fail_reason": "COMPUTED_VERDICT_FORBIDDEN",
+      "fixture_matrix": "VERDICT_NEGATIVE"
+    },
+    {
+      "file": "invalid_matrix_bridge_required_expected_failure_family.json",
+      "expected_verdict": "EXPECTED_BRIDGE_REQUIRED",
+      "forbidden_field": "expected_failure_family",
+      "must_fail_reason": "OUTCOME_FAILURE_FAMILY_FORBIDDEN",
+      "fixture_matrix": "VERDICT_NEGATIVE"
+    },
+    {
+      "file": "invalid_matrix_bridge_required_expected_residual_policy.json",
+      "expected_verdict": "EXPECTED_BRIDGE_REQUIRED",
+      "forbidden_field": "expected_residual_policy",
+      "must_fail_reason": "OUTCOME_RESIDUAL_POLICY_FORBIDDEN",
+      "fixture_matrix": "VERDICT_NEGATIVE"
+    },
+    {
+      "file": "invalid_matrix_bridge_required_computed_verdict.json",
+      "expected_verdict": "EXPECTED_BRIDGE_REQUIRED",
+      "forbidden_field": "computed_verdict",
+      "must_fail_reason": "COMPUTED_VERDICT_FORBIDDEN",
+      "fixture_matrix": "VERDICT_NEGATIVE"
     }
   ],
   "trace_ref": "docs/18_COMPUTED_COVERAGE_SCHEMA_CONSTITUTION.md"
