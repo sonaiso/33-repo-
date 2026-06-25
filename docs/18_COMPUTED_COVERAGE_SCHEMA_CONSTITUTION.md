@@ -56,6 +56,10 @@ Conditional requirements:
 - `EXPECTED_PROOF_REQUIRED` requires `expected_failure_family`.
 - `EXPECTED_RESIDUAL` requires `expected_residual_policy`.
 - `EXPECTED_BRIDGE_REQUIRED` requires non-empty `required_bridges`.
+- Outcome-specific fields are exclusive declarations:
+  - `expected_failure_family` is allowed only for `EXPECTED_BLOCKED` and `EXPECTED_PROOF_REQUIRED`.
+  - `expected_residual_policy` is allowed only for `EXPECTED_RESIDUAL`.
+  - `required_bridges` is allowed only for `EXPECTED_BRIDGE_REQUIRED`.
 
 Forbidden fields/claims:
 - `computed_verdict`
