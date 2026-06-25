@@ -61,12 +61,14 @@ def _validate_rule(key: str, value: Any, rule: dict[str, Any]) -> None:
 
 
 def _rule_matches(value: Any, rule: dict[str, Any]) -> bool:
-    """Return whether a payload value satisfies a supported schema rule.
+    """Return True when a value matches a supported schema constraint.
 
     The fallback validator implements only the JSON Schema keywords used by
-    this coverage schema. Unknown rule shapes are treated as satisfied so the
-    fallback remains limited to explicit guardrails rather than becoming a
-    partial general-purpose validator.
+    this coverage schema. The result is True when the value satisfies the
+    recognized constraint and False when it violates that constraint. Unknown
+    rule shapes are treated as satisfied so the fallback remains limited to
+    explicit guardrails rather than becoming a partial general-purpose
+    validator.
     """
     if "not" in rule:
         return not _rule_matches(value, rule["not"])
@@ -133,8 +135,9 @@ def _fallback_validate(schema: dict[str, Any], payload: dict[str, Any]) -> None:
 
         then_clause = conditional.get("then", {})
         forbidden_then_fields = then_clause.get("not", {}).get("required", [])
-        # JSON Schema `not: {required: [...]}` fails only when every listed
-        # field is present; the current coverage schema uses single-field
+        # JSON Schema `not: {required: [...]}` rejects only when every listed
+        # field is present. This fallback mirrors that condition and raises at
+        # the same point; the current coverage schema uses single-field
         # forbidden outcome declarations.
         if forbidden_then_fields and all(field in payload for field in forbidden_then_fields):
             raise ValueError(
