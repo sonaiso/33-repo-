@@ -84,7 +84,6 @@ def _validate_allowed_in(record_id: str, allowed_in: Any) -> tuple[str, ...]:
             not path.startswith(ALLOWED_AUDIT_DOCUMENT_PREFIX)
             or not path.endswith(ALLOWED_AUDIT_DOCUMENT_SUFFIX)
             or not candidate.is_file()
-            or candidate.is_symlink()
         ):
             raise ValueError(
                 f"{record_id}.allowed_in must reference existing audit "

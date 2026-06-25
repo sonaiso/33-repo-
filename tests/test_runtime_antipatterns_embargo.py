@@ -181,12 +181,19 @@ def path_matches_allowed_in(path: Path, allowed_in: tuple[str, ...]) -> bool:
     return relative_path in allowed_in
 
 
-def pattern_violations_for_text(path: Path, text: str) -> list[str]:
+def pattern_violations_for_text(
+    path: Path,
+    text: str,
+    patterns=FORBIDDEN_PATTERNS,
+    records_by_id=FORBIDDEN_PATTERN_RECORDS_BY_ID,
+) -> list[str]:
     """Return forbidden pattern violations for text outside allowed contexts."""
+    assert patterns
+    assert records_by_id
     violations: list[str] = []
     offsets = line_starts(text)
-    for pattern in FORBIDDEN_PATTERNS:
-        record = FORBIDDEN_PATTERN_RECORDS_BY_ID[pattern.id]
+    for pattern in patterns:
+        record = records_by_id[pattern.id]
         if path_matches_allowed_in(path, record.allowed_in):
             continue
         for match in pattern.matcher.finditer(text):
@@ -311,6 +318,7 @@ def test_registered_allowed_contexts_do_not_report_registered_antipattern_text()
     """trace_ref: docs/12_RUNTIME_EMBARGO_CONSTITUTION.md Embargo Rule."""
     for pattern_id, sample in PATTERN_FIXTURES.items():
         record = FORBIDDEN_PATTERN_RECORDS_BY_ID[pattern_id]
+        assert FORBIDDEN_PATTERNS_BY_ID[pattern_id].matcher.search(sample)
         for allowed_path in record.allowed_in:
             path = REPO_ROOT / allowed_path
             assert not pattern_violations_for_text(path, sample), pattern_id
