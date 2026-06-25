@@ -13,23 +13,28 @@ import pytest
 REPO_ROOT = Path(__file__).parent.parent
 GUARD_DOC = REPO_ROOT / "docs" / "15_REJECTED_RUNTIME_PATTERNS.md"
 
-FORBIDDEN_CANONICAL_RUNTIME_ARTIFACTS = (
-    REPO_ROOT / "src" / "taaqqul_slot_geometry" / "L1" / "binding_kernel.py",
-    REPO_ROOT / "src" / "taaqqul_slot_geometry" / "L1" / "decision_engine.py",
-    REPO_ROOT / "src" / "taaqqul_slot_geometry" / "runtime" / "binding_kernel.py",
-    REPO_ROOT / "src" / "taaqqul_slot_geometry" / "runtime" / "decision_engine.py",
-    REPO_ROOT / "src" / "taaqqul_slot_geometry" / "core" / "binding_kernel.py",
-    REPO_ROOT / "src" / "taaqqul_slot_geometry" / "core" / "decision_engine.py",
-    REPO_ROOT / "coverage_matrix_v0.1.yaml",
-    REPO_ROOT / "docs" / "coverage_matrix_v0.1.yaml",
-    REPO_ROOT / "data" / "coverage_matrix_v0.1.yaml",
-    REPO_ROOT / "schemas" / "coverage_matrix_v0.1.yaml",
-    REPO_ROOT / "tests" / "test_binding_constraints.py",
-    REPO_ROOT / "l_protocol" / "contracts" / "binding_instructions.py",
-    REPO_ROOT / "l_protocol" / "engine" / "binding_kernel.py",
-    REPO_ROOT / "l_protocol" / "engine" / "decision_engine.py",
-    REPO_ROOT / "l_protocol" / "coverage_matrix_v0.1.yaml",
-    REPO_ROOT / "l_protocol" / "tests" / "test_binding_constraints.py",
+FORBIDDEN_RUNTIME_ARTIFACT_PATHS = (
+    # Repo-relative forbidden artifact paths under the runtime embargo.
+    # FORBIDDEN_CANONICAL_RUNTIME_ARTIFACTS prepends REPO_ROOT to these paths.
+    "src/taaqqul_slot_geometry/L1/binding_kernel.py",
+    "src/taaqqul_slot_geometry/L1/decision_engine.py",
+    "src/taaqqul_slot_geometry/runtime/binding_kernel.py",
+    "src/taaqqul_slot_geometry/runtime/decision_engine.py",
+    "src/taaqqul_slot_geometry/core/binding_kernel.py",
+    "src/taaqqul_slot_geometry/core/decision_engine.py",
+    "coverage_matrix_v0.1.yaml",
+    "docs/coverage_matrix_v0.1.yaml",
+    "data/coverage_matrix_v0.1.yaml",
+    "schemas/coverage_matrix_v0.1.yaml",
+    "tests/test_binding_constraints.py",
+    "l_protocol/contracts/binding_instructions.py",
+    "l_protocol/engine/binding_kernel.py",
+    "l_protocol/engine/decision_engine.py",
+    "l_protocol/coverage_matrix_v0.1.yaml",
+    "l_protocol/tests/test_binding_constraints.py",
+)
+FORBIDDEN_CANONICAL_RUNTIME_ARTIFACTS = tuple(
+    REPO_ROOT / artifact for artifact in FORBIDDEN_RUNTIME_ARTIFACT_PATHS
 )
 CLASS_FIELD_LOOKAHEAD_LIMIT = 400
 RETURN_TYPE_LOOKAHEAD_LIMIT = 120
@@ -90,6 +95,8 @@ REQUIRED_DOC_PHRASES = [
     "No runtime translators.",
     "No coverage runner.",
     "No runtime domain opening.",
+    "Forbidden artifact lists must remain schema/test/doc consistent.",
+    "Path-normalization variants are rejected before any forbidden artifact can be authorized.",
     "The guard scanner must detect both single-line and multi-line forms of rejected evidence and transform anti-patterns.",
 ]
 

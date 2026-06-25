@@ -63,6 +63,8 @@ and manual coverage_matrix_v0.1.yaml.
 
 These canonical-path prohibitions do not authorize runtime, a kernel, a decision engine, a coverage matrix,
 runtime predicates, translators, or runtime-domain opening.
+Forbidden artifact lists must remain schema/test/doc consistent.
+Path-normalization variants are rejected before any forbidden artifact can be authorized.
 
 ## Rejected Rank Patterns
 
