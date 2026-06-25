@@ -26,6 +26,14 @@ FIXTURES_DIR = REPO_ROOT / "tests" / "fixtures" / "coverage_cases"
 INVALID_MATRIX_FIXTURES = sorted(
     path.name for path in FIXTURES_DIR.glob("invalid_matrix_*.json")
 )
+EXPECTED_VERDICT_REQUIRED_FIELDS: dict[str, dict[str, Any]] = {
+    "EXPECTED_ACCEPTED_CANDIDATE": {},
+    "EXPECTED_BLOCKED": {"expected_failure_family": "FAMILY_EMBARGO"},
+    "EXPECTED_RESIDUAL": {"expected_residual_policy": "KEEP_RESIDUALS"},
+    "EXPECTED_BRIDGE_REQUIRED": {"required_bridges": ["DAL_TO_LAFZI_BRIDGE"]},
+    "EXPECTED_PROOF_REQUIRED": {"expected_failure_family": "FAMILY_PROOF_REQUIRED"},
+}
+TEST_FORBIDDEN_COMPUTED_VERDICT_VALUE = "FORBIDDEN_COMPUTED"
 
 
 def _load_schema() -> dict[str, Any]:
@@ -174,6 +182,15 @@ def _minimal_valid_case() -> dict[str, Any]:
         ],
         "trace_ref": "docs/18_COMPUTED_COVERAGE_SCHEMA_CONSTITUTION.md",
     }
+
+
+def _valid_case_for_verdict(verdict: str) -> dict[str, Any]:
+    assert verdict in EXPECTED_VERDICT_REQUIRED_FIELDS
+    return (
+        _minimal_valid_case()
+        | {"expected_verdict": verdict}
+        | EXPECTED_VERDICT_REQUIRED_FIELDS[verdict]
+    )
 
 
 def _assert_invalid(payload: dict[str, Any]) -> None:
@@ -426,7 +443,10 @@ def test_schema_rejects_required_bridges_for_non_bridge_verdicts(
 
 
 def test_schema_rejects_computed_verdict():
-    _assert_invalid(_minimal_valid_case() | {"computed_verdict": "manual"})
+    _assert_invalid(
+        _minimal_valid_case()
+        | {"computed_verdict": TEST_FORBIDDEN_COMPUTED_VERDICT_VALUE}
+    )
 
 
 def test_schema_rejects_mrk_defaults():
@@ -474,14 +494,24 @@ def test_schema_keeps_coverage_matrix_forbidden_and_absent():
 )
 def test_expected_verdict_enum_is_supported(verdict: str):
     schema = _load_schema()
-    payload = _minimal_valid_case() | {"expected_verdict": verdict}
-    if verdict in {"EXPECTED_BLOCKED", "EXPECTED_PROOF_REQUIRED"}:
-        payload["expected_failure_family"] = "FAMILY"
-    if verdict == "EXPECTED_RESIDUAL":
-        payload["expected_residual_policy"] = "KEEP"
-    if verdict == "EXPECTED_BRIDGE_REQUIRED":
-        payload["required_bridges"] = ["BRIDGE"]
-    _validate_payload(schema, payload)
+    _validate_payload(schema, _valid_case_for_verdict(verdict))
+
+
+@pytest.mark.parametrize(
+    "verdict",
+    [
+        "EXPECTED_ACCEPTED_CANDIDATE",
+        "EXPECTED_BLOCKED",
+        "EXPECTED_RESIDUAL",
+        "EXPECTED_BRIDGE_REQUIRED",
+        "EXPECTED_PROOF_REQUIRED",
+    ],
+)
+def test_schema_rejects_computed_verdict_for_every_expected_verdict(verdict: str):
+    _assert_invalid(
+        _valid_case_for_verdict(verdict)
+        | {"computed_verdict": TEST_FORBIDDEN_COMPUTED_VERDICT_VALUE}
+    )
 
 
 def test_fallback_validator_accepts_valid_case(monkeypatch: pytest.MonkeyPatch):
@@ -492,7 +522,10 @@ def test_fallback_validator_accepts_valid_case(monkeypatch: pytest.MonkeyPatch):
 
 def test_fallback_validator_rejects_computed_verdict(monkeypatch: pytest.MonkeyPatch):
     monkeypatch.setattr("tests.test_computed_coverage_schema.Draft202012Validator", None)
-    _assert_invalid(_minimal_valid_case() | {"computed_verdict": "manual"})
+    _assert_invalid(
+        _minimal_valid_case()
+        | {"computed_verdict": TEST_FORBIDDEN_COMPUTED_VERDICT_VALUE}
+    )
 
 
 def test_fallback_validator_rejects_irrelevant_outcome_field(monkeypatch: pytest.MonkeyPatch):

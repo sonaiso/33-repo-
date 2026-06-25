@@ -18,7 +18,10 @@ from tests.forbidden_runtime_patterns import (
     compile_forbidden_runtime_patterns,
     load_forbidden_runtime_patterns,
 )
-from tests.test_forbidden_runtime_pattern_fixtures import PATTERN_FIXTURES
+from tests.test_forbidden_runtime_pattern_fixtures import (
+    ALLOWED_CONTEXT_NEGATIVE_FIXTURES,
+    PATTERN_FIXTURES,
+)
 
 REPO_ROOT = Path(__file__).parent.parent
 GUARD_DOC = REPO_ROOT / "docs" / "15_REJECTED_RUNTIME_PATTERNS.md"
@@ -318,7 +321,7 @@ def test_allowed_in_paths_are_existing_audit_document_contexts():
 
 def test_registered_allowed_contexts_do_not_report_registered_antipattern_text():
     """trace_ref: docs/12_RUNTIME_EMBARGO_CONSTITUTION.md Embargo Rule."""
-    for pattern_id, sample in PATTERN_FIXTURES.items():
+    for pattern_id, sample in ALLOWED_CONTEXT_NEGATIVE_FIXTURES.items():
         record = FORBIDDEN_PATTERN_RECORDS_BY_ID[pattern_id]
         assert FORBIDDEN_PATTERNS_BY_ID[pattern_id].matcher.search(sample)
         for allowed_path in record.allowed_in:

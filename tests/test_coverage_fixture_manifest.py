@@ -319,6 +319,23 @@ def test_manifest_verdict_matrix_has_negative_fixture_for_each_irrelevant_outcom
     assert observed == expected
 
 
+def test_manifest_verdict_matrix_negative_entries_match_fixture_payloads():
+    manifest = _load_manifest()
+    schema = _load_schema()
+
+    for entry in _manifest_entries(manifest, "invalid_fixtures"):
+        if entry.get("fixture_matrix") != "VERDICT_NEGATIVE":
+            continue
+        payload = _fixture_payload(entry["file"])
+
+        assert payload["expected_verdict"] == entry["expected_verdict"]
+        assert entry["forbidden_field"] in payload
+        assert payload[entry["forbidden_field"]]
+        assert entry["must_fail_reason"] == _invalid_reason_map(manifest)[entry["file"]]
+        with pytest.raises(ValidationError):
+            _validate_payload(schema, payload)
+
+
 def test_manifest_verdict_matrix_has_computed_verdict_negative_fixture_for_each_verdict():
     manifest = _load_manifest()
     schema = _load_schema()

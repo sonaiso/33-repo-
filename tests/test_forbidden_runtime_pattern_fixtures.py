@@ -67,6 +67,15 @@ PATTERN_FIXTURES = {
 }
 
 
+ALLOWED_CONTEXT_NEGATIVE_FIXTURES = {
+    pattern_id: (
+        "Authorized audit documentation quotation; this text is not runtime "
+        f"authority:\n{sample}"
+    )
+    for pattern_id, sample in PATTERN_FIXTURES.items()
+}
+
+
 def test_forbidden_runtime_pattern_fixtures_cover_every_registry_id():
     """trace_ref: docs/12_RUNTIME_EMBARGO_CONSTITUTION.md Embargo Rule."""
     registry_ids = {record.id for record in load_forbidden_runtime_patterns()}
@@ -85,4 +94,25 @@ def test_forbidden_runtime_pattern_fixtures_match_canonical_patterns():
     }
 
     for pattern_id, sample in PATTERN_FIXTURES.items():
+        assert compiled_by_id[pattern_id].search(sample), pattern_id
+
+
+def test_allowed_context_negative_fixtures_cover_every_registry_id():
+    """trace_ref: docs/12_RUNTIME_EMBARGO_CONSTITUTION.md Embargo Rule."""
+    registry_ids = {record.id for record in load_forbidden_runtime_patterns()}
+    fixture_ids = set(ALLOWED_CONTEXT_NEGATIVE_FIXTURES)
+
+    assert fixture_ids == registry_ids
+
+
+def test_allowed_context_negative_fixtures_match_canonical_patterns():
+    """trace_ref: docs/12_RUNTIME_EMBARGO_CONSTITUTION.md Embargo Rule."""
+    compiled_by_id = {
+        pattern.id: pattern.matcher
+        for pattern in compile_forbidden_runtime_patterns(
+            load_forbidden_runtime_patterns()
+        )
+    }
+
+    for pattern_id, sample in ALLOWED_CONTEXT_NEGATIVE_FIXTURES.items():
         assert compiled_by_id[pattern_id].search(sample), pattern_id
