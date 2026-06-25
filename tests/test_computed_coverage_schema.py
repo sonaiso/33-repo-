@@ -33,7 +33,7 @@ EXPECTED_VERDICT_REQUIRED_FIELDS: dict[str, dict[str, Any]] = {
     "EXPECTED_BRIDGE_REQUIRED": {"required_bridges": ["DAL_TO_LAFZI_BRIDGE"]},
     "EXPECTED_PROOF_REQUIRED": {"expected_failure_family": "FAMILY_PROOF_REQUIRED"},
 }
-FORBIDDEN_COMPUTED_VALUE = "FORBIDDEN_COMPUTED"
+TEST_FORBIDDEN_COMPUTED_VERDICT_VALUE = "FORBIDDEN_COMPUTED"
 
 
 def _load_schema() -> dict[str, Any]:
@@ -444,7 +444,8 @@ def test_schema_rejects_required_bridges_for_non_bridge_verdicts(
 
 def test_schema_rejects_computed_verdict():
     _assert_invalid(
-        _minimal_valid_case() | {"computed_verdict": FORBIDDEN_COMPUTED_VALUE}
+        _minimal_valid_case()
+        | {"computed_verdict": TEST_FORBIDDEN_COMPUTED_VERDICT_VALUE}
     )
 
 
@@ -509,7 +510,7 @@ def test_expected_verdict_enum_is_supported(verdict: str):
 def test_schema_rejects_computed_verdict_for_every_expected_verdict(verdict: str):
     _assert_invalid(
         _valid_case_for_verdict(verdict)
-        | {"computed_verdict": FORBIDDEN_COMPUTED_VALUE}
+        | {"computed_verdict": TEST_FORBIDDEN_COMPUTED_VERDICT_VALUE}
     )
 
 
@@ -522,7 +523,8 @@ def test_fallback_validator_accepts_valid_case(monkeypatch: pytest.MonkeyPatch):
 def test_fallback_validator_rejects_computed_verdict(monkeypatch: pytest.MonkeyPatch):
     monkeypatch.setattr("tests.test_computed_coverage_schema.Draft202012Validator", None)
     _assert_invalid(
-        _minimal_valid_case() | {"computed_verdict": FORBIDDEN_COMPUTED_VALUE}
+        _minimal_valid_case()
+        | {"computed_verdict": TEST_FORBIDDEN_COMPUTED_VERDICT_VALUE}
     )
 
 
