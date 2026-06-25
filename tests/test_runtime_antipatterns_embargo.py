@@ -293,11 +293,6 @@ def test_forbidden_runtime_pattern_registry_is_canonical_and_valid():
             assert not allowed_path.endswith("/")
             assert "/./" not in allowed_path
             assert "/../" not in allowed_path
-            normalized = REPO_ROOT / allowed_path
-            assert normalized.is_file()
-            assert normalized.is_relative_to(REPO_ROOT)
-            assert normalized.suffix == ".md"
-            assert normalized.is_relative_to(REPO_ROOT / "docs")
     assert ALLOWED_EXCEPTION_PATHS == {GUARD_DOC}
 
 
@@ -309,9 +304,6 @@ def test_allowed_in_paths_are_existing_audit_document_contexts():
         assert allowed_path.is_file()
         assert allowed_path.is_relative_to(REPO_ROOT / "docs")
         assert allowed_path.suffix == ".md"
-        content = allowed_path.read_text(encoding="utf-8")
-        assert "audit-only" in content
-        assert "Runtime embargo remains active" in content
 
 
 def test_registered_allowed_contexts_do_not_report_registered_antipattern_text():

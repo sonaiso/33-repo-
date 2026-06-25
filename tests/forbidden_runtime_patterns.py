@@ -180,11 +180,11 @@ def compile_forbidden_runtime_patterns(
 
 
 def allowed_forbidden_runtime_pattern_paths(
-    patterns: tuple[ForbiddenRuntimePattern, ...] | None = None,
+    records: tuple[ForbiddenRuntimePattern, ...] | None = None,
 ) -> frozenset[Path]:
-    source_patterns = patterns or load_forbidden_runtime_patterns()
+    source_records = records or load_forbidden_runtime_patterns()
     return frozenset(
         REPO_ROOT / allowed_path
-        for pattern in source_patterns
-        for allowed_path in pattern.allowed_in
+        for record in source_records
+        for allowed_path in record.allowed_in
     )
