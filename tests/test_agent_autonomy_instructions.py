@@ -149,7 +149,7 @@ def test_copilot_instructions_declare_current_pr_105_baseline():
         assert marker in content
 
 
-def test_post_pr_105_transition_preserves_schema_only_non_runtime_boundary():
+def test_schema_only_boundary_preserved_after_pr_105():
     """trace_ref: docs/12_RUNTIME_EMBARGO_CONSTITUTION.md Embargo Rule."""
     for path in (AGENT_AUTONOMY_RUNBOOK, COPILOT_INSTRUCTIONS):
         content = _read_text(path)
