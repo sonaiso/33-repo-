@@ -32,6 +32,8 @@ RUNBOOK_REQUIRED_SECTIONS = (
     "## Scope",
     "## Non-scope",
     "## Authority docs",
+    "## Current hardening baseline",
+    "## Highest-priority safe gap queue",
     "## Required PR body shape",
     "## Required validation",
     "## Constitutional invariants preserved",
@@ -44,10 +46,29 @@ PR_BODY_FIELDS = (
     "Files changed",
     "Tests run",
     "Constitutional invariants preserved",
+    "Why this is audit-only",
 )
 
 ARABIC_NEXT_SAFE_STEP_PROMPT = (
     "إذا أردت، أبدأ الآن بالخطوة التالية الضيقة الآمنة (PR واحد فقط) وفق خيارك التالي."
+)
+
+CURRENT_BASELINE_MARKERS = (
+    "PR #103",
+    "expected_verdict fixture matrix",
+    "Computed coverage is schema/fixture based only",
+    "computed_verdict cannot be supplied by fixture data",
+    "do not regress it",
+)
+
+SAFE_GAP_QUEUE_MARKERS = (
+    "Fix weak or missing tests around computed coverage verdict fixtures",
+    "Add negative fixture coverage for allowed contexts",
+    "computed_verdict rejection fixture",
+    "canonical_family",
+    "forbidden_runtime_use",
+    "agent autonomy instructions/runbook",
+    "anti-pattern regression guards",
 )
 
 
@@ -90,6 +111,30 @@ def test_agent_autonomy_runbook_has_required_sections_and_pr_fields():
         assert section in content
     for field in PR_BODY_FIELDS:
         assert field in required_pr_body
+
+
+def test_agent_autonomy_runbook_declares_current_computed_coverage_baseline():
+    """trace_ref: docs/00B_AGENT_BINDING_CONSTITUTION.md Role Boundaries."""
+    content = _read_text(AGENT_AUTONOMY_RUNBOOK)
+
+    for marker in CURRENT_BASELINE_MARKERS:
+        assert marker in content
+
+
+def test_agent_autonomy_runbook_declares_safe_gap_queue_after_pr_103():
+    """trace_ref: docs/12_RUNTIME_EMBARGO_CONSTITUTION.md Embargo Rule."""
+    content = _read_text(AGENT_AUTONOMY_RUNBOOK)
+
+    for marker in SAFE_GAP_QUEUE_MARKERS:
+        assert marker in content
+
+
+def test_copilot_instructions_declare_current_pr_103_baseline():
+    """trace_ref: docs/00B_AGENT_BINDING_CONSTITUTION.md Role Boundaries."""
+    content = _read_text(COPILOT_INSTRUCTIONS)
+
+    for marker in CURRENT_BASELINE_MARKERS:
+        assert marker in content
 
 
 def test_agent_autonomy_runbook_declares_stop_conditions():
