@@ -178,12 +178,14 @@ def _minimal_valid_case() -> dict[str, Any]:
 
 def _valid_case_for_verdict(verdict: str) -> dict[str, Any]:
     payload = _minimal_valid_case() | {"expected_verdict": verdict}
-    if verdict in {"EXPECTED_BLOCKED", "EXPECTED_PROOF_REQUIRED"}:
-        payload["expected_failure_family"] = "FAMILY"
+    if verdict == "EXPECTED_BLOCKED":
+        payload["expected_failure_family"] = "FAMILY_EMBARGO"
+    if verdict == "EXPECTED_PROOF_REQUIRED":
+        payload["expected_failure_family"] = "FAMILY_PROOF_REQUIRED"
     if verdict == "EXPECTED_RESIDUAL":
-        payload["expected_residual_policy"] = "KEEP"
+        payload["expected_residual_policy"] = "KEEP_RESIDUALS"
     if verdict == "EXPECTED_BRIDGE_REQUIRED":
-        payload["required_bridges"] = ["BRIDGE"]
+        payload["required_bridges"] = ["DAL_TO_LAFZI_BRIDGE"]
     return payload
 
 
