@@ -1,0 +1,11 @@
+{
+  "case_id": "fixture-valid-matrix-residual-001",
+  "input_text": "matrix residual audit case",
+  "input_domain": "D3_LEXICAL_MADLUL",
+  "expected_verdict": "EXPECTED_RESIDUAL",
+  "required_contracts": [
+    "docs/18_COMPUTED_COVERAGE_SCHEMA_CONSTITUTION.md"
+  ],
+  "expected_residual_policy": "KEEP_RESIDUALS",
+  "trace_ref": "docs/18_COMPUTED_COVERAGE_SCHEMA_CONSTITUTION.md"
+}

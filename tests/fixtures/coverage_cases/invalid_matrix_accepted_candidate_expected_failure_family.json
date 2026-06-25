@@ -1,0 +1,11 @@
+{
+  "case_id": "fixture-invalid-matrix-accepted-candidate-expected-failure-family-001",
+  "input_text": "matrix accepted candidate rejects expected_failure_family",
+  "input_domain": "D2_LAFZI_FORM",
+  "expected_verdict": "EXPECTED_ACCEPTED_CANDIDATE",
+  "required_contracts": [
+    "docs/18_COMPUTED_COVERAGE_SCHEMA_CONSTITUTION.md"
+  ],
+  "trace_ref": "docs/18_COMPUTED_COVERAGE_SCHEMA_CONSTITUTION.md",
+  "expected_failure_family": "FAMILY_EMBARGO"
+}

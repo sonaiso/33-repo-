@@ -1,0 +1,11 @@
+{
+  "case_id": "fixture-valid-matrix-blocked-001",
+  "input_text": "matrix blocked audit case",
+  "input_domain": "D1_DAL_ONLY",
+  "expected_verdict": "EXPECTED_BLOCKED",
+  "required_contracts": [
+    "docs/18_COMPUTED_COVERAGE_SCHEMA_CONSTITUTION.md"
+  ],
+  "expected_failure_family": "FAMILY_EMBARGO",
+  "trace_ref": "docs/18_COMPUTED_COVERAGE_SCHEMA_CONSTITUTION.md"
+}
