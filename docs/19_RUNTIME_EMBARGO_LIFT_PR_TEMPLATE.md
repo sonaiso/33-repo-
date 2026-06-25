@@ -37,17 +37,20 @@ List exact repo-relative canonical file paths only.
 - No globs/wildcards (`*`, `?`, `[ ]`, `{ }`).
 - No absolute paths.
 - No `..` segments.
+- No `.` segments anywhere in the path.
 - No backslashes.
 - No empty segments (`//`).
+- No trailing slash.
 - No leading `./`.
 - No leading or trailing whitespace.
 - Forbidden runtime paths may not appear in `authorized_artifacts` for any current lift type, including proof evaluator, bridge evaluator, coverage runner, and kernel lift requests.
-- Normalization variants of forbidden runtime paths are rejected; agents must not rely on path cleanup to authorize artifacts.
+- Paths must already be canonical; do not rely on normalization/path cleanup to authorize artifacts.
 
 ## 3) Explicit Non-Authorized Artifacts
 List runtime artifacts that remain forbidden in this PR.
 
 Minimum forbidden runtime paths:
+Source-of-truth (audit-only): `data/forbidden_runtime_artifacts.json`
 - `src/taaqqul_slot_geometry/L1/binding_kernel.py`
 - `src/taaqqul_slot_geometry/L1/decision_engine.py`
 - `src/taaqqul_slot_geometry/runtime/binding_kernel.py`
