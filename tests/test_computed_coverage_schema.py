@@ -61,6 +61,13 @@ def _validate_rule(key: str, value: Any, rule: dict[str, Any]) -> None:
 
 
 def _rule_matches(value: Any, rule: dict[str, Any]) -> bool:
+    """Return whether a payload value satisfies a supported schema rule.
+
+    The fallback validator implements only the JSON Schema keywords used by
+    this coverage schema. Unknown rule shapes are treated as satisfied so the
+    fallback remains limited to explicit guardrails rather than becoming a
+    partial general-purpose validator.
+    """
     if "not" in rule:
         return not _rule_matches(value, rule["not"])
     if "const" in rule:
@@ -128,7 +135,10 @@ def _fallback_validate(schema: dict[str, Any], payload: dict[str, Any]) -> None:
         then_not = then_clause.get("not", {})
         forbidden_then_fields = then_not.get("required", [])
         if forbidden_then_fields and all(field in payload for field in forbidden_then_fields):
-            raise ValueError(f"Forbidden conditional field present: {forbidden_then_fields[0]}")
+            raise ValueError(
+                "Forbidden conditional fields present: "
+                f"{', '.join(forbidden_then_fields)}"
+            )
         for field in then_clause.get("required", []):
             if field not in payload:
                 raise ValueError(f"Missing conditional required field: {field}")
