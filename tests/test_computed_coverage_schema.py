@@ -60,6 +60,25 @@ def _validate_rule(key: str, value: Any, rule: dict[str, Any]) -> None:
         raise ValueError(f"{key} must satisfy pattern")
 
 
+def _rule_matches(value: Any, rule: dict[str, Any]) -> bool:
+    """Return True when a value matches a supported schema constraint.
+
+    The fallback validator implements only the JSON Schema keywords used by
+    this coverage schema. The result is True when the value satisfies the
+    recognized constraint and False when it violates that constraint. Unknown
+    rule shapes are treated as satisfied so the fallback remains limited to
+    explicit guardrails rather than becoming a partial general-purpose
+    validator.
+    """
+    if "not" in rule:
+        return not _rule_matches(value, rule["not"])
+    if "const" in rule:
+        return value == rule["const"]
+    if "enum" in rule:
+        return value in rule["enum"]
+    return True
+
+
 def _fallback_validate(schema: dict[str, Any], payload: dict[str, Any]) -> None:
     """Validate payloads when jsonschema is unavailable.
 
@@ -108,16 +127,23 @@ def _fallback_validate(schema: dict[str, Any], payload: dict[str, Any]) -> None:
         for field, rule in if_clause.get("properties", {}).items():
             if field not in payload:
                 continue
-            if "const" in rule and payload[field] != rule["const"]:
-                matches = False
-                break
-            if "enum" in rule and payload[field] not in rule["enum"]:
+            if not _rule_matches(payload[field], rule):
                 matches = False
                 break
         if not matches:
             continue
 
         then_clause = conditional.get("then", {})
+        forbidden_then_fields = then_clause.get("not", {}).get("required", [])
+        # JSON Schema `not: {required: [...]}` rejects only when every listed
+        # field is present. This fallback mirrors that condition and raises at
+        # the same point; the current coverage schema uses single-field
+        # forbidden outcome declarations.
+        if forbidden_then_fields and all(field in payload for field in forbidden_then_fields):
+            raise ValueError(
+                "Forbidden conditional fields present: "
+                f"{', '.join(forbidden_then_fields)}"
+            )
         for field in then_clause.get("required", []):
             if field not in payload:
                 raise ValueError(f"Missing conditional required field: {field}")
@@ -279,6 +305,25 @@ def test_schema_rejects_expected_proof_required_without_failure_family():
     _assert_invalid(_minimal_valid_case() | {"expected_verdict": "EXPECTED_PROOF_REQUIRED"})
 
 
+@pytest.mark.parametrize(
+    ("verdict", "extra"),
+    [
+        ("EXPECTED_ACCEPTED_CANDIDATE", {}),
+        ("EXPECTED_RESIDUAL", {"expected_residual_policy": "KEEP_RESIDUALS"}),
+        ("EXPECTED_BRIDGE_REQUIRED", {"required_bridges": ["DAL_TO_LAFZI_BRIDGE"]}),
+    ],
+)
+def test_schema_rejects_failure_family_for_non_failure_verdicts(
+    verdict: str,
+    extra: dict[str, Any],
+):
+    _assert_invalid(
+        _minimal_valid_case()
+        | {"expected_verdict": verdict, "expected_failure_family": "FAMILY_EMBARGO"}
+        | extra
+    )
+
+
 @pytest.mark.parametrize("invalid_family", ["PROOF/MRK", "rank family", "family_lower", "meaning-leak!"])
 def test_schema_rejects_non_schema_safe_expected_failure_family(invalid_family: str):
     _assert_invalid(
@@ -301,6 +346,26 @@ def test_schema_accepts_expected_residual_only_with_residual_policy():
 
 def test_schema_rejects_expected_residual_without_residual_policy():
     _assert_invalid(_minimal_valid_case() | {"expected_verdict": "EXPECTED_RESIDUAL"})
+
+
+@pytest.mark.parametrize(
+    ("verdict", "extra"),
+    [
+        ("EXPECTED_ACCEPTED_CANDIDATE", {}),
+        ("EXPECTED_BLOCKED", {"expected_failure_family": "FAMILY_EMBARGO"}),
+        ("EXPECTED_BRIDGE_REQUIRED", {"required_bridges": ["DAL_TO_LAFZI_BRIDGE"]}),
+        ("EXPECTED_PROOF_REQUIRED", {"expected_failure_family": "FAMILY_PROOF_REQUIRED"}),
+    ],
+)
+def test_schema_rejects_residual_policy_for_non_residual_verdicts(
+    verdict: str,
+    extra: dict[str, Any],
+):
+    _assert_invalid(
+        _minimal_valid_case()
+        | {"expected_verdict": verdict, "expected_residual_policy": "KEEP_RESIDUALS"}
+        | extra
+    )
 
 
 @pytest.mark.parametrize("invalid_policy", ["POLICY/ONE", "policy one", "policy_lower", "policy!"])
@@ -334,6 +399,26 @@ def test_schema_rejects_expected_bridge_required_with_empty_required_bridges():
             "expected_verdict": "EXPECTED_BRIDGE_REQUIRED",
             "required_bridges": [],
         }
+    )
+
+
+@pytest.mark.parametrize(
+    ("verdict", "extra"),
+    [
+        ("EXPECTED_ACCEPTED_CANDIDATE", {}),
+        ("EXPECTED_BLOCKED", {"expected_failure_family": "FAMILY_EMBARGO"}),
+        ("EXPECTED_RESIDUAL", {"expected_residual_policy": "KEEP_RESIDUALS"}),
+        ("EXPECTED_PROOF_REQUIRED", {"expected_failure_family": "FAMILY_PROOF_REQUIRED"}),
+    ],
+)
+def test_schema_rejects_required_bridges_for_non_bridge_verdicts(
+    verdict: str,
+    extra: dict[str, Any],
+):
+    _assert_invalid(
+        _minimal_valid_case()
+        | {"expected_verdict": verdict, "required_bridges": ["DAL_TO_LAFZI_BRIDGE"]}
+        | extra
     )
 
 
@@ -405,3 +490,14 @@ def test_fallback_validator_accepts_valid_case(monkeypatch: pytest.MonkeyPatch):
 def test_fallback_validator_rejects_computed_verdict(monkeypatch: pytest.MonkeyPatch):
     monkeypatch.setattr("tests.test_computed_coverage_schema.Draft202012Validator", None)
     _assert_invalid(_minimal_valid_case() | {"computed_verdict": "manual"})
+
+
+def test_fallback_validator_rejects_irrelevant_outcome_field(monkeypatch: pytest.MonkeyPatch):
+    monkeypatch.setattr("tests.test_computed_coverage_schema.Draft202012Validator", None)
+    _assert_invalid(
+        _minimal_valid_case()
+        | {
+            "expected_verdict": "EXPECTED_ACCEPTED_CANDIDATE",
+            "expected_failure_family": "FAMILY_EMBARGO",
+        }
+    )

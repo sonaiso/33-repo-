@@ -286,6 +286,72 @@
           "expected_failure_family"
         ]
       }
+    },
+    {
+      "if": {
+        "properties": {
+          "expected_verdict": {
+            "not": {
+              "enum": [
+                "EXPECTED_BLOCKED",
+                "EXPECTED_PROOF_REQUIRED"
+              ]
+            }
+          }
+        },
+        "required": [
+          "expected_verdict"
+        ]
+      },
+      "then": {
+        "not": {
+          "required": [
+            "expected_failure_family"
+          ]
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "expected_verdict": {
+            "not": {
+              "const": "EXPECTED_RESIDUAL"
+            }
+          }
+        },
+        "required": [
+          "expected_verdict"
+        ]
+      },
+      "then": {
+        "not": {
+          "required": [
+            "expected_residual_policy"
+          ]
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "expected_verdict": {
+            "not": {
+              "const": "EXPECTED_BRIDGE_REQUIRED"
+            }
+          }
+        },
+        "required": [
+          "expected_verdict"
+        ]
+      },
+      "then": {
+        "not": {
+          "required": [
+            "required_bridges"
+          ]
+        }
+      }
     }
   ]
 }
