@@ -39,9 +39,13 @@ class CompiledForbiddenRuntimePattern(NamedTuple):
 def _load_json_payload(path: Path = CANONICAL_FORBIDDEN_RUNTIME_PATTERNS_PATH) -> Any:
     try:
         return json.loads(path.read_text(encoding="utf-8"))
-    except OSError as exc:
+    except FileNotFoundError as exc:
         raise RuntimeError(
             f"Missing canonical forbidden runtime pattern list: {path}"
+        ) from exc
+    except OSError as exc:
+        raise RuntimeError(
+            f"Unable to read canonical forbidden runtime pattern list: {path}"
         ) from exc
     except json.JSONDecodeError as exc:
         raise RuntimeError(

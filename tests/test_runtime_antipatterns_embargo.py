@@ -6,7 +6,6 @@ import io
 import json
 import tokenize
 from bisect import bisect_right
-from itertools import chain
 from pathlib import Path
 
 import pytest
@@ -176,19 +175,18 @@ def scanned_text(path: Path) -> str:
 
 
 def line_starts(text: str) -> tuple[int, ...]:
-    """Return zero-based offsets for line starts in scan text."""
-    return tuple(
-        chain(
-            (0,),
-            (idx + 1 for idx, char in enumerate(text) if char == "\n"),
-        )
-    )
+    """Return zero-based offsets for the first character of each scan-text line."""
+    offsets = [0]
+    for idx, char in enumerate(text):
+        if char == "\n":
+            offsets.append(idx + 1)
+    return tuple(offsets)
 
 
 def line_number_at(offsets: tuple[int, ...], position: int) -> int:
     """Return the one-based line number where a zero-based text position occurs."""
-    # bisect_right returns the insertion point after any line start equal to
-    # position; that count is the corresponding one-based line number.
+    # The number of line starts less than or equal to position is the
+    # corresponding one-based line number.
     return bisect_right(offsets, position)
 
 
@@ -437,6 +435,17 @@ def test_python_comments_and_strings_are_ignored_for_antipattern_scan(tmp_path: 
     assert "domain_proved" not in stripped
     assert "Rank.CERTIFICATE" not in stripped
     assert "identity_preserved" not in stripped
+
+
+def test_line_number_lookup_handles_line_starts_and_mid_line_positions():
+    """trace_ref: docs/12_RUNTIME_EMBARGO_CONSTITUTION.md Embargo Rule."""
+    offsets = line_starts("a\nbc\ndef")
+    assert offsets == (0, 2, 5)
+    assert line_number_at(offsets, 0) == 1
+    assert line_number_at(offsets, 1) == 1
+    assert line_number_at(offsets, 2) == 2
+    assert line_number_at(offsets, 4) == 2
+    assert line_number_at(offsets, 5) == 3
 
 
 def test_transform_antipattern_regexes_cover_annotation_variants():
