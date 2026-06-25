@@ -68,6 +68,9 @@ When assigned a broad hardening request, the agent must:
 6. Avoid unrelated cleanup.
 7. Stop after one narrow PR.
 
+Operator prompt (explicit narrow-step trigger):
+إذا أردت، أبدأ الآن بالخطوة التالية الضيقة الآمنة (PR واحد فقط) وفق خيارك التالي.
+
 Allowed next-safe-step categories include:
 
 - strengthening audit-only forbidden-pattern registries
