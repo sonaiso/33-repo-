@@ -62,7 +62,7 @@ def _validate_allowed_in(record_id: str, allowed_in: Any) -> tuple[str, ...]:
                 f"{record_id}.allowed_in must not contain absolute, relative, "
                 "backslash, or empty-segment paths"
             )
-        if path.endswith("/") or "/./" in path or "/../" in path or path.startswith("../"):
+        if path.endswith("/") or "/./" in path or "/../" in path:
             raise ValueError(
                 f"{record_id}.allowed_in must not contain trailing slashes "
                 "or navigation segments"

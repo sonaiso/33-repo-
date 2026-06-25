@@ -6,6 +6,7 @@ import io
 import json
 import tokenize
 from bisect import bisect_right
+from itertools import chain
 from pathlib import Path
 
 import pytest
@@ -176,7 +177,12 @@ def scanned_text(path: Path) -> str:
 
 def line_starts(text: str) -> tuple[int, ...]:
     """Return zero-based offsets for line starts in scan text."""
-    return (0, *(index + 1 for index, character in enumerate(text) if character == "\n"))
+    return tuple(
+        chain(
+            (0,),
+            (index + 1 for index, character in enumerate(text) if character == "\n"),
+        )
+    )
 
 
 def line_number_at(offsets: tuple[int, ...], position: int) -> int:
