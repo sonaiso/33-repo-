@@ -122,9 +122,9 @@
       "items": {
         "type": "string",
         "minLength": 1,
-        "description": "Repo-relative canonical path only: no absolute paths, no leading './', no leading/trailing whitespace, no backslashes, no '..' segments, no empty segments ('//'), and no glob wildcards.",
-        "$comment": "No leading slash (absolute paths), no leading './', no leading/trailing whitespace, no backslashes anywhere, no '..' path segments, no consecutive slashes (empty segments), and no glob wildcards.",
-        "pattern": "^(?!/)(?!\\.\\/)(?!\\s)(?!.*\\s$)(?!.*\\\\)(?!.*(?:^|/)\\.\\.(?:/|$))(?!.*//)(?!.*[*?\\[\\]{}]).+$"
+        "description": "Repo-relative canonical path only: no absolute paths, no leading './', no leading/trailing whitespace, no backslashes, no '.' or '..' segments, no empty segments ('//'), no trailing slash, and no glob wildcards.",
+        "$comment": "No leading slash (absolute paths), no leading './', no leading/trailing whitespace, no backslashes anywhere, no '.' or '..' path segments, no consecutive slashes (empty segments), no trailing slash, and no glob wildcards.",
+        "pattern": "^(?!/)(?!\\.\\/)(?!\\s)(?!.*\\s$)(?!.*\\\\)(?!.*(?:^|/)\\.(?:/|$))(?!.*(?:^|/)\\.\\.(?:/|$))(?!.*//)(?!.*\\/$)(?!.*[*?\\[\\]{}]).+$"
       }
     },
     "non_scope_artifacts": {
@@ -134,9 +134,9 @@
       "items": {
         "type": "string",
         "minLength": 1,
-        "description": "Repo-relative canonical path only: no absolute paths, no leading './', no leading/trailing whitespace, no backslashes, no '..' segments, no empty segments ('//'), and no glob wildcards.",
-        "$comment": "No leading slash (absolute paths), no leading './', no leading/trailing whitespace, no backslashes anywhere, no '..' path segments, no consecutive slashes (empty segments), and no glob wildcards.",
-        "pattern": "^(?!/)(?!\\.\\/)(?!\\s)(?!.*\\s$)(?!.*\\\\)(?!.*(?:^|/)\\.\\.(?:/|$))(?!.*//)(?!.*[*?\\[\\]{}]).+$"
+        "description": "Repo-relative canonical path only: no absolute paths, no leading './', no leading/trailing whitespace, no backslashes, no '.' or '..' segments, no empty segments ('//'), no trailing slash, and no glob wildcards.",
+        "$comment": "No leading slash (absolute paths), no leading './', no leading/trailing whitespace, no backslashes anywhere, no '.' or '..' path segments, no consecutive slashes (empty segments), no trailing slash, and no glob wildcards.",
+        "pattern": "^(?!/)(?!\\.\\/)(?!\\s)(?!.*\\s$)(?!.*\\\\)(?!.*(?:^|/)\\.(?:/|$))(?!.*(?:^|/)\\.\\.(?:/|$))(?!.*//)(?!.*\\/$)(?!.*[*?\\[\\]{}]).+$"
       }
     },
     "rollback_plan": {

@@ -103,7 +103,8 @@ def _forbidden_artifact_path_variants(artifact: str) -> list[str]:
     """Build malformed path variants that must fail schema validation.
 
     These variants model normalization bypass attempts: leading ./, surrounding
-    whitespace, consecutive slashes, backslashes, and injected .. segments.
+    whitespace, consecutive slashes, backslashes, current-directory/trailing-slash
+    tricks, and injected .. segments.
     """
     def replaced_or_prefixed(replacement: str, count: int = -1) -> str:
         if "/" not in artifact:
@@ -118,15 +119,18 @@ def _forbidden_artifact_path_variants(artifact: str) -> list[str]:
     full_double_slash = replaced_or_prefixed("//")
     partial_backslash = replaced_or_prefixed("\\", 1)
     full_backslash = replaced_or_prefixed("\\")
+    partial_dot = replaced_or_prefixed("/./", 1)
     partial_dotdot = replaced_or_prefixed("/../", 1)
     return [
         f"./{artifact}",
+        f"{artifact}/",
         leading_whitespace,
         trailing_whitespace,
         partial_double_slash,
         full_double_slash,
         partial_backslash,
         full_backslash,
+        partial_dot,
         partial_dotdot,
         f"safe/../{artifact}",
     ]
@@ -429,6 +433,8 @@ def test_all_lift_types_reject_forbidden_authorized_artifacts(
         ("authorized_artifacts", "src/runtime/binding_kernel.py "),
         ("authorized_artifacts", "src\\windows\\path.py"),
         ("authorized_artifacts", "src//double/slash.py"),
+        ("authorized_artifacts", "src/runtime/./binding_kernel.py"),
+        ("authorized_artifacts", "src/runtime/binding_kernel.py/"),
         ("non_scope_artifacts", "/abs/path.py"),
         ("non_scope_artifacts", "../runtime/binding_kernel.py"),
         ("non_scope_artifacts", "./src/runtime/binding_kernel.py"),
@@ -436,9 +442,28 @@ def test_all_lift_types_reject_forbidden_authorized_artifacts(
         ("non_scope_artifacts", "src/runtime/binding_kernel.py "),
         ("non_scope_artifacts", "src\\windows\\path.py"),
         ("non_scope_artifacts", "src//double/slash.py"),
+        ("non_scope_artifacts", "src/runtime/./binding_kernel.py"),
+        ("non_scope_artifacts", "src/runtime/binding_kernel.py/"),
     ],
 )
 def test_paths_reject_non_canonical_entries(field: str, value: str):
+    payload = _valid_request()
+    payload[field] = [value]
+    _assert_invalid(payload)
+
+
+@pytest.mark.parametrize("field", ["authorized_artifacts", "non_scope_artifacts"])
+@pytest.mark.parametrize(
+    "value",
+    [
+        "src/./taaqqul_slot_geometry/runtime/binding_kernel.py",
+        "src/taaqqul_slot_geometry/./runtime/binding_kernel.py",
+        "src/taaqqul_slot_geometry/runtime/./binding_kernel.py",
+        "src/taaqqul_slot_geometry/runtime/binding_kernel.py/",
+        "./src/taaqqul_slot_geometry/runtime/binding_kernel.py",
+    ],
+)
+def test_paths_reject_dot_segment_and_trailing_slash_bypasses(field: str, value: str):
     payload = _valid_request()
     payload[field] = [value]
     _assert_invalid(payload)
