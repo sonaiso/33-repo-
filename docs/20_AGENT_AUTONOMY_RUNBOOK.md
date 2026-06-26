@@ -39,6 +39,10 @@ It does not allow FailureAlignment artifacts to replace `FailureCode`.
 - PR #103 added the `expected_verdict` fixture matrix for computed coverage.
 - PR #105 strengthened the computed verdict fixture guardrails after that matrix.
 - PR #106 synchronizes autonomy guidance to the post-PR #106 guardrail state and hardens anti-pattern regression guards.
+- PR #110 confirms the autonomous agent posture is guardrails-only and audit-only.
+- Post-PR #110 autonomy means `Constitution-bound autonomous auditor`.
+- Autonomy inside audit. No autonomy inside runtime.
+- Rejected runtime examples are anti-patterns, not implementation plans.
 - Marker phrase: expected_verdict fixture matrix.
 - The PR #103 matrix includes positive fixtures for every `expected_verdict` label.
 - PR #105 confirms the matrix includes negative fixtures for irrelevant outcome fields and for `computed_verdict`.
@@ -46,6 +50,8 @@ It does not allow FailureAlignment artifacts to replace `FailureCode`.
 - `expected_verdict` fixtures are declarative only; `computed_verdict` cannot be supplied by fixture data.
 - all `computed_verdict` examples remain invalid fixture payloads only.
 - Completed computed-verdict fixture work must not be repeated by future autonomy.
+- Completed forbidden-pattern fixture coverage must not be repeated when already covered.
+- Completed allowed-context negative fixture coverage must not be repeated when already covered.
 - do not regress it: future autonomy must build on schema, fixtures, manifests, registries, and audit guardrails.
 - Do not convert schema fixtures into runtime cases, computed outcomes, a coverage runner, or runtime readiness.
 
@@ -88,6 +94,10 @@ Operator prompt (explicit narrow-step trigger):
 
 Allowed next-safe-step categories include:
 
+- resolving review comments or weak tests inside the current constitutional scope
+- strengthening anti-pattern guardrails
+- adding forbidden-pattern drift tests
+- hardening instruction/runbook guardrails
 - strengthening audit-only forbidden-pattern registries
 - adding fixture coverage for guard behavior
 - documenting agent-safe workflow boundaries
@@ -96,7 +106,7 @@ Allowed next-safe-step categories include:
 
 ## Highest-priority safe gap queue
 
-After PR #106, select the first narrow gap that still applies:
+After PR #110, select the first narrow gap that still applies:
 
 1. Closed by PR #105: computed coverage verdict fixture tests are strengthened.
 2. Closed before this transition: allowed-context negative fixture coverage exists so forbidden patterns do not false-positive in authorized documentation.
@@ -104,7 +114,9 @@ After PR #106, select the first narrow gap that still applies:
 4. Closed by PR #105: manifest tests prove every `expected_verdict` has one positive fixture, at least one unrelated-field negative fixture, and at least one `computed_verdict` rejection fixture; marker phrase: computed_verdict rejection fixture.
 5. Closed before this transition: `failure_alignment.csv` has `canonical_family`, `domain_scope`, `proof_obligation`, `residual_policy`, `forbidden_runtime_use`; all rows remain `is_executable_row=false` and `executable_mapping=AUDIT_ONLY`.
 6. Closed by PR #106: keep agent autonomy instructions/runbook synchronized with the post-PR #106 guardrail state so future sessions do not repeat completed computed-verdict fixture work.
-7. Current safe gap after PR #106: add or refine anti-pattern regression guards only for forbidden rank promotion, Boolean-as-proof defaults, evidence list as proof, runtime engine names, forbidden runtime artifact names, coverage matrix artifacts, and transform stubs.
+7. Closed by PR #110: keep post-PR #110 autonomy guardrails audit-only; rejected runtime examples remain anti-patterns, not implementation plans.
+8. Current safe gap after PR #110: fix unresolved review comments or weak tests from the latest merged PRs if they stay inside audit-only guardrails.
+9. Next safe gaps after PR #110: strengthen anti-pattern guardrails, forbidden-pattern drift tests, instruction/runbook hardening, and audit-only registry/schema hardening only.
 
 Stop after exactly one queue item. If the first remaining queue item would require runtime, a kernel, domain opening, semantic decision authority, rank promotion, Boolean-as-proof, or computed verdict runtime, report `BLOCKED`.
 
@@ -127,11 +139,14 @@ The agent must stop and report `BLOCKED` if the next required step needs:
 
 Every PR produced under this runbook must state:
 
+- Summary
 - Scope
 - Non-scope
-- Authority docs
+- Authority docs consulted
 - Files changed
+- Tests added/changed
 - Tests run
+- Runtime embargo status
 - Constitutional invariants preserved
 - Why this is audit-only
 

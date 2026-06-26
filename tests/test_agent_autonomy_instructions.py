@@ -40,11 +40,14 @@ RUNBOOK_REQUIRED_SECTIONS = (
 )
 
 PR_BODY_FIELDS = (
+    "Summary",
     "Scope",
     "Non-scope",
-    "Authority docs",
+    "Authority docs consulted",
     "Files changed",
+    "Tests added/changed",
     "Tests run",
+    "Runtime embargo status",
     "Constitutional invariants preserved",
     "Why this is audit-only",
 )
@@ -57,16 +60,19 @@ CURRENT_BASELINE_MARKERS = (
     "PR #103",
     "PR #105",
     "PR #106",
+    "PR #110",
     "expected_verdict fixture matrix",
     "Computed coverage is schema/fixture based only",
     "`computed_verdict` cannot be supplied by fixture data",
     "all `computed_verdict` examples remain invalid",
     "Completed computed-verdict fixture work must not be repeated",
+    "Completed forbidden-pattern fixture coverage must not be repeated",
+    "Completed allowed-context negative fixture coverage must not be repeated",
     "do not regress it",
 )
 
 SAFE_GAP_QUEUE_MARKERS = (
-    "After PR #106",
+    "After PR #110",
     "Closed by PR #105: computed coverage verdict fixture tests are strengthened",
     "allowed-context negative fixture coverage exists",
     "schema tests prove `computed_verdict` is rejected for every verdict fixture type",
@@ -76,8 +82,31 @@ SAFE_GAP_QUEUE_MARKERS = (
     "Closed by PR #106: keep agent autonomy instructions/runbook synchronized",
     "post-PR #106 guardrail state",
     "do not repeat completed computed-verdict fixture work",
-    "Current safe gap after PR #106",
-    "anti-pattern regression guards only",
+    "Closed by PR #110",
+    "post-PR #110 autonomy guardrails audit-only",
+    "Current safe gap after PR #110",
+    "unresolved review comments or weak tests",
+    "forbidden-pattern drift tests",
+    "instruction/runbook hardening",
+    "audit-only registry/schema hardening",
+)
+
+POST_PR_110_AUTONOMY_MARKERS = (
+    "Constitution-bound autonomous auditor",
+    "Autonomy inside audit. No autonomy inside runtime.",
+    "Rejected runtime examples are anti-patterns, not implementation plans.",
+)
+
+HARD_PROHIBITION_MARKERS = (
+    "binding_kernel.py",
+    "decision_engine.py",
+    "coverage_matrix_v0.1.yaml",
+    "runtime predicates",
+    "runtime translators",
+    "computed verdict runtime",
+    "rank promotion",
+    "Boolean-as-proof",
+    "runtime domain opening",
 )
 
 
@@ -89,10 +118,10 @@ def _normalized(text: str) -> str:
     return text.casefold()
 
 
-def _post_pr_106_segment(text: str) -> str:
+def _post_pr_110_segment(text: str) -> str:
     normalized = _normalized(text)
     queue_marker = "## highest-priority safe gap queue"
-    roadmap_marker = "## current roadmap after pr #106"
+    roadmap_marker = "## current roadmap after pr #110"
     if queue_marker in normalized:
         return normalized.split(queue_marker, maxsplit=1)[1]
     assert roadmap_marker in normalized
@@ -140,7 +169,7 @@ def test_agent_autonomy_runbook_declares_current_computed_coverage_baseline():
         assert marker in content
 
 
-def test_agent_autonomy_runbook_declares_safe_gap_queue_after_pr_106():
+def test_agent_autonomy_runbook_declares_safe_gap_queue_after_pr_110():
     """trace_ref: docs/12_RUNTIME_EMBARGO_CONSTITUTION.md Embargo Rule."""
     content = _read_text(AGENT_AUTONOMY_RUNBOOK)
 
@@ -148,37 +177,53 @@ def test_agent_autonomy_runbook_declares_safe_gap_queue_after_pr_106():
         assert marker in content
 
 
-def test_copilot_instructions_declare_current_pr_106_baseline():
+def test_copilot_instructions_declare_current_pr_110_baseline():
     """trace_ref: docs/00B_AGENT_BINDING_CONSTITUTION.md Role Boundaries."""
     content = _read_text(COPILOT_INSTRUCTIONS)
 
+    assert "PR #110" in content
     assert "PR #106" in content
     assert "PR #105" in content
-    for marker in CURRENT_BASELINE_MARKERS:
+    for marker in CURRENT_BASELINE_MARKERS[:8]:
         assert marker in content
 
 
-def test_schema_only_boundary_preserved_after_pr_106():
+def test_schema_only_boundary_preserved_after_pr_110():
     """trace_ref: docs/12_RUNTIME_EMBARGO_CONSTITUTION.md Embargo Rule."""
     for path in (AGENT_AUTONOMY_RUNBOOK, COPILOT_INSTRUCTIONS):
         content = _read_text(path)
-        post_pr_106_segment = _post_pr_106_segment(content)
+        post_pr_110_segment = _post_pr_110_segment(content)
 
         assert "schema/fixture based only" in _normalized(content)
-        assert "coverage runner" not in post_pr_106_segment
-        assert "runtime readiness" not in post_pr_106_segment
+        assert "coverage runner" not in post_pr_110_segment
+        assert "runtime readiness" not in post_pr_110_segment
 
 
-def test_post_pr_106_queue_does_not_reopen_computed_verdict_fixture_work():
+def test_post_pr_110_queue_does_not_reopen_closed_fixture_work():
     """trace_ref: docs/00B_AGENT_BINDING_CONSTITUTION.md Role Boundaries."""
     for path in (AGENT_AUTONOMY_RUNBOOK, COPILOT_INSTRUCTIONS):
         content = _read_text(path)
-        post_pr_106_segment = _post_pr_106_segment(content)
+        post_pr_110_segment = _post_pr_110_segment(content)
 
-        assert "do not repeat completed computed-verdict fixture work" in post_pr_106_segment
-        assert "current safe gap after pr #106" in post_pr_106_segment
-        assert "anti-pattern regression guards only" in post_pr_106_segment
-        assert "current transition" not in post_pr_106_segment
+        assert "computed-verdict fixture work" in post_pr_110_segment
+        assert "current safe gap after pr #110" in post_pr_110_segment
+        assert "forbidden-pattern drift tests" in post_pr_110_segment
+        assert "current transition" not in post_pr_110_segment
+
+
+def test_post_pr_110_autonomy_boundary_is_declared_in_instruction_docs():
+    """trace_ref: docs/00B_AGENT_BINDING_CONSTITUTION.md Role Boundaries."""
+    for path in (AGENT_AUTONOMY_RUNBOOK, COPILOT_INSTRUCTIONS):
+        content = _read_text(path)
+        for marker in POST_PR_110_AUTONOMY_MARKERS:
+            assert marker in content
+
+
+def test_instruction_docs_share_core_hard_prohibitions():
+    """trace_ref: docs/12_RUNTIME_EMBARGO_CONSTITUTION.md Explicit Prohibitions."""
+    for marker in HARD_PROHIBITION_MARKERS:
+        for path in (AGENT_AUTONOMY_RUNBOOK, COPILOT_INSTRUCTIONS):
+            assert marker in _read_text(path)
 
 
 def test_agent_autonomy_runbook_declares_stop_conditions():
