@@ -33,6 +33,10 @@ bounded next-safe-step selection.
 - PR #105 strengthened the fixture guardrails: `computed_verdict` cannot be supplied by fixture data and all `computed_verdict` examples remain invalid fixtures only.
 - Completed computed-verdict fixture work must not be repeated by future autonomy.
 - PR #106 synchronizes autonomy guidance to the post-PR #106 state and hardens anti-pattern regression guards without adding runtime behavior.
+- PR #110 confirms the autonomy posture is guardrails-only: no runtime, kernel, decision engine, coverage matrix, predicates, translators, computed-verdict runtime, or domain opening.
+- The agent posture is `Constitution-bound autonomous auditor`.
+- Autonomy inside audit. No autonomy inside runtime.
+- Rejected runtime examples are anti-patterns, not implementation plans.
 
 ## Forbidden Actions
 
@@ -59,6 +63,7 @@ Do not introduce:
 - runtime predicates
 - runtime translators
 - manual `ComputedVerdict`
+- computed verdict runtime
 - runtime domain opening
 
 Do not allow:
@@ -118,7 +123,7 @@ After each PR, verify:
 
 If any invariant fails, stop and report `BLOCKED`.
 
-## Current Roadmap After PR #106
+## Current Roadmap After PR #110
 
 Source of truth: `docs/15_PROJECT_ROADMAP.md`.
 Operational companion: `docs/20_AGENT_AUTONOMY_RUNBOOK.md`.
@@ -131,6 +136,8 @@ Next-safe-step priority queue:
 4. Closed by PR #105: manifest tests prove every `expected_verdict` has one positive fixture, at least one unrelated-field negative fixture, and at least one `computed_verdict` rejection fixture.
 5. Closed before this transition: `failure_alignment.csv` has `canonical_family`, `domain_scope`, `proof_obligation`, `residual_policy`, `forbidden_runtime_use`; keep all rows `is_executable_row=false` and `executable_mapping=AUDIT_ONLY`.
 6. Closed by PR #106: agent autonomy instructions/runbook are synchronized with the post-PR #106 guardrail state so future sessions do not repeat completed computed-verdict fixture work.
-7. Current safe gap after PR #106: anti-pattern regression guards only — rank promotion, Boolean-as-proof defaults, evidence list as proof, runtime engine names, forbidden runtime artifact names, coverage matrix artifacts, and transform stubs.
+7. Closed by PR #110: post-PR #106 guardrail state is reinforced as audit-only autonomy and rejected runtime examples remain anti-patterns, not implementation plans.
+8. Current safe gap after PR #110: unresolved review-comment fixes or weak tests inside the current constitutional scope.
+9. Next safe gaps after PR #110: anti-pattern guardrails, forbidden-pattern drift tests, instruction/runbook hardening, and audit-only registry/schema hardening only.
 
 Choose one highest-priority safe gap only, prefer docs/schema/data/tests, and stop before runtime/kernel/domain opening.
