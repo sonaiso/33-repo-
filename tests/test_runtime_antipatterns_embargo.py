@@ -37,6 +37,9 @@ FORBIDDEN_CANONICAL_RUNTIME_ARTIFACTS = tuple(
     REPO_ROOT / artifact for artifact in FORBIDDEN_RUNTIME_ARTIFACT_PATHS
 )
 RUNTIME_EMBARGO_DOC = REPO_ROOT / "docs" / "12_RUNTIME_EMBARGO_CONSTITUTION.md"
+FORBIDDEN_ALLOWED_CONTEXT_BASES = frozenset(
+    REPO_ROOT / path for path in ("src", "schemas", "ci", "tests")
+)
 CLASS_FIELD_LOOKAHEAD_LIMIT = 400
 RETURN_TYPE_LOOKAHEAD_LIMIT = 120
 REQUIRED_PATTERN_IDS = {
@@ -391,10 +394,10 @@ def test_allowed_context_paths_are_audit_only_documentation():
 
         assert relative_path.startswith("docs/")
         assert relative_path.endswith(".md")
-        assert not allowed_path.is_relative_to(REPO_ROOT / "src")
-        assert not allowed_path.is_relative_to(REPO_ROOT / "schemas")
-        assert not allowed_path.is_relative_to(REPO_ROOT / "ci")
-        assert not allowed_path.is_relative_to(REPO_ROOT / "tests")
+        assert not any(
+            allowed_path.is_relative_to(base)
+            for base in FORBIDDEN_ALLOWED_CONTEXT_BASES
+        )
         assert re.search(r"\baudit[-\s]+only\b", content)
         assert re.search(r"\bquoted[-\s]+anti-patterns?\b", content)
 

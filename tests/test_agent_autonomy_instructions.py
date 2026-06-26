@@ -109,7 +109,7 @@ HARD_PROHIBITION_MARKERS = (
     "runtime domain opening",
 )
 
-EXACT_HARD_PROHIBITION_MARKERS = (
+COMPREHENSIVE_HARD_PROHIBITION_MARKERS = (
     *HARD_PROHIBITION_MARKERS,
     "Rank.CERTIFICATE",
     "Rank.REJECTED",
@@ -251,7 +251,7 @@ def test_runbook_mirrors_exact_copilot_hard_prohibition_markers():
     copilot_content = _read_text(COPILOT_INSTRUCTIONS)
     runbook_content = _read_text(AGENT_AUTONOMY_RUNBOOK)
 
-    for marker in EXACT_HARD_PROHIBITION_MARKERS:
+    for marker in COMPREHENSIVE_HARD_PROHIBITION_MARKERS:
         assert marker in copilot_content, f"missing Copilot hard prohibition marker: {marker}"
         assert marker in runbook_content, f"missing runbook hard prohibition marker: {marker}"
 
