@@ -48,6 +48,7 @@ List exact repo-relative canonical file paths only.
 
 ## 3) Explicit Non-Authorized Artifacts
 List runtime artifacts that remain forbidden in this PR.
+`non_scope_artifacts` in the lift payload must include the full canonical forbidden set.
 
 Minimum forbidden runtime paths:
 Source-of-truth (audit-only): `data/forbidden_runtime_artifacts.json`

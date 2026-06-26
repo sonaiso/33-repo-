@@ -92,6 +92,94 @@
           }
         }
       }
+    },
+    {
+      "properties": {
+        "non_scope_artifacts": {
+          "allOf": [
+            {
+              "contains": {
+                "const": "src/taaqqul_slot_geometry/L1/binding_kernel.py"
+              }
+            },
+            {
+              "contains": {
+                "const": "src/taaqqul_slot_geometry/L1/decision_engine.py"
+              }
+            },
+            {
+              "contains": {
+                "const": "src/taaqqul_slot_geometry/runtime/binding_kernel.py"
+              }
+            },
+            {
+              "contains": {
+                "const": "src/taaqqul_slot_geometry/runtime/decision_engine.py"
+              }
+            },
+            {
+              "contains": {
+                "const": "src/taaqqul_slot_geometry/core/binding_kernel.py"
+              }
+            },
+            {
+              "contains": {
+                "const": "src/taaqqul_slot_geometry/core/decision_engine.py"
+              }
+            },
+            {
+              "contains": {
+                "const": "coverage_matrix_v0.1.yaml"
+              }
+            },
+            {
+              "contains": {
+                "const": "docs/coverage_matrix_v0.1.yaml"
+              }
+            },
+            {
+              "contains": {
+                "const": "data/coverage_matrix_v0.1.yaml"
+              }
+            },
+            {
+              "contains": {
+                "const": "schemas/coverage_matrix_v0.1.yaml"
+              }
+            },
+            {
+              "contains": {
+                "const": "tests/test_binding_constraints.py"
+              }
+            },
+            {
+              "contains": {
+                "const": "l_protocol/engine/binding_kernel.py"
+              }
+            },
+            {
+              "contains": {
+                "const": "l_protocol/engine/decision_engine.py"
+              }
+            },
+            {
+              "contains": {
+                "const": "l_protocol/contracts/binding_instructions.py"
+              }
+            },
+            {
+              "contains": {
+                "const": "l_protocol/coverage_matrix_v0.1.yaml"
+              }
+            },
+            {
+              "contains": {
+                "const": "l_protocol/tests/test_binding_constraints.py"
+              }
+            }
+          ]
+        }
+      }
     }
   ],
   "required": [
