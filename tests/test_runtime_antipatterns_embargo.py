@@ -506,6 +506,7 @@ def test_forbidden_runtime_artifact_loader_rejects_invalid_paths(
         "docs/coverage_matrix_v0.1.yaml ",
         "docs/\tcoverage_matrix_v0.1.yaml",
         "docs/coverage_matrix_v0.1.yaml\n",
+        "docs/\x00coverage_matrix_v0.1.yaml",
         "C:/coverage_matrix_v0.1.yaml",
         "~/coverage_matrix_v0.1.yaml",
     ],
