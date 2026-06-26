@@ -497,6 +497,36 @@ def test_forbidden_runtime_artifact_loader_rejects_invalid_paths(
             load_forbidden_runtime_artifact_paths()
 
 
+@pytest.mark.parametrize(
+    "unsafe_path",
+    [
+        ".",
+        "..",
+        " docs/coverage_matrix_v0.1.yaml",
+        "docs/coverage_matrix_v0.1.yaml ",
+        "docs/\tcoverage_matrix_v0.1.yaml",
+        "docs/coverage_matrix_v0.1.yaml\n",
+        "C:/coverage_matrix_v0.1.yaml",
+        "~/coverage_matrix_v0.1.yaml",
+    ],
+)
+def test_forbidden_runtime_artifact_loader_rejects_unsafe_path_formats(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    unsafe_path: str,
+):
+    """trace_ref: docs/12_RUNTIME_EMBARGO_CONSTITUTION.md Explicit Prohibitions."""
+    path = tmp_path / "unsafe_artifacts.json"
+    path.write_text(json.dumps([unsafe_path]), encoding="utf-8")
+    monkeypatch.setattr(
+        forbidden_runtime_artifacts,
+        "CANONICAL_FORBIDDEN_RUNTIME_ARTIFACTS_PATH",
+        path,
+    )
+    with pytest.raises(ValueError):
+        load_forbidden_runtime_artifact_paths()
+
+
 def test_forbidden_runtime_pattern_loader_rejects_invalid_payloads(tmp_path: Path):
     """trace_ref: docs/12_RUNTIME_EMBARGO_CONSTITUTION.md Embargo Rule."""
     invalid_payloads = [

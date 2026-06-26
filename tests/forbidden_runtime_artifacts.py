@@ -15,6 +15,25 @@ CANONICAL_FORBIDDEN_RUNTIME_ARTIFACTS_PATH = (
 )
 
 
+def _has_unsafe_path_format(path_value: str) -> bool:
+    if path_value != path_value.strip():
+        return True
+    if any(char in path_value for char in ("\x00", "\r", "\n", "\t")):
+        return True
+    if ":" in path_value or path_value.startswith("~"):
+        return True
+    if (
+        path_value.startswith(("/", "./", "../"))
+        or "\\" in path_value
+        or "//" in path_value
+        or path_value.endswith("/")
+        or "/./" in path_value
+        or "/../" in path_value
+    ):
+        return True
+    return any(part in {"", ".", ".."} for part in path_value.split("/"))
+
+
 def load_forbidden_runtime_artifact_paths() -> tuple[str, ...]:
     try:
         payload = json.loads(
@@ -40,17 +59,11 @@ def load_forbidden_runtime_artifact_paths() -> tuple[str, ...]:
         raise ValueError("data/forbidden_runtime_artifacts.json must contain unique paths")
     repo_root_resolved = REPO_ROOT.resolve(strict=False)
     for item in payload:
-        if (
-            item.startswith(("/", "./", "../"))
-            or "\\" in item
-            or "//" in item
-            or item.endswith("/")
-            or "/./" in item
-            or "/../" in item
-        ):
+        if _has_unsafe_path_format(item):
             raise ValueError(
                 "data/forbidden_runtime_artifacts.json must not contain absolute, "
-                "relative, backslash, empty-segment, trailing-slash, or navigation paths"
+                "relative, backslash, empty-segment, trailing-slash, navigation, "
+                "or other unsafe path formats"
             )
         candidate = (REPO_ROOT / item).resolve(strict=False)
         try:
