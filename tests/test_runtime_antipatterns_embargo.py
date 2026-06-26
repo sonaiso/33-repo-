@@ -167,6 +167,8 @@ ESSENTIAL_FORBIDDEN_ARTIFACT_NAMES = frozenset(
 # Keys are exact phrases from docs/12_RUNTIME_EMBARGO_CONSTITUTION.md; values
 # are the corresponding audit guardrail markers in docs/15 or the registries.
 EMBARGO_TO_REJECTED_PATTERN_MARKERS = {
+    # Artifact names intentionally map 1:1 so future registry/doc drift is
+    # caught even when no additional syntax marker is associated with a file.
     "binding_kernel.py": ("binding_kernel.py",),
     "decision_engine.py": ("decision_engine.py",),
     "coverage_matrix_v0.1.yaml": ("coverage_matrix_v0.1.yaml",),
@@ -386,9 +388,11 @@ def test_runtime_embargo_explicit_prohibitions_are_reflected_in_audit_guardrails
     audit_guardrail_text = "\n".join(
         (rejected_content, artifact_registry_text, pattern_registry_text)
     )
+    normalized_audit_guardrail_text = audit_guardrail_text.casefold()
 
     for embargo_marker, guardrail_markers in EMBARGO_TO_REJECTED_PATTERN_MARKERS.items():
         assert embargo_marker in embargo_content
+        assert embargo_marker.casefold() in normalized_audit_guardrail_text
         assert any(marker in audit_guardrail_text for marker in guardrail_markers), (
             f"Runtime embargo marker must be reflected in audit guardrails: {embargo_marker}"
         )
