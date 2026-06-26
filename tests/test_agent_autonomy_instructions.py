@@ -55,19 +55,23 @@ ARABIC_NEXT_SAFE_STEP_PROMPT = (
 
 CURRENT_BASELINE_MARKERS = (
     "PR #103",
+    "PR #105",
     "expected_verdict fixture matrix",
     "Computed coverage is schema/fixture based only",
-    "computed_verdict cannot be supplied by fixture data",
+    "`computed_verdict` cannot be supplied by fixture data",
+    "all `computed_verdict` examples remain invalid",
     "do not regress it",
 )
 
 SAFE_GAP_QUEUE_MARKERS = (
-    "Fix weak or missing tests around computed coverage verdict fixtures",
-    "Add negative fixture coverage for allowed contexts",
+    "After PR #105",
+    "Closed by PR #105: computed coverage verdict fixture tests are strengthened",
+    "allowed-context negative fixture coverage exists",
+    "schema tests prove `computed_verdict` is rejected for every verdict fixture type",
     "computed_verdict rejection fixture",
     "canonical_family",
     "forbidden_runtime_use",
-    "agent autonomy instructions/runbook",
+    "Current transition: keep agent autonomy instructions/runbook synchronized",
     "anti-pattern regression guards",
 )
 
@@ -78,6 +82,13 @@ def _read_text(path: Path) -> str:
 
 def _normalized(text: str) -> str:
     return text.casefold()
+
+
+def _post_pr_105_segment(text: str) -> str:
+    marker = "post-pr #105"
+    normalized = _normalized(text)
+    assert marker in normalized
+    return normalized.split(marker, maxsplit=1)[1]
 
 
 def test_copilot_instruction_files_exist():
@@ -121,7 +132,7 @@ def test_agent_autonomy_runbook_declares_current_computed_coverage_baseline():
         assert marker in content
 
 
-def test_agent_autonomy_runbook_declares_safe_gap_queue_after_pr_103():
+def test_agent_autonomy_runbook_declares_safe_gap_queue_after_pr_105():
     """trace_ref: docs/12_RUNTIME_EMBARGO_CONSTITUTION.md Embargo Rule."""
     content = _read_text(AGENT_AUTONOMY_RUNBOOK)
 
@@ -129,12 +140,24 @@ def test_agent_autonomy_runbook_declares_safe_gap_queue_after_pr_103():
         assert marker in content
 
 
-def test_copilot_instructions_declare_current_pr_103_baseline():
+def test_copilot_instructions_declare_current_pr_105_baseline():
     """trace_ref: docs/00B_AGENT_BINDING_CONSTITUTION.md Role Boundaries."""
     content = _read_text(COPILOT_INSTRUCTIONS)
 
+    assert "PR #105" in content
     for marker in CURRENT_BASELINE_MARKERS:
         assert marker in content
+
+
+def test_schema_only_boundary_preserved_after_pr_105():
+    """trace_ref: docs/12_RUNTIME_EMBARGO_CONSTITUTION.md Embargo Rule."""
+    for path in (AGENT_AUTONOMY_RUNBOOK, COPILOT_INSTRUCTIONS):
+        content = _read_text(path)
+        post_pr_105_segment = _post_pr_105_segment(content)
+
+        assert "schema/fixture based only" in _normalized(content)
+        assert "coverage runner" not in post_pr_105_segment
+        assert "runtime readiness" not in post_pr_105_segment
 
 
 def test_agent_autonomy_runbook_declares_stop_conditions():
