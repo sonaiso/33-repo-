@@ -110,9 +110,7 @@ HARD_PROHIBITION_MARKERS = (
 )
 
 EXACT_HARD_PROHIBITION_MARKERS = (
-    "binding_kernel.py",
-    "decision_engine.py",
-    "coverage_matrix_v0.1.yaml",
+    *HARD_PROHIBITION_MARKERS,
     "Rank.CERTIFICATE",
     "Rank.REJECTED",
     "ExecutionRank.CERTIFIED",
@@ -124,11 +122,7 @@ EXACT_HARD_PROHIBITION_MARKERS = (
     "is_preserved: true",
     "evidence list as proof",
     "identity preservation defaulting to true",
-    "runtime predicates",
-    "runtime translators",
     "manual `ComputedVerdict`",
-    "computed verdict runtime",
-    "runtime domain opening",
     "DAL_ONLY",
     "LAFZI_FORM",
     "Euclidean Learning",

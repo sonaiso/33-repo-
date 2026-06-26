@@ -376,7 +376,7 @@ def test_runtime_embargo_explicit_prohibitions_are_reflected_in_audit_guardrails
         )
 
 
-def test_allowed_in_contexts_remain_approved_quoted_audit_document_exceptions():
+def test_allowed_context_paths_are_audit_only_documentation():
     """trace_ref: docs/12_RUNTIME_EMBARGO_CONSTITUTION.md Embargo Rule."""
     for allowed_path in ALLOWED_EXCEPTION_PATHS:
         relative_path = allowed_path.relative_to(REPO_ROOT).as_posix()
