@@ -90,10 +90,13 @@ def _normalized(text: str) -> str:
 
 
 def _post_pr_106_segment(text: str) -> str:
-    marker = "post-pr #106"
     normalized = _normalized(text)
-    assert marker in normalized
-    return normalized.split(marker, maxsplit=1)[1]
+    queue_marker = "## highest-priority safe gap queue"
+    roadmap_marker = "## current roadmap after pr #106"
+    if queue_marker in normalized:
+        return normalized.split(queue_marker, maxsplit=1)[1]
+    assert roadmap_marker in normalized
+    return normalized.split(roadmap_marker, maxsplit=1)[1]
 
 
 def test_copilot_instruction_files_exist():
