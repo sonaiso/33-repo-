@@ -1,4 +1,9 @@
-"""Rejected runtime anti-pattern guardrails for PR #63 (docs + tests only)."""
+"""Rejected runtime anti-pattern guardrails for PR #63 (docs + tests only).
+
+Embargo drift mappings use exact phrases from the Runtime Embargo Constitution
+as keys and tuples of corresponding audit guardrail markers as values. The
+values must appear in the rejected-pattern document or audit-only registries.
+"""
 
 from __future__ import annotations
 
@@ -391,7 +396,7 @@ def test_allowed_context_paths_are_audit_only_documentation():
         assert not allowed_path.is_relative_to(REPO_ROOT / "ci")
         assert not allowed_path.is_relative_to(REPO_ROOT / "tests")
         assert re.search(r"\baudit[-\s]+only\b", content)
-        assert re.search(r"\bquoted\s+anti-patterns?\b", content)
+        assert re.search(r"\bquoted[-\s]+anti-patterns?\b", content)
 
 
 def test_registered_allowed_contexts_do_not_report_registered_antipattern_text():
