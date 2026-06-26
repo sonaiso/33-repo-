@@ -75,7 +75,7 @@ ALLOWED_CONTEXT_NEGATIVE_FIXTURES = {
     for pattern_id, sample in PATTERN_FIXTURES.items()
 }
 
-LEGACY_REQUIRED_PATTERN_FIXTURE_IDS = frozenset(
+ESSENTIAL_ANTIPATTERN_FIXTURE_IDS = frozenset(
     {
         "RANK_CERTIFICATE_FORBIDDEN",
         "RANK_REJECTED_FORBIDDEN",
@@ -137,9 +137,9 @@ def test_allowed_context_negative_fixtures_match_canonical_patterns():
         assert compiled_by_id[pattern_id].search(sample), pattern_id
 
 
-def test_legacy_required_antipattern_fixtures_remain_explicit():
+def test_essential_antipattern_fixtures_remain_explicit():
     """trace_ref: docs/12_RUNTIME_EMBARGO_CONSTITUTION.md Embargo Rule."""
-    missing = LEGACY_REQUIRED_PATTERN_FIXTURE_IDS - set(PATTERN_FIXTURES)
+    missing = ESSENTIAL_ANTIPATTERN_FIXTURE_IDS - set(PATTERN_FIXTURES)
     assert not missing
 
     compiled_by_id = {
@@ -149,7 +149,7 @@ def test_legacy_required_antipattern_fixtures_remain_explicit():
         )
     }
 
-    for pattern_id in LEGACY_REQUIRED_PATTERN_FIXTURE_IDS:
+    for pattern_id in ESSENTIAL_ANTIPATTERN_FIXTURE_IDS:
         assert compiled_by_id[pattern_id].search(PATTERN_FIXTURES[pattern_id])
         assert compiled_by_id[pattern_id].search(
             ALLOWED_CONTEXT_NEGATIVE_FIXTURES[pattern_id]

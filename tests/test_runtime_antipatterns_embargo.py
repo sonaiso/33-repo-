@@ -145,7 +145,7 @@ FORBIDDEN_PATTERN_RECORDS_BY_ID = {
 }
 FORBIDDEN_PATTERNS = compile_forbidden_runtime_patterns(FORBIDDEN_PATTERN_RECORDS)
 FORBIDDEN_PATTERNS_BY_ID = {pattern.id: pattern for pattern in FORBIDDEN_PATTERNS}
-REQUIRED_LEGACY_FORBIDDEN_ARTIFACT_NAMES = frozenset(
+ESSENTIAL_FORBIDDEN_ARTIFACT_NAMES = frozenset(
     {"binding_kernel.py", "decision_engine.py", "coverage_matrix_v0.1.yaml"}
 )
 TRANSFORM_ANTIPATTERN_PATTERNS = tuple(
@@ -323,12 +323,12 @@ def test_allowed_in_paths_are_existing_audit_document_contexts():
         assert allowed_path.suffix == ".md"
 
 
-def test_forbidden_runtime_artifact_registry_covers_legacy_antipattern_names():
+def test_forbidden_runtime_artifact_registry_covers_essential_antipattern_names():
     """trace_ref: docs/12_RUNTIME_EMBARGO_CONSTITUTION.md Explicit Prohibitions."""
     artifact_paths = load_forbidden_runtime_artifact_paths()
     names_by_path = {Path(artifact_path).name for artifact_path in artifact_paths}
 
-    assert REQUIRED_LEGACY_FORBIDDEN_ARTIFACT_NAMES <= names_by_path
+    assert ESSENTIAL_FORBIDDEN_ARTIFACT_NAMES <= names_by_path
     assert "coverage_matrix_v0.1.yaml" in artifact_paths
     assert any(path.endswith("/binding_kernel.py") for path in artifact_paths)
     assert any(path.endswith("/decision_engine.py") for path in artifact_paths)
