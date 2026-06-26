@@ -23,6 +23,8 @@ It does not allow FailureAlignment artifacts to replace `FailureCode`.
 - `docs/13_FAILURE_ALIGNMENT_CONSTITUTION.md`
 - `docs/14_EUCLIDEAN_LEARNING_DOMAIN_BOUNDARY.md`
 - `docs/15_REJECTED_RUNTIME_PATTERNS.md`
+- `docs/15_PROJECT_ROADMAP.md`
+- `docs/20_AGENT_AUTONOMY_RUNBOOK.md`
 
 ## Current constitutional state
 
@@ -98,6 +100,26 @@ When assigned a broad hardening request, the agent must:
 5. Add tests or schema checks that make the guard durable.
 6. Avoid unrelated cleanup.
 7. Stop after one narrow PR.
+
+## Mandatory One-Goal Execution Protocol
+
+Before any implementation step, complete this sequence:
+
+1. Declare one auditable constitutional claim only (single-goal scope, no multi-goal execution).
+2. Declare governing authority docs for this task:
+   - `docs/00_MAQOOL_CONSTITUTION.md`
+   - `docs/00A_CONSTITUTIONAL_PROGRAMMING_AMENDMENT.md`
+   - `docs/12_RUNTIME_EMBARGO_CONSTITUTION.md`
+   - `docs/13_FAILURE_ALIGNMENT_CONSTITUTION.md`
+   - `docs/14_EUCLIDEAN_LEARNING_DOMAIN_BOUNDARY.md`
+   - `docs/15_PROJECT_ROADMAP.md`
+   - `docs/20_AGENT_AUTONOMY_RUNBOOK.md`
+3. Re-state current constitutional bounds: L0 closed, L1 contract/audit bounded, L2/L3 locked, runtime embargo active.
+4. Select exactly one queue item from the next-safe-step priority queue.
+5. State Scope and Non-scope explicitly to prevent runtime/kernel/decision-authority drift.
+6. Produce one verifiable audit-only output and stop.
+7. Run required validation commands.
+8. If any required next step needs runtime authorization or locked-layer opening, stop and report `BLOCKED`.
 
 Operator prompt (explicit narrow-step trigger):
 إذا أردت، أبدأ الآن بالخطوة التالية الضيقة الآمنة (PR واحد فقط) وفق خيارك التالي.
