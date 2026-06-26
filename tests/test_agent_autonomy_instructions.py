@@ -33,6 +33,7 @@ RUNBOOK_REQUIRED_SECTIONS = (
     "## Non-scope",
     "## Authority docs",
     "## Current hardening baseline",
+    "## Mandatory One-Goal Execution Protocol",
     "## Highest-priority safe gap queue",
     "## Required PR body shape",
     "## Required validation",
@@ -95,6 +96,22 @@ POST_PR_110_AUTONOMY_MARKERS = (
     "Constitution-bound autonomous auditor",
     "Autonomy inside audit. No autonomy inside runtime.",
     "Rejected runtime examples are anti-patterns, not implementation plans.",
+)
+
+ONE_GOAL_PROTOCOL_MARKERS = (
+    "Declare one auditable constitutional claim only",
+    "docs/00_MAQOOL_CONSTITUTION.md",
+    "docs/00A_CONSTITUTIONAL_PROGRAMMING_AMENDMENT.md",
+    "docs/12_RUNTIME_EMBARGO_CONSTITUTION.md",
+    "docs/13_FAILURE_ALIGNMENT_CONSTITUTION.md",
+    "docs/14_EUCLIDEAN_LEARNING_DOMAIN_BOUNDARY.md",
+    "docs/15_PROJECT_ROADMAP.md",
+    "docs/20_AGENT_AUTONOMY_RUNBOOK.md",
+    "Re-state current constitutional bounds: L0 closed, L1 contract/audit bounded, L2/L3 locked, runtime embargo active.",
+    "Select exactly one queue item from the next-safe-step priority queue.",
+    "State Scope and Non-scope explicitly to prevent runtime/kernel/decision-authority drift.",
+    "Produce one verifiable audit-only output and stop.",
+    "If any required next step needs runtime authorization or locked-layer opening, stop and report `BLOCKED`.",
 )
 
 HARD_PROHIBITION_MARKERS = (
@@ -236,6 +253,14 @@ def test_post_pr_110_autonomy_boundary_is_declared_in_instruction_docs():
     for path in (AGENT_AUTONOMY_RUNBOOK, COPILOT_INSTRUCTIONS):
         content = _read_text(path)
         for marker in POST_PR_110_AUTONOMY_MARKERS:
+            assert marker in content
+
+
+def test_instruction_docs_enforce_mandatory_one_goal_execution_protocol():
+    """trace_ref: docs/00A_CONSTITUTIONAL_PROGRAMMING_AMENDMENT.md; docs/12_RUNTIME_EMBARGO_CONSTITUTION.md"""
+    for path in (AGENT_AUTONOMY_RUNBOOK, COPILOT_INSTRUCTIONS):
+        content = _read_text(path)
+        for marker in ONE_GOAL_PROTOCOL_MARKERS:
             assert marker in content
 
 

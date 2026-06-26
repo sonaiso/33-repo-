@@ -98,6 +98,26 @@ Every new entity must preserve:
 - named `FailureCode` on rejection
 - no I/O in pure source code
 
+## Mandatory One-Goal Execution Protocol
+
+Before any implementation step, complete this sequence:
+
+1. Declare one auditable constitutional claim only (single-goal scope, no multi-goal execution).
+2. Declare governing authority docs for this task:
+   - `docs/00_MAQOOL_CONSTITUTION.md`
+   - `docs/00A_CONSTITUTIONAL_PROGRAMMING_AMENDMENT.md`
+   - `docs/12_RUNTIME_EMBARGO_CONSTITUTION.md`
+   - `docs/13_FAILURE_ALIGNMENT_CONSTITUTION.md`
+   - `docs/14_EUCLIDEAN_LEARNING_DOMAIN_BOUNDARY.md`
+   - `docs/15_PROJECT_ROADMAP.md`
+   - `docs/20_AGENT_AUTONOMY_RUNBOOK.md`
+3. Re-state current constitutional bounds: L0 closed, L1 contract/audit bounded, L2/L3 locked, runtime embargo active.
+4. Select exactly one queue item from the next-safe-step priority queue.
+5. State Scope and Non-scope explicitly to prevent runtime/kernel/decision-authority drift.
+6. Produce one verifiable audit-only output and stop.
+7. Run required validation commands.
+8. If any required next step needs runtime authorization or locked-layer opening, stop and report `BLOCKED`.
+
 ## Required Validation
 
 Before finishing any PR, run or state inability to run:
