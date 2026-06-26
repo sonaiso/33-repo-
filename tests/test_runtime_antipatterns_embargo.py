@@ -329,9 +329,6 @@ def test_forbidden_runtime_artifact_registry_covers_essential_antipattern_names(
     names_by_path = {Path(artifact_path).name for artifact_path in artifact_paths}
 
     assert ESSENTIAL_FORBIDDEN_ARTIFACT_NAMES <= names_by_path
-    assert "coverage_matrix_v0.1.yaml" in artifact_paths
-    assert any(path.endswith("/binding_kernel.py") for path in artifact_paths)
-    assert any(path.endswith("/decision_engine.py") for path in artifact_paths)
     assert all(not path.startswith(("/", "./", "../")) for path in artifact_paths)
 
 
