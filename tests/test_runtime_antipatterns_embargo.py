@@ -152,6 +152,8 @@ FORBIDDEN_PATTERNS_BY_ID = {pattern.id: pattern for pattern in FORBIDDEN_PATTERN
 ESSENTIAL_FORBIDDEN_ARTIFACT_NAMES = frozenset(
     {"binding_kernel.py", "decision_engine.py", "coverage_matrix_v0.1.yaml"}
 )
+# Keys are exact phrases from docs/12_RUNTIME_EMBARGO_CONSTITUTION.md; values
+# are the corresponding audit guardrail markers in docs/15 or the registries.
 EMBARGO_TO_REJECTED_PATTERN_MARKERS = {
     "binding_kernel.py": ("binding_kernel.py",),
     "decision_engine.py": ("decision_engine.py",),
