@@ -186,6 +186,8 @@ def _valid_request() -> dict[str, Any]:
             "src/taaqqul_slot_geometry/core/decision_engine.py",
             "coverage_matrix_v0.1.yaml",
         ],
+        "readiness_ledger_source": "docs/17_RUNTIME_EMBARGO_READINESS_LEDGER.md",
+        "residual_blockers_acknowledged": True,
         "rollback_plan": "Revert schema and template files; keep embargo active.",
         "negative_tests": [
             *REQUIRED_NEGATIVE_TESTS,
@@ -212,6 +214,8 @@ def test_runtime_lift_template_states_non_authorization():
     assert "Readiness is not lift." in content
     assert "DONE in readiness ledger is not lift." in content
     assert "This template does not authorize runtime." in content
+    assert "readiness_ledger_source: docs/17_RUNTIME_EMBARGO_READINESS_LEDGER.md" in content
+    assert "residual_blockers_acknowledged: true" in content
 
 
 def test_lift_request_template_lists_full_required_negative_tests():
@@ -278,6 +282,29 @@ def test_rollback_plan_is_required():
     payload = _valid_request()
     payload.pop("rollback_plan")
     _assert_invalid(payload)
+
+
+def test_readiness_ledger_source_is_required():
+    payload = _valid_request()
+    payload.pop("readiness_ledger_source")
+    _assert_invalid(payload)
+
+
+def test_readiness_ledger_source_must_match_canonical_path():
+    _assert_invalid(
+        _valid_request()
+        | {"readiness_ledger_source": "docs/17_runtime_embargo_readiness_ledger.md"}
+    )
+
+
+def test_residual_blockers_acknowledgement_is_required():
+    payload = _valid_request()
+    payload.pop("residual_blockers_acknowledged")
+    _assert_invalid(payload)
+
+
+def test_residual_blockers_acknowledgement_must_be_true():
+    _assert_invalid(_valid_request() | {"residual_blockers_acknowledged": False})
 
 
 def test_negative_tests_are_required():

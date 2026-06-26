@@ -98,6 +98,8 @@
     "lift_type",
     "authorized_artifacts",
     "non_scope_artifacts",
+    "readiness_ledger_source",
+    "residual_blockers_acknowledged",
     "rollback_plan",
     "negative_tests",
     "domain_opening",
@@ -138,6 +140,14 @@
         "$comment": "No leading slash (absolute paths), no leading './', no leading/trailing whitespace, no backslashes anywhere, no '.' or '..' path segments, no consecutive slashes (empty segments), no trailing slash, and no glob wildcards.",
         "pattern": "^(?!/)(?!\\.\\/)(?!\\s)(?!.*\\s$)(?!.*\\\\)(?!.*(?:^|/)\\.(?:/|$))(?!.*(?:^|/)\\.\\.(?:/|$))(?!.*//)(?!.*\\/$)(?!.*[*?\\[\\]{}]).+$"
       }
+    },
+    "readiness_ledger_source": {
+      "type": "string",
+      "const": "docs/17_RUNTIME_EMBARGO_READINESS_LEDGER.md"
+    },
+    "residual_blockers_acknowledged": {
+      "type": "boolean",
+      "const": true
     },
     "rollback_plan": {
       "type": "string",

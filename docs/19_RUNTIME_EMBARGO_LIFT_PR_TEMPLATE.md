@@ -107,16 +107,23 @@ Minimum required negative-test identifiers:
 ## 8) Rollback Plan
 Required and executable rollback steps.
 
-## 9) FailureAlignment Impact
+## 9) Readiness Ledger Residuals Acknowledgement
+Required fields in the lift request payload:
+- `readiness_ledger_source: docs/17_RUNTIME_EMBARGO_READINESS_LEDGER.md`
+- `residual_blockers_acknowledged: true`
+
+This acknowledgement is mandatory and does not authorize runtime by itself.
+
+## 10) FailureAlignment Impact
 State impact on FailureCode families and why alignment remains preserved.
 
-## 10) Coverage Schema Impact
+## 11) Coverage Schema Impact
 State schema-only changes (if any) and confirm no runtime coverage runner is introduced.
 
-## 11) Rank Ceiling Policy
+## 12) Rank Ceiling Policy
 Must remain `CANDIDATE_ONLY` unless a future constitutional protocol explicitly changes it.
 
-## 12) Explicit Non-Blanket Statement
+## 13) Explicit Non-Blanket Statement
 Required statement:
 - This lift request authorizes only the exact artifacts listed in this PR.
 - All non-listed runtime artifacts remain blocked.
