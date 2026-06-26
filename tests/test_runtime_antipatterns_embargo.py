@@ -17,6 +17,7 @@ from pathlib import Path
 import pytest
 
 from tests.forbidden_runtime_artifacts import load_forbidden_runtime_artifact_paths
+import tests.forbidden_runtime_artifacts as forbidden_runtime_artifacts
 from tests.forbidden_runtime_patterns import (
     CANONICAL_FORBIDDEN_RUNTIME_PATTERNS_PATH,
     ForbiddenRuntimePattern,
@@ -467,6 +468,64 @@ def test_forbidden_runtime_pattern_loader_reports_invalid_json(tmp_path: Path):
     invalid.write_text("{", encoding="utf-8")
     with pytest.raises(RuntimeError, match="Invalid JSON in canonical forbidden runtime pattern list"):
         load_forbidden_runtime_patterns(invalid)
+
+
+def test_forbidden_runtime_artifact_loader_rejects_invalid_paths(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+):
+    """trace_ref: docs/12_RUNTIME_EMBARGO_CONSTITUTION.md Explicit Prohibitions."""
+    invalid_payloads = [
+        ["/abs/binding_kernel.py"],
+        ["./binding_kernel.py"],
+        ["../binding_kernel.py"],
+        ["docs\\coverage_matrix_v0.1.yaml"],
+        ["docs//coverage_matrix_v0.1.yaml"],
+        ["docs/./coverage_matrix_v0.1.yaml"],
+        ["docs/../coverage_matrix_v0.1.yaml"],
+        ["docs/coverage_matrix_v0.1.yaml/"],
+    ]
+    for index, payload in enumerate(invalid_payloads):
+        path = tmp_path / f"invalid_artifacts_{index}.json"
+        path.write_text(json.dumps(payload), encoding="utf-8")
+        monkeypatch.setattr(
+            forbidden_runtime_artifacts,
+            "CANONICAL_FORBIDDEN_RUNTIME_ARTIFACTS_PATH",
+            path,
+        )
+        with pytest.raises(ValueError):
+            load_forbidden_runtime_artifact_paths()
+
+
+@pytest.mark.parametrize(
+    "unsafe_path",
+    [
+        ".",
+        "..",
+        " docs/coverage_matrix_v0.1.yaml",
+        "docs/coverage_matrix_v0.1.yaml ",
+        "docs/\tcoverage_matrix_v0.1.yaml",
+        "docs/coverage_matrix_v0.1.yaml\n",
+        "docs/\x00coverage_matrix_v0.1.yaml",
+        "C:/coverage_matrix_v0.1.yaml",
+        "~/coverage_matrix_v0.1.yaml",
+    ],
+)
+def test_forbidden_runtime_artifact_loader_rejects_unsafe_path_formats(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    unsafe_path: str,
+):
+    """trace_ref: docs/12_RUNTIME_EMBARGO_CONSTITUTION.md Explicit Prohibitions."""
+    path = tmp_path / "unsafe_artifacts.json"
+    path.write_text(json.dumps([unsafe_path]), encoding="utf-8")
+    monkeypatch.setattr(
+        forbidden_runtime_artifacts,
+        "CANONICAL_FORBIDDEN_RUNTIME_ARTIFACTS_PATH",
+        path,
+    )
+    with pytest.raises(ValueError):
+        load_forbidden_runtime_artifact_paths()
 
 
 def test_forbidden_runtime_pattern_loader_rejects_invalid_payloads(tmp_path: Path):

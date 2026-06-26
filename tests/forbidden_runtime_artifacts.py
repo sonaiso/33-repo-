@@ -15,6 +15,23 @@ CANONICAL_FORBIDDEN_RUNTIME_ARTIFACTS_PATH = (
 )
 
 
+def _has_unsafe_path_format(path_value: str) -> bool:
+    """Return whether an artifact-path entry violates embargo-safe path rules."""
+    if path_value != path_value.strip():
+        return True
+    if any(char in path_value for char in ("\x00", "\r", "\n", "\t")):
+        return True
+    if ":" in path_value or path_value.startswith("~"):
+        return True
+    if (
+        path_value.startswith(("/", "./", "../"))
+        or "\\" in path_value
+        or path_value.endswith("/")
+    ):
+        return True
+    return any(part in {"", ".", ".."} for part in path_value.split("/"))
+
+
 def load_forbidden_runtime_artifact_paths() -> tuple[str, ...]:
     try:
         payload = json.loads(
@@ -38,4 +55,18 @@ def load_forbidden_runtime_artifact_paths() -> tuple[str, ...]:
         )
     if len(payload) != len(set(payload)):
         raise ValueError("data/forbidden_runtime_artifacts.json must contain unique paths")
+    for item in payload:
+        if _has_unsafe_path_format(item):
+            raise ValueError(
+                "data/forbidden_runtime_artifacts.json must not contain absolute, "
+                "relative, backslash, empty-segment, trailing-slash, navigation, "
+                "or other unsafe path formats"
+            )
+        candidate = REPO_ROOT / item
+        try:
+            candidate.relative_to(REPO_ROOT)
+        except ValueError as exc:
+            raise ValueError(
+                "data/forbidden_runtime_artifacts.json paths must stay within the repository"
+            ) from exc
     return tuple(payload)
