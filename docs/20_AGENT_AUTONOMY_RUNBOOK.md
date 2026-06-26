@@ -38,12 +38,14 @@ It does not allow FailureAlignment artifacts to replace `FailureCode`.
 
 - PR #103 added the `expected_verdict` fixture matrix for computed coverage.
 - PR #105 strengthened the computed verdict fixture guardrails after that matrix.
+- PR #106 synchronizes autonomy guidance to the post-PR #106 guardrail state and hardens anti-pattern regression guards.
 - Marker phrase: expected_verdict fixture matrix.
 - The PR #103 matrix includes positive fixtures for every `expected_verdict` label.
 - PR #105 confirms the matrix includes negative fixtures for irrelevant outcome fields and for `computed_verdict`.
 - Computed coverage is schema/fixture based only.
 - `expected_verdict` fixtures are declarative only; `computed_verdict` cannot be supplied by fixture data.
 - all `computed_verdict` examples remain invalid fixture payloads only.
+- Completed computed-verdict fixture work must not be repeated by future autonomy.
 - do not regress it: future autonomy must build on schema, fixtures, manifests, registries, and audit guardrails.
 - Do not convert schema fixtures into runtime cases, computed outcomes, a coverage runner, or runtime readiness.
 
@@ -94,15 +96,15 @@ Allowed next-safe-step categories include:
 
 ## Highest-priority safe gap queue
 
-After PR #105, select the first narrow gap that still applies:
+After PR #106, select the first narrow gap that still applies:
 
 1. Closed by PR #105: computed coverage verdict fixture tests are strengthened.
 2. Closed before this transition: allowed-context negative fixture coverage exists so forbidden patterns do not false-positive in authorized documentation.
 3. Closed by PR #105: schema tests prove `computed_verdict` is rejected for every verdict fixture type.
 4. Closed by PR #105: manifest tests prove every `expected_verdict` has one positive fixture, at least one unrelated-field negative fixture, and at least one `computed_verdict` rejection fixture; marker phrase: computed_verdict rejection fixture.
 5. Closed before this transition: `failure_alignment.csv` has `canonical_family`, `domain_scope`, `proof_obligation`, `residual_policy`, `forbidden_runtime_use`; all rows remain `is_executable_row=false` and `executable_mapping=AUDIT_ONLY`.
-6. Current transition: keep agent autonomy instructions/runbook synchronized with the post-PR #105 guardrail state so future sessions do not repeat closed computed-verdict fixture work.
-7. Next remaining safe gap after this transition: add or refine anti-pattern regression guards for forbidden rank promotion, Boolean-as-proof defaults, evidence list as proof, runtime engine names, forbidden runtime artifact names, and coverage matrix artifacts.
+6. Closed by PR #106: keep agent autonomy instructions/runbook synchronized with the post-PR #106 guardrail state so future sessions do not repeat completed computed-verdict fixture work.
+7. Current safe gap after PR #106: add or refine anti-pattern regression guards only for forbidden rank promotion, Boolean-as-proof defaults, evidence list as proof, runtime engine names, forbidden runtime artifact names, coverage matrix artifacts, and transform stubs.
 
 Stop after exactly one queue item. If the first remaining queue item would require runtime, a kernel, domain opening, semantic decision authority, rank promotion, Boolean-as-proof, or computed verdict runtime, report `BLOCKED`.
 

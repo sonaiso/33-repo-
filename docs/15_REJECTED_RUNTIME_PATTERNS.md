@@ -27,6 +27,7 @@ Derived from:
 This document records rejected patterns only.
 It is audit-only.
 It is not an implementation plan.
+The rejected artifacts and anti-patterns listed here are not future roadmap items.
 It does not authorize runtime.
 
 ## Rejected Artifacts

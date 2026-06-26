@@ -56,23 +56,28 @@ ARABIC_NEXT_SAFE_STEP_PROMPT = (
 CURRENT_BASELINE_MARKERS = (
     "PR #103",
     "PR #105",
+    "PR #106",
     "expected_verdict fixture matrix",
     "Computed coverage is schema/fixture based only",
     "`computed_verdict` cannot be supplied by fixture data",
     "all `computed_verdict` examples remain invalid",
+    "Completed computed-verdict fixture work must not be repeated",
     "do not regress it",
 )
 
 SAFE_GAP_QUEUE_MARKERS = (
-    "After PR #105",
+    "After PR #106",
     "Closed by PR #105: computed coverage verdict fixture tests are strengthened",
     "allowed-context negative fixture coverage exists",
     "schema tests prove `computed_verdict` is rejected for every verdict fixture type",
     "computed_verdict rejection fixture",
     "canonical_family",
     "forbidden_runtime_use",
-    "Current transition: keep agent autonomy instructions/runbook synchronized",
-    "anti-pattern regression guards",
+    "Closed by PR #106: keep agent autonomy instructions/runbook synchronized",
+    "post-PR #106 guardrail state",
+    "do not repeat completed computed-verdict fixture work",
+    "Current safe gap after PR #106",
+    "anti-pattern regression guards only",
 )
 
 
@@ -84,8 +89,8 @@ def _normalized(text: str) -> str:
     return text.casefold()
 
 
-def _post_pr_105_segment(text: str) -> str:
-    marker = "post-pr #105"
+def _post_pr_106_segment(text: str) -> str:
+    marker = "post-pr #106"
     normalized = _normalized(text)
     assert marker in normalized
     return normalized.split(marker, maxsplit=1)[1]
@@ -132,7 +137,7 @@ def test_agent_autonomy_runbook_declares_current_computed_coverage_baseline():
         assert marker in content
 
 
-def test_agent_autonomy_runbook_declares_safe_gap_queue_after_pr_105():
+def test_agent_autonomy_runbook_declares_safe_gap_queue_after_pr_106():
     """trace_ref: docs/12_RUNTIME_EMBARGO_CONSTITUTION.md Embargo Rule."""
     content = _read_text(AGENT_AUTONOMY_RUNBOOK)
 
@@ -140,24 +145,37 @@ def test_agent_autonomy_runbook_declares_safe_gap_queue_after_pr_105():
         assert marker in content
 
 
-def test_copilot_instructions_declare_current_pr_105_baseline():
+def test_copilot_instructions_declare_current_pr_106_baseline():
     """trace_ref: docs/00B_AGENT_BINDING_CONSTITUTION.md Role Boundaries."""
     content = _read_text(COPILOT_INSTRUCTIONS)
 
+    assert "PR #106" in content
     assert "PR #105" in content
     for marker in CURRENT_BASELINE_MARKERS:
         assert marker in content
 
 
-def test_schema_only_boundary_preserved_after_pr_105():
+def test_schema_only_boundary_preserved_after_pr_106():
     """trace_ref: docs/12_RUNTIME_EMBARGO_CONSTITUTION.md Embargo Rule."""
     for path in (AGENT_AUTONOMY_RUNBOOK, COPILOT_INSTRUCTIONS):
         content = _read_text(path)
-        post_pr_105_segment = _post_pr_105_segment(content)
+        post_pr_106_segment = _post_pr_106_segment(content)
 
         assert "schema/fixture based only" in _normalized(content)
-        assert "coverage runner" not in post_pr_105_segment
-        assert "runtime readiness" not in post_pr_105_segment
+        assert "coverage runner" not in post_pr_106_segment
+        assert "runtime readiness" not in post_pr_106_segment
+
+
+def test_post_pr_106_queue_does_not_reopen_computed_verdict_fixture_work():
+    """trace_ref: docs/00B_AGENT_BINDING_CONSTITUTION.md Role Boundaries."""
+    for path in (AGENT_AUTONOMY_RUNBOOK, COPILOT_INSTRUCTIONS):
+        content = _read_text(path)
+        post_pr_106_segment = _post_pr_106_segment(content)
+
+        assert "do not repeat completed computed-verdict fixture work" in post_pr_106_segment
+        assert "current safe gap after pr #106" in post_pr_106_segment
+        assert "anti-pattern regression guards only" in post_pr_106_segment
+        assert "current transition" not in post_pr_106_segment
 
 
 def test_agent_autonomy_runbook_declares_stop_conditions():

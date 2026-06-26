@@ -75,6 +75,25 @@ ALLOWED_CONTEXT_NEGATIVE_FIXTURES = {
     for pattern_id, sample in PATTERN_FIXTURES.items()
 }
 
+LEGACY_REQUIRED_PATTERN_FIXTURE_IDS = frozenset(
+    {
+        "RANK_CERTIFICATE_FORBIDDEN",
+        "RANK_REJECTED_FORBIDDEN",
+        "EXECUTION_RANK_CERTIFIED_FORBIDDEN",
+        "MRK_BOOLEAN_DEFAULT_DOMAIN_PROVED",
+        "MRK_BOOLEAN_DEFAULT_IDENTITY_PRESERVED",
+        "MRK_BOOLEAN_DEFAULT_GATE_PASSED",
+        "IS_PRESERVED_TRUE_FIELD_FORBIDDEN",
+        "IDENTITY_PRESERVED_TRUE_FIELD_FORBIDDEN",
+        "EVIDENCE_LIST_AS_PROOF_PHRASE_FORBIDDEN",
+        "EVIDENCE_LIST_INLINE_LICENSE_FORBIDDEN",
+        "EVIDENCE_LIST_MULTILINE_LICENSE_FORBIDDEN",
+        "TRANSFORM_PASS_INLINE_FORBIDDEN",
+        "TRANSFORM_PASS_ANNOTATED_FORBIDDEN",
+        "TRANSFORM_PASS_MULTILINE_ANNOTATED_FORBIDDEN",
+    }
+)
+
 
 def test_forbidden_runtime_pattern_fixtures_cover_every_registry_id():
     """trace_ref: docs/12_RUNTIME_EMBARGO_CONSTITUTION.md Embargo Rule."""
@@ -116,3 +135,22 @@ def test_allowed_context_negative_fixtures_match_canonical_patterns():
 
     for pattern_id, sample in ALLOWED_CONTEXT_NEGATIVE_FIXTURES.items():
         assert compiled_by_id[pattern_id].search(sample), pattern_id
+
+
+def test_legacy_required_antipattern_fixtures_remain_explicit():
+    """trace_ref: docs/12_RUNTIME_EMBARGO_CONSTITUTION.md Embargo Rule."""
+    missing = LEGACY_REQUIRED_PATTERN_FIXTURE_IDS - set(PATTERN_FIXTURES)
+    assert not missing
+
+    compiled_by_id = {
+        pattern.id: pattern.matcher
+        for pattern in compile_forbidden_runtime_patterns(
+            load_forbidden_runtime_patterns()
+        )
+    }
+
+    for pattern_id in LEGACY_REQUIRED_PATTERN_FIXTURE_IDS:
+        assert compiled_by_id[pattern_id].search(PATTERN_FIXTURES[pattern_id])
+        assert compiled_by_id[pattern_id].search(
+            ALLOWED_CONTEXT_NEGATIVE_FIXTURES[pattern_id]
+        )
