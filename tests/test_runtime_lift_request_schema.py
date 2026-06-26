@@ -29,6 +29,7 @@ REPO_ROOT = Path(__file__).parent.parent
 SCHEMA_PATH = REPO_ROOT / "schemas" / "runtime_lift_request.schema.json"
 REJECTED_PATTERNS_DOC_PATH = REPO_ROOT / "docs" / "15_REJECTED_RUNTIME_PATTERNS.md"
 TEMPLATE_PATH = REPO_ROOT / "docs" / "19_RUNTIME_EMBARGO_LIFT_PR_TEMPLATE.md"
+READY_REQUEST_PATH = REPO_ROOT / "data" / "runtime_lift_request.ready.json"
 READINESS_LEDGER_SOURCE = "docs/17_RUNTIME_EMBARGO_READINESS_LEDGER.md"
 REQUIRED_NEGATIVE_TESTS = [
     "reject-rank-certificate",
@@ -231,6 +232,12 @@ def _assert_invalid(payload: dict[str, Any]) -> None:
 def test_runtime_lift_template_and_schema_exist():
     assert TEMPLATE_PATH.exists()
     assert SCHEMA_PATH.exists()
+
+
+def test_ready_runtime_lift_request_payload_validates():
+    schema = _load_schema()
+    payload = json.loads(READY_REQUEST_PATH.read_text(encoding="utf-8"))
+    _validate_payload(schema, payload)
 
 
 def test_runtime_lift_template_states_non_authorization():

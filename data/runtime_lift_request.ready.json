@@ -1,0 +1,38 @@
+{
+  "lift_type": "LIFT_TYPE_SCHEMA_RUNTIME",
+  "authorized_artifacts": [
+    "schemas/runtime_lift_request.schema.json"
+  ],
+  "non_scope_artifacts": [
+    "src/taaqqul_slot_geometry/L1/binding_kernel.py",
+    "src/taaqqul_slot_geometry/L1/decision_engine.py",
+    "src/taaqqul_slot_geometry/runtime/binding_kernel.py",
+    "src/taaqqul_slot_geometry/runtime/decision_engine.py",
+    "src/taaqqul_slot_geometry/core/binding_kernel.py",
+    "src/taaqqul_slot_geometry/core/decision_engine.py",
+    "coverage_matrix_v0.1.yaml",
+    "docs/coverage_matrix_v0.1.yaml",
+    "data/coverage_matrix_v0.1.yaml",
+    "schemas/coverage_matrix_v0.1.yaml",
+    "tests/test_binding_constraints.py",
+    "l_protocol/contracts/binding_instructions.py",
+    "l_protocol/engine/binding_kernel.py",
+    "l_protocol/engine/decision_engine.py",
+    "l_protocol/coverage_matrix_v0.1.yaml",
+    "l_protocol/tests/test_binding_constraints.py"
+  ],
+  "readiness_ledger_source": "docs/17_RUNTIME_EMBARGO_READINESS_LEDGER.md",
+  "residual_blockers_acknowledged": true,
+  "rollback_plan": "Revert this request payload and any related schema/template updates while keeping runtime embargo active.",
+  "negative_tests": [
+    "reject-rank-certificate",
+    "reject-rank-rejected",
+    "reject-boolean-as-proof",
+    "reject-evidence-list-as-proof",
+    "reject-domain-open-without-bridge",
+    "reject-manual-computed-verdict"
+  ],
+  "domain_opening": "none",
+  "rank_policy": "CANDIDATE_ONLY",
+  "blanket_lift": false
+}
