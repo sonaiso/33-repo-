@@ -733,6 +733,33 @@ def test_python_comments_and_strings_are_ignored_for_antipattern_scan(tmp_path: 
     assert "identity_preserved" not in stripped
 
 
+def test_yaml_and_toml_comments_and_strings_are_scanned_as_raw_text(tmp_path: Path):
+    yaml_path = tmp_path / "example.yaml"
+    yaml_path.write_text(
+        (
+            "# domain_proved: true\n"
+            "safe: value\n"
+        ),
+        encoding="utf-8",
+    )
+    yaml_violations = pattern_violations_for_text(yaml_path, scanned_text(yaml_path))
+    assert any(
+        "MRK_BOOLEAN_DEFAULT_DOMAIN_PROVED" in violation
+        for violation in yaml_violations
+    )
+
+    toml_path = tmp_path / "example.toml"
+    toml_path.write_text(
+        (
+            'note = "Rank.CERTIFICATE appears in a string"\n'
+            "safe = 1\n"
+        ),
+        encoding="utf-8",
+    )
+    toml_violations = pattern_violations_for_text(toml_path, scanned_text(toml_path))
+    assert any("RANK_CERTIFICATE_FORBIDDEN" in violation for violation in toml_violations)
+
+
 def test_line_number_lookup_handles_line_starts_and_mid_line_positions():
     """trace_ref: docs/12_RUNTIME_EMBARGO_CONSTITUTION.md Embargo Rule."""
     offsets = line_starts("a\nbc\ndef")
