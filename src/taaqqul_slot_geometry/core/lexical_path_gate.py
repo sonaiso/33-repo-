@@ -87,7 +87,7 @@ class Trace:
 
 @dataclass(frozen=True)
 class Residual:
-    code: LexicalFailureCode | str
+    code: LexicalFailureCode
     message: str
     severity: ResidualSeverity = ResidualSeverity.BLOCKING
     trace_ref: Optional[str] = None
@@ -284,7 +284,7 @@ def process_lexical_item(
             *card.residual_entries,
             Residual(
                 LexicalFailureCode.PATH_CARD_AMBIGUOUS,
-                f"Path type {card.path_type.value!r} is not licensed for derivation here.",
+                f"Path type {card.path_type.value!r} is not licensed for derivation in process_lexical_item.",
                 ResidualSeverity.DEFERRED,
             ),
         ),
@@ -337,7 +337,7 @@ def _process_masdar_path(
             (
                 Residual(
                     LexicalFailureCode.GENERATOR_FAILED,
-                    f"Masdar verb generator failed: {exc.__class__.__name__}",
+                    f"Masdar verb generator failed: {exc.__class__.__name__}: {exc}",
                 ),
             ),
         )
@@ -453,7 +453,7 @@ def _process_denominal_branch(
             (
                 Residual(
                     LexicalFailureCode.GENERATOR_FAILED,
-                    f"Denominal branch generator failed: {exc.__class__.__name__}",
+                    f"Denominal branch generator failed: {exc.__class__.__name__}: {exc}",
                 ),
             ),
         )
@@ -591,11 +591,16 @@ def _residual_decision(
 
 
 def _normalize_residuals(residuals: tuple[Residual, ...]) -> tuple[Residual, ...]:
-    seen: set[tuple[str, str, Optional[str]]] = set()
+    seen: set[tuple[str, str, Optional[str], ResidualSeverity]] = set()
     normalized: list[Residual] = []
 
     for residual in residuals:
-        key = (str(residual.code), residual.message, residual.trace_ref)
+        key = (
+            str(residual.code),
+            residual.message,
+            residual.trace_ref,
+            residual.severity,
+        )
         if key not in seen:
             seen.add(key)
             normalized.append(residual)
