@@ -31,6 +31,8 @@ bounded next-safe-step selection.
 - Computed coverage is schema/fixture based only.
 - PR #103 added the `expected_verdict` fixture matrix; marker phrase: expected_verdict fixture matrix; do not regress it.
 - PR #105 strengthened the fixture guardrails: `computed_verdict` cannot be supplied by fixture data and all `computed_verdict` examples remain invalid fixtures only.
+- Completed computed-verdict fixture work must not be repeated by future autonomy.
+- PR #106 synchronizes autonomy guidance to the post-PR #106 state and hardens anti-pattern regression guards without adding runtime behavior.
 
 ## Forbidden Actions
 
@@ -116,7 +118,7 @@ After each PR, verify:
 
 If any invariant fails, stop and report `BLOCKED`.
 
-## Current Roadmap After PR #105
+## Current Roadmap After PR #106
 
 Source of truth: `docs/15_PROJECT_ROADMAP.md`.
 Operational companion: `docs/20_AGENT_AUTONOMY_RUNBOOK.md`.
@@ -128,7 +130,7 @@ Next-safe-step priority queue:
 3. Closed by PR #105: schema tests prove `computed_verdict` is rejected for every verdict fixture type.
 4. Closed by PR #105: manifest tests prove every `expected_verdict` has one positive fixture, at least one unrelated-field negative fixture, and at least one `computed_verdict` rejection fixture.
 5. Closed before this transition: `failure_alignment.csv` has `canonical_family`, `domain_scope`, `proof_obligation`, `residual_policy`, `forbidden_runtime_use`; keep all rows `is_executable_row=false` and `executable_mapping=AUDIT_ONLY`.
-6. Current transition: keep agent autonomy instructions/runbook synchronized with the post-PR #105 guardrail state.
-7. Next remaining safe gap after this transition: add anti-pattern regression guards for rank promotion, Boolean-as-proof defaults, evidence list as proof, runtime engine names, forbidden runtime artifact names, and coverage matrix artifacts.
+6. Closed by PR #106: agent autonomy instructions/runbook are synchronized with the post-PR #106 guardrail state so future sessions do not repeat completed computed-verdict fixture work.
+7. Current safe gap after PR #106: anti-pattern regression guards only — rank promotion, Boolean-as-proof defaults, evidence list as proof, runtime engine names, forbidden runtime artifact names, coverage matrix artifacts, and transform stubs.
 
 Choose one highest-priority safe gap only, prefer docs/schema/data/tests, and stop before runtime/kernel/domain opening.

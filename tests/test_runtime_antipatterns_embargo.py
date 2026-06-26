@@ -71,6 +71,7 @@ REQUIRED_DOC_PHRASES = [
     "Rejected Runtime Anti-Patterns",
     "This document records rejected patterns only.",
     "It is audit-only.",
+    "The rejected artifacts and anti-patterns listed here are not future roadmap items.",
     # Canonical forbidden artifact paths — derived from FORBIDDEN_CANONICAL_RUNTIME_ARTIFACTS
     # so that this check stays in sync with the enforced canonical path list.
     # All paths in FORBIDDEN_CANONICAL_RUNTIME_ARTIFACTS are constructed as
@@ -144,6 +145,11 @@ FORBIDDEN_PATTERN_RECORDS_BY_ID = {
 }
 FORBIDDEN_PATTERNS = compile_forbidden_runtime_patterns(FORBIDDEN_PATTERN_RECORDS)
 FORBIDDEN_PATTERNS_BY_ID = {pattern.id: pattern for pattern in FORBIDDEN_PATTERNS}
+# Essential subset of canonical artifact prohibitions for
+# docs/12_RUNTIME_EMBARGO_CONSTITUTION.md Explicit Prohibitions.
+ESSENTIAL_FORBIDDEN_ARTIFACT_NAMES = frozenset(
+    {"binding_kernel.py", "decision_engine.py", "coverage_matrix_v0.1.yaml"}
+)
 TRANSFORM_ANTIPATTERN_PATTERNS = tuple(
     pattern
     for pattern in FORBIDDEN_PATTERNS
@@ -319,6 +325,15 @@ def test_allowed_in_paths_are_existing_audit_document_contexts():
         assert allowed_path.suffix == ".md"
 
 
+def test_forbidden_runtime_artifact_registry_covers_essential_antipattern_names():
+    """trace_ref: docs/12_RUNTIME_EMBARGO_CONSTITUTION.md Explicit Prohibitions."""
+    artifact_paths = load_forbidden_runtime_artifact_paths()
+    names_by_path = {Path(artifact_path).name for artifact_path in artifact_paths}
+
+    assert ESSENTIAL_FORBIDDEN_ARTIFACT_NAMES <= names_by_path
+    assert all(not path.startswith(("/", "./", "../")) for path in artifact_paths)
+
+
 def test_registered_allowed_contexts_do_not_report_registered_antipattern_text():
     """trace_ref: docs/12_RUNTIME_EMBARGO_CONSTITUTION.md Embargo Rule."""
     for pattern_id, sample in ALLOWED_CONTEXT_NEGATIVE_FIXTURES.items():
@@ -327,6 +342,26 @@ def test_registered_allowed_contexts_do_not_report_registered_antipattern_text()
         for allowed_path in record.allowed_in:
             path = REPO_ROOT / allowed_path
             assert not pattern_violations_for_text(path, sample), pattern_id
+
+
+def test_guard_document_itself_is_allowed_audit_context_for_quoted_patterns():
+    """trace_ref: docs/12_RUNTIME_EMBARGO_CONSTITUTION.md Embargo Rule."""
+    content = GUARD_DOC.read_text(encoding="utf-8")
+    assert not pattern_violations_for_text(GUARD_DOC, content)
+
+
+def test_guard_document_quoted_patterns_fail_outside_allowed_context(
+    tmp_path: Path,
+):
+    """trace_ref: docs/12_RUNTIME_EMBARGO_CONSTITUTION.md Embargo Rule."""
+    copied_doc = tmp_path / "copied_rejected_runtime_patterns.md"
+    content = GUARD_DOC.read_text(encoding="utf-8")
+
+    violations = pattern_violations_for_text(copied_doc, content)
+
+    assert violations
+    assert any("Rank.CERTIFICATE" in violation for violation in violations)
+    assert any("evidence list as proof" in violation for violation in violations)
 
 
 def test_registered_antipattern_text_still_fails_outside_allowed_contexts(

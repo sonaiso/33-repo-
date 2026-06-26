@@ -75,6 +75,27 @@ ALLOWED_CONTEXT_NEGATIVE_FIXTURES = {
     for pattern_id, sample in PATTERN_FIXTURES.items()
 }
 
+# Essential hardened regression subset under
+# docs/12_RUNTIME_EMBARGO_CONSTITUTION.md Embargo Rule.
+ESSENTIAL_ANTIPATTERN_FIXTURE_IDS = frozenset(
+    {
+        "RANK_CERTIFICATE_FORBIDDEN",
+        "RANK_REJECTED_FORBIDDEN",
+        "EXECUTION_RANK_CERTIFIED_FORBIDDEN",
+        "MRK_BOOLEAN_DEFAULT_DOMAIN_PROVED",
+        "MRK_BOOLEAN_DEFAULT_IDENTITY_PRESERVED",
+        "MRK_BOOLEAN_DEFAULT_GATE_PASSED",
+        "IS_PRESERVED_TRUE_FIELD_FORBIDDEN",
+        "IDENTITY_PRESERVED_TRUE_FIELD_FORBIDDEN",
+        "EVIDENCE_LIST_AS_PROOF_PHRASE_FORBIDDEN",
+        "EVIDENCE_LIST_INLINE_LICENSE_FORBIDDEN",
+        "EVIDENCE_LIST_MULTILINE_LICENSE_FORBIDDEN",
+        "TRANSFORM_PASS_INLINE_FORBIDDEN",
+        "TRANSFORM_PASS_ANNOTATED_FORBIDDEN",
+        "TRANSFORM_PASS_MULTILINE_ANNOTATED_FORBIDDEN",
+    }
+)
+
 
 def test_forbidden_runtime_pattern_fixtures_cover_every_registry_id():
     """trace_ref: docs/12_RUNTIME_EMBARGO_CONSTITUTION.md Embargo Rule."""
@@ -116,3 +137,10 @@ def test_allowed_context_negative_fixtures_match_canonical_patterns():
 
     for pattern_id, sample in ALLOWED_CONTEXT_NEGATIVE_FIXTURES.items():
         assert compiled_by_id[pattern_id].search(sample), pattern_id
+
+
+def test_essential_antipattern_fixtures_remain_explicit():
+    """trace_ref: docs/12_RUNTIME_EMBARGO_CONSTITUTION.md Embargo Rule."""
+    missing = ESSENTIAL_ANTIPATTERN_FIXTURE_IDS - set(PATTERN_FIXTURES)
+    assert not missing
+    assert ESSENTIAL_ANTIPATTERN_FIXTURE_IDS <= set(ALLOWED_CONTEXT_NEGATIVE_FIXTURES)
