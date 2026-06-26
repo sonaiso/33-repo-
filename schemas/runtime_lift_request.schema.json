@@ -96,6 +96,7 @@
     {
       "properties": {
         "non_scope_artifacts": {
+          "description": "Must explicitly acknowledge the full canonical forbidden runtime artifact set from data/forbidden_runtime_artifacts.json.",
           "allOf": [
             {
               "contains": {

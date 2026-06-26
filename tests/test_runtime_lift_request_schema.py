@@ -29,6 +29,7 @@ REPO_ROOT = Path(__file__).parent.parent
 SCHEMA_PATH = REPO_ROOT / "schemas" / "runtime_lift_request.schema.json"
 REJECTED_PATTERNS_DOC_PATH = REPO_ROOT / "docs" / "15_REJECTED_RUNTIME_PATTERNS.md"
 TEMPLATE_PATH = REPO_ROOT / "docs" / "19_RUNTIME_EMBARGO_LIFT_PR_TEMPLATE.md"
+READINESS_LEDGER_SOURCE = "docs/17_RUNTIME_EMBARGO_READINESS_LEDGER.md"
 REQUIRED_NEGATIVE_TESTS = [
     "reject-rank-certificate",
     "reject-rank-rejected",
@@ -80,7 +81,7 @@ def _schema_forbidden_authorized_artifacts_enum() -> list[str]:
 
 
 def _schema_required_non_scope_artifacts() -> list[str]:
-    """Extract mandatory non_scope_artifacts from schema allOf constraints."""
+    """Extract mandatory non_scope artifacts from schema allOf constraints."""
     schema = _load_schema()
     for rule in schema.get("allOf", []):
         clauses = (
@@ -100,6 +101,14 @@ def _schema_required_non_scope_artifacts() -> list[str]:
 
 def _embargo_test_forbidden_artifacts() -> set[str]:
     return set(EMBARGO_FORBIDDEN_RUNTIME_ARTIFACTS)
+
+
+def _schema_readiness_ledger_source_const() -> str:
+    schema = _load_schema()
+    value = schema.get("properties", {}).get("readiness_ledger_source", {}).get("const")
+    if not value:
+        raise AssertionError("schema readiness_ledger_source const is missing")
+    return value
 
 
 def _forbidden_artifact_path_variants(artifact: str) -> list[str]:
@@ -200,8 +209,8 @@ def _valid_request() -> dict[str, Any]:
     return {
         "lift_type": "LIFT_TYPE_SCHEMA_RUNTIME",
         "authorized_artifacts": ["schemas/runtime_lift_request.schema.json"],
-        "non_scope_artifacts": [*FORBIDDEN_RUNTIME_ARTIFACTS],
-        "readiness_ledger_source": "docs/17_RUNTIME_EMBARGO_READINESS_LEDGER.md",
+        "non_scope_artifacts": list(FORBIDDEN_RUNTIME_ARTIFACTS),
+        "readiness_ledger_source": READINESS_LEDGER_SOURCE,
         "residual_blockers_acknowledged": True,
         "rollback_plan": "Revert schema and template files; keep embargo active.",
         "negative_tests": [
@@ -229,7 +238,7 @@ def test_runtime_lift_template_states_non_authorization():
     assert "Readiness is not lift." in content
     assert "DONE in readiness ledger is not lift." in content
     assert "This template does not authorize runtime." in content
-    assert "readiness_ledger_source: docs/17_RUNTIME_EMBARGO_READINESS_LEDGER.md" in content
+    assert f"readiness_ledger_source: {READINESS_LEDGER_SOURCE}" in content
     assert "residual_blockers_acknowledged: true" in content
 
 
@@ -266,9 +275,21 @@ def test_forbidden_runtime_artifact_lists_do_not_drift():
     assert embargo_artifacts == test_artifacts
 
 
-def test_schema_requires_full_non_scope_forbidden_runtime_artifact_set():
+def test_schema_readiness_ledger_source_const_does_not_drift():
+    assert _schema_readiness_ledger_source_const() == READINESS_LEDGER_SOURCE
+    assert (REPO_ROOT / READINESS_LEDGER_SOURCE).exists()
+
+
+@pytest.mark.parametrize("missing_artifact", FORBIDDEN_RUNTIME_ARTIFACTS)
+def test_schema_requires_every_mandatory_non_scope_artifact(
+    missing_artifact: str,
+):
     payload = _valid_request()
-    payload["non_scope_artifacts"] = payload["non_scope_artifacts"][:-1]
+    payload["non_scope_artifacts"] = [
+        artifact
+        for artifact in payload["non_scope_artifacts"]
+        if artifact != missing_artifact
+    ]
     _assert_invalid(payload)
 
 

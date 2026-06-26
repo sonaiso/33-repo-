@@ -114,6 +114,7 @@ Required fields in the lift request payload:
 - `residual_blockers_acknowledged: true`
 
 This acknowledgement is mandatory and does not authorize runtime by itself.
+It confirms the request author reviewed residual blockers and accepts that unresolved blockers prevent runtime authorization.
 
 ## 10) FailureAlignment Impact
 State impact on FailureCode families and why alignment remains preserved.
