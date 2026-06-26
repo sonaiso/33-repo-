@@ -92,12 +92,103 @@
           }
         }
       }
+    },
+    {
+      "properties": {
+        "non_scope_artifacts": {
+          "description": "Must explicitly acknowledge the full canonical forbidden runtime artifact set from data/forbidden_runtime_artifacts.json.",
+          "allOf": [
+            {
+              "contains": {
+                "const": "src/taaqqul_slot_geometry/L1/binding_kernel.py"
+              }
+            },
+            {
+              "contains": {
+                "const": "src/taaqqul_slot_geometry/L1/decision_engine.py"
+              }
+            },
+            {
+              "contains": {
+                "const": "src/taaqqul_slot_geometry/runtime/binding_kernel.py"
+              }
+            },
+            {
+              "contains": {
+                "const": "src/taaqqul_slot_geometry/runtime/decision_engine.py"
+              }
+            },
+            {
+              "contains": {
+                "const": "src/taaqqul_slot_geometry/core/binding_kernel.py"
+              }
+            },
+            {
+              "contains": {
+                "const": "src/taaqqul_slot_geometry/core/decision_engine.py"
+              }
+            },
+            {
+              "contains": {
+                "const": "coverage_matrix_v0.1.yaml"
+              }
+            },
+            {
+              "contains": {
+                "const": "docs/coverage_matrix_v0.1.yaml"
+              }
+            },
+            {
+              "contains": {
+                "const": "data/coverage_matrix_v0.1.yaml"
+              }
+            },
+            {
+              "contains": {
+                "const": "schemas/coverage_matrix_v0.1.yaml"
+              }
+            },
+            {
+              "contains": {
+                "const": "tests/test_binding_constraints.py"
+              }
+            },
+            {
+              "contains": {
+                "const": "l_protocol/engine/binding_kernel.py"
+              }
+            },
+            {
+              "contains": {
+                "const": "l_protocol/engine/decision_engine.py"
+              }
+            },
+            {
+              "contains": {
+                "const": "l_protocol/contracts/binding_instructions.py"
+              }
+            },
+            {
+              "contains": {
+                "const": "l_protocol/coverage_matrix_v0.1.yaml"
+              }
+            },
+            {
+              "contains": {
+                "const": "l_protocol/tests/test_binding_constraints.py"
+              }
+            }
+          ]
+        }
+      }
     }
   ],
   "required": [
     "lift_type",
     "authorized_artifacts",
     "non_scope_artifacts",
+    "readiness_ledger_source",
+    "residual_blockers_acknowledged",
     "rollback_plan",
     "negative_tests",
     "domain_opening",
@@ -138,6 +229,14 @@
         "$comment": "No leading slash (absolute paths), no leading './', no leading/trailing whitespace, no backslashes anywhere, no '.' or '..' path segments, no consecutive slashes (empty segments), no trailing slash, and no glob wildcards.",
         "pattern": "^(?!/)(?!\\.\\/)(?!\\s)(?!.*\\s$)(?!.*\\\\)(?!.*(?:^|/)\\.(?:/|$))(?!.*(?:^|/)\\.\\.(?:/|$))(?!.*//)(?!.*\\/$)(?!.*[*?\\[\\]{}]).+$"
       }
+    },
+    "readiness_ledger_source": {
+      "type": "string",
+      "const": "docs/17_RUNTIME_EMBARGO_READINESS_LEDGER.md"
+    },
+    "residual_blockers_acknowledged": {
+      "type": "boolean",
+      "const": true
     },
     "rollback_plan": {
       "type": "string",

@@ -29,6 +29,8 @@ REPO_ROOT = Path(__file__).parent.parent
 SCHEMA_PATH = REPO_ROOT / "schemas" / "runtime_lift_request.schema.json"
 REJECTED_PATTERNS_DOC_PATH = REPO_ROOT / "docs" / "15_REJECTED_RUNTIME_PATTERNS.md"
 TEMPLATE_PATH = REPO_ROOT / "docs" / "19_RUNTIME_EMBARGO_LIFT_PR_TEMPLATE.md"
+READY_REQUEST_PATH = REPO_ROOT / "data" / "runtime_lift_request.ready.json"
+READINESS_LEDGER_SOURCE = "docs/17_RUNTIME_EMBARGO_READINESS_LEDGER.md"
 REQUIRED_NEGATIVE_TESTS = [
     "reject-rank-certificate",
     "reject-rank-rejected",
@@ -79,8 +81,35 @@ def _schema_forbidden_authorized_artifacts_enum() -> list[str]:
     raise AssertionError("schema-wide forbidden authorized_artifacts enum is missing")
 
 
+def _schema_required_non_scope_artifacts() -> list[str]:
+    """Extract mandatory non_scope artifacts from schema allOf constraints."""
+    schema = _load_schema()
+    for rule in schema.get("allOf", []):
+        clauses = (
+            rule.get("properties", {})
+            .get("non_scope_artifacts", {})
+            .get("allOf", [])
+        )
+        values = [
+            clause.get("contains", {}).get("const")
+            for clause in clauses
+            if clause.get("contains", {}).get("const")
+        ]
+        if values:
+            return values
+    raise AssertionError("schema non_scope_artifacts required set is missing")
+
+
 def _embargo_test_forbidden_artifacts() -> set[str]:
     return set(EMBARGO_FORBIDDEN_RUNTIME_ARTIFACTS)
+
+
+def _schema_readiness_ledger_source_const() -> str:
+    schema = _load_schema()
+    value = schema.get("properties", {}).get("readiness_ledger_source", {}).get("const")
+    if not value:
+        raise AssertionError("schema readiness_ledger_source const is missing")
+    return value
 
 
 def _forbidden_artifact_path_variants(artifact: str) -> list[str]:
@@ -181,11 +210,9 @@ def _valid_request() -> dict[str, Any]:
     return {
         "lift_type": "LIFT_TYPE_SCHEMA_RUNTIME",
         "authorized_artifacts": ["schemas/runtime_lift_request.schema.json"],
-        "non_scope_artifacts": [
-            "src/taaqqul_slot_geometry/runtime/binding_kernel.py",
-            "src/taaqqul_slot_geometry/core/decision_engine.py",
-            "coverage_matrix_v0.1.yaml",
-        ],
+        "non_scope_artifacts": list(FORBIDDEN_RUNTIME_ARTIFACTS),
+        "readiness_ledger_source": READINESS_LEDGER_SOURCE,
+        "residual_blockers_acknowledged": True,
         "rollback_plan": "Revert schema and template files; keep embargo active.",
         "negative_tests": [
             *REQUIRED_NEGATIVE_TESTS,
@@ -207,11 +234,24 @@ def test_runtime_lift_template_and_schema_exist():
     assert SCHEMA_PATH.exists()
 
 
+def test_ready_runtime_lift_request_payload_validates():
+    schema = _load_schema()
+    payload = json.loads(READY_REQUEST_PATH.read_text(encoding="utf-8"))
+    _validate_payload(schema, payload)
+
+
+def test_ready_runtime_lift_request_payload_declares_full_non_scope_set():
+    payload = json.loads(READY_REQUEST_PATH.read_text(encoding="utf-8"))
+    assert set(payload["non_scope_artifacts"]) == set(FORBIDDEN_RUNTIME_ARTIFACTS)
+
+
 def test_runtime_lift_template_states_non_authorization():
     content = TEMPLATE_PATH.read_text(encoding="utf-8")
     assert "Readiness is not lift." in content
     assert "DONE in readiness ledger is not lift." in content
     assert "This template does not authorize runtime." in content
+    assert f"readiness_ledger_source: {READINESS_LEDGER_SOURCE}" in content
+    assert "residual_blockers_acknowledged: true" in content
 
 
 def test_lift_request_template_lists_full_required_negative_tests():
@@ -223,6 +263,10 @@ def test_lift_request_template_lists_full_required_negative_tests():
 def test_lift_request_template_lists_forbidden_runtime_paths():
     content = TEMPLATE_PATH.read_text(encoding="utf-8")
     assert "forbidden_runtime_artifacts.json" in content
+    assert (
+        "`non_scope_artifacts` in the lift payload must include the full canonical forbidden set."
+        in content
+    )
     for artifact in FORBIDDEN_RUNTIME_ARTIFACTS:
         assert artifact in content
 
@@ -235,10 +279,30 @@ def test_rejected_patterns_doc_lists_forbidden_runtime_paths():
 
 def test_forbidden_runtime_artifact_lists_do_not_drift():
     schema_artifacts = set(_schema_forbidden_authorized_artifacts_enum())
+    schema_non_scope_artifacts = set(_schema_required_non_scope_artifacts())
     test_artifacts = set(FORBIDDEN_RUNTIME_ARTIFACTS)
     embargo_artifacts = _embargo_test_forbidden_artifacts()
     assert schema_artifacts == test_artifacts
+    assert schema_non_scope_artifacts == test_artifacts
     assert embargo_artifacts == test_artifacts
+
+
+def test_schema_readiness_ledger_source_const_does_not_drift():
+    assert _schema_readiness_ledger_source_const() == READINESS_LEDGER_SOURCE
+    assert (REPO_ROOT / READINESS_LEDGER_SOURCE).exists()
+
+
+@pytest.mark.parametrize("missing_artifact", FORBIDDEN_RUNTIME_ARTIFACTS)
+def test_schema_requires_every_mandatory_non_scope_artifact(
+    missing_artifact: str,
+):
+    payload = _valid_request()
+    payload["non_scope_artifacts"] = [
+        artifact
+        for artifact in payload["non_scope_artifacts"]
+        if artifact != missing_artifact
+    ]
+    _assert_invalid(payload)
 
 
 def test_forbidden_runtime_artifact_docs_do_not_drift():
@@ -278,6 +342,29 @@ def test_rollback_plan_is_required():
     payload = _valid_request()
     payload.pop("rollback_plan")
     _assert_invalid(payload)
+
+
+def test_readiness_ledger_source_is_required():
+    payload = _valid_request()
+    payload.pop("readiness_ledger_source")
+    _assert_invalid(payload)
+
+
+def test_readiness_ledger_source_must_match_canonical_path():
+    _assert_invalid(
+        _valid_request()
+        | {"readiness_ledger_source": "docs/17_runtime_embargo_readiness_ledger.md"}
+    )
+
+
+def test_residual_blockers_acknowledgement_is_required():
+    payload = _valid_request()
+    payload.pop("residual_blockers_acknowledged")
+    _assert_invalid(payload)
+
+
+def test_residual_blockers_acknowledgement_must_be_true():
+    _assert_invalid(_valid_request() | {"residual_blockers_acknowledged": False})
 
 
 def test_negative_tests_are_required():
