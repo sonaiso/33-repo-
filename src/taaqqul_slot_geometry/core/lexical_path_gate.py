@@ -270,7 +270,7 @@ def process_lexical_item(
         )
 
     if card.path_type == PathType.MASDAR_OPEN:
-        return _process_masdar_open(cleaned_word, card, context, generator, sink)
+        return _process_masdar_path(cleaned_word, card, context, generator, sink)
     if card.path_type == PathType.JAMID_CLOSED:
         return _process_jamid_closed(cleaned_word, card)
     if card.path_type == PathType.DENOMINAL_BRANCH:
@@ -291,7 +291,7 @@ def process_lexical_item(
     )
 
 
-def _process_masdar_open(
+def _process_masdar_path(
     word: str,
     card: PathCard,
     context: Mapping[str, Any],
