@@ -56,6 +56,14 @@ class _RecordingSink(NullResidualSink):
         self.calls.append((word, residuals, context))
 
 
+class _FailingGenerator(VerbGenerator):
+    def generate_from_masdar(self, card: PathCard) -> LexicalCandidate:
+        raise RuntimeError("masdar failed")
+
+    def generate_from_denominal_branch(self, card: PathCard) -> LexicalCandidate:
+        raise ValueError("branch failed")
+
+
 def _trace(*refs: str) -> Trace:
     return Trace(refs=refs)
 
@@ -214,3 +222,61 @@ def test_blocking_residuals_are_visible_and_deduplicated() -> None:
 
 def test_ambiguous_residual_spelling_is_canonical() -> None:
     assert PathType.AMBIGUOUS_RESIDUAL.value == "AmbiguousResidual"
+
+
+def test_masdar_generator_failure_becomes_visible_residual() -> None:
+    card = PathCard(
+        word="مصدر",
+        path_type=PathType.MASDAR_OPEN,
+        trace=_trace("l0", "l1"),
+        rank_level=GateRank.HYPOTHESIS,
+        identity_ref="id-5",
+        root=("ك", "ت", "ب"),
+        event_load=True,
+        vowel_pattern="فَعَلَ",
+    )
+    sink = _RecordingSink()
+
+    decision = process_lexical_item(
+        "مصدر",
+        {},
+        card_repo=_StaticRepo(card),
+        generator=_FailingGenerator(),
+        residual_sink=sink,
+    )
+
+    assert decision.kind == DecisionKind.RESIDUAL
+    assert decision.residual_entries[0].code == LexicalFailureCode.GENERATOR_FAILED
+    assert len(sink.calls) == 1
+
+
+def test_denominal_generator_failure_becomes_visible_residual() -> None:
+    card = PathCard(
+        word="اشتقاق",
+        path_type=PathType.DENOMINAL_BRANCH,
+        trace=_trace("l0", "l1"),
+        rank_level=GateRank.HYPOTHESIS,
+        identity_ref="id-6",
+        root=("ك", "ت", "ب"),
+        branch_license=True,
+        branch_card=BranchCard(
+            branch_id="b-2",
+            origin_ref="origin",
+            residual_source="audit",
+            license_ref="lic-2",
+            trace=_trace("l0", "l1", "branch"),
+        ),
+    )
+    sink = _RecordingSink()
+
+    decision = process_lexical_item(
+        "اشتقاق",
+        {},
+        card_repo=_StaticRepo(card),
+        generator=_FailingGenerator(),
+        residual_sink=sink,
+    )
+
+    assert decision.kind == DecisionKind.RESIDUAL
+    assert decision.residual_entries[0].code == LexicalFailureCode.GENERATOR_FAILED
+    assert len(sink.calls) == 1
