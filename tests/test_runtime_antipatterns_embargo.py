@@ -30,6 +30,7 @@ FORBIDDEN_RUNTIME_ARTIFACT_PATHS = load_forbidden_runtime_artifact_paths()
 FORBIDDEN_CANONICAL_RUNTIME_ARTIFACTS = tuple(
     REPO_ROOT / artifact for artifact in FORBIDDEN_RUNTIME_ARTIFACT_PATHS
 )
+RUNTIME_EMBARGO_DOC = REPO_ROOT / "docs" / "12_RUNTIME_EMBARGO_CONSTITUTION.md"
 CLASS_FIELD_LOOKAHEAD_LIMIT = 400
 RETURN_TYPE_LOOKAHEAD_LIMIT = 120
 REQUIRED_PATTERN_IDS = {
@@ -150,6 +151,15 @@ FORBIDDEN_PATTERNS_BY_ID = {pattern.id: pattern for pattern in FORBIDDEN_PATTERN
 ESSENTIAL_FORBIDDEN_ARTIFACT_NAMES = frozenset(
     {"binding_kernel.py", "decision_engine.py", "coverage_matrix_v0.1.yaml"}
 )
+EMBARGO_TO_REJECTED_PATTERN_MARKERS = {
+    "binding_kernel.py": ("binding_kernel.py",),
+    "decision_engine.py": ("decision_engine.py",),
+    "coverage_matrix_v0.1.yaml": ("coverage_matrix_v0.1.yaml",),
+    "Runtime predicates": ("RuntimePredicate", "runtime_predicate:"),
+    "runtime translators": ("RuntimeTranslator", "runtime_translator:"),
+    "Rank.CERTIFICATE": ("Rank.CERTIFICATE",),
+    "manual computed verdict": ("ComputedVerdict", "computed_verdict"),
+}
 TRANSFORM_ANTIPATTERN_PATTERNS = tuple(
     pattern
     for pattern in FORBIDDEN_PATTERNS
@@ -332,6 +342,53 @@ def test_forbidden_runtime_artifact_registry_covers_essential_antipattern_names(
 
     assert ESSENTIAL_FORBIDDEN_ARTIFACT_NAMES <= names_by_path
     assert all(not path.startswith(("/", "./", "../")) for path in artifact_paths)
+
+
+def test_forbidden_runtime_artifact_registry_is_reflected_in_rejected_patterns_doc():
+    """trace_ref: docs/12_RUNTIME_EMBARGO_CONSTITUTION.md Explicit Prohibitions."""
+    content = GUARD_DOC.read_text(encoding="utf-8")
+    artifact_paths = load_forbidden_runtime_artifact_paths()
+
+    for artifact_path in artifact_paths:
+        assert artifact_path in content
+    for artifact_name in ESSENTIAL_FORBIDDEN_ARTIFACT_NAMES:
+        assert artifact_name in content
+
+
+def test_runtime_embargo_explicit_prohibitions_are_reflected_in_audit_guardrails():
+    """trace_ref: docs/12_RUNTIME_EMBARGO_CONSTITUTION.md Explicit Prohibitions."""
+    embargo_content = RUNTIME_EMBARGO_DOC.read_text(encoding="utf-8")
+    rejected_content = GUARD_DOC.read_text(encoding="utf-8")
+    artifact_registry_text = "\n".join(load_forbidden_runtime_artifact_paths())
+    pattern_registry_text = "\n".join(
+        f"{record.id}\n{record.pattern}\n{record.description}"
+        for record in FORBIDDEN_PATTERN_RECORDS
+    )
+    audit_guardrail_text = "\n".join(
+        (rejected_content, artifact_registry_text, pattern_registry_text)
+    )
+
+    for embargo_marker, guardrail_markers in EMBARGO_TO_REJECTED_PATTERN_MARKERS.items():
+        assert embargo_marker in embargo_content
+        assert any(marker in audit_guardrail_text for marker in guardrail_markers), (
+            f"Runtime embargo marker must be reflected in audit guardrails: {embargo_marker}"
+        )
+
+
+def test_allowed_in_contexts_remain_approved_quoted_audit_document_exceptions():
+    """trace_ref: docs/12_RUNTIME_EMBARGO_CONSTITUTION.md Embargo Rule."""
+    for allowed_path in ALLOWED_EXCEPTION_PATHS:
+        relative_path = allowed_path.relative_to(REPO_ROOT).as_posix()
+        content = allowed_path.read_text(encoding="utf-8").casefold()
+
+        assert relative_path.startswith("docs/")
+        assert relative_path.endswith(".md")
+        assert not allowed_path.is_relative_to(REPO_ROOT / "src")
+        assert not allowed_path.is_relative_to(REPO_ROOT / "schemas")
+        assert not allowed_path.is_relative_to(REPO_ROOT / "ci")
+        assert not allowed_path.is_relative_to(REPO_ROOT / "tests")
+        assert "audit-only" in content
+        assert "quoted anti-pattern" in content
 
 
 def test_registered_allowed_contexts_do_not_report_registered_antipattern_text():

@@ -69,6 +69,12 @@ An autonomous agent must not introduce:
 - `Rank.REJECTED`
 - `ExecutionRank.CERTIFIED` as runtime authority
 - Boolean-as-proof defaults or fields
+  - `domain_proved: true`
+  - `unit_proved: true`
+  - `identity_preserved: true`
+  - `trace_preserved: true`
+  - `gate_passed: true`
+  - `is_preserved: true`
 - evidence list as proof
 - identity preservation defaulting to true
 - runtime predicates
@@ -76,6 +82,10 @@ An autonomous agent must not introduce:
 - manual `ComputedVerdict`
 - computed verdict runtime
 - runtime domain opening
+- `DAL_ONLY` producing root, weight, word, tool, meaning, isnad, ifadah, hukm, or tanzil
+- `LAFZI_FORM` producing lexical meaning, usage, isnad, ifadah, hukm, or tanzil
+- Euclidean Learning audit labels opening runtime domains
+- FailureAlignment replacing `FailureCode`
 
 ## Next-safe-step selection
 
