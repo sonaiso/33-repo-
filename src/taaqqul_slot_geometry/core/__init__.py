@@ -137,6 +137,21 @@ from taaqqul_slot_geometry.core.closure_kernel import (
     should_block_transition,
     weak_letter_gate,
 )
+from taaqqul_slot_geometry.core.lexical_path_gate import (
+    BranchCard,
+    DecisionKind,
+    GateRank,
+    LexicalCandidate,
+    LexicalDecision,
+    LexicalFailureCode,
+    NullResidualSink,
+    PathCard,
+    PathCardRepository,
+    PathType,
+    ResidualSink,
+    VerbGenerator,
+    process_lexical_item,
+)
 
 __all__ = [
     "Rank",
@@ -266,4 +281,18 @@ __all__ = [
     "resolve_closure_conflicts",
     "should_block_transition",
     "weak_letter_gate",
+    # Lexical Path Gate (audit-only)
+    "BranchCard",
+    "DecisionKind",
+    "GateRank",
+    "LexicalCandidate",
+    "LexicalDecision",
+    "LexicalFailureCode",
+    "NullResidualSink",
+    "PathCard",
+    "PathCardRepository",
+    "PathType",
+    "ResidualSink",
+    "VerbGenerator",
+    "process_lexical_item",
 ]
