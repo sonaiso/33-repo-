@@ -329,7 +329,7 @@ def _process_masdar_path(
 
     try:
         candidate = generator.generate_from_masdar(card)
-    except Exception as exc:  # pragma: no cover - defensive path
+    except (ValueError, RuntimeError) as exc:  # pragma: no cover - defensive path
         return _residual_decision(
             word,
             context,
@@ -445,7 +445,7 @@ def _process_denominal_branch(
 
     try:
         candidate = generator.generate_from_denominal_branch(card)
-    except Exception as exc:  # pragma: no cover - defensive path
+    except (ValueError, RuntimeError) as exc:  # pragma: no cover - defensive path
         return _residual_decision(
             word,
             context,
