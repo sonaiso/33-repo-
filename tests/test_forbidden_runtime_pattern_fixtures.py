@@ -75,6 +75,8 @@ ALLOWED_CONTEXT_NEGATIVE_FIXTURES = {
     for pattern_id, sample in PATTERN_FIXTURES.items()
 }
 
+# Essential hardened regression subset under
+# docs/12_RUNTIME_EMBARGO_CONSTITUTION.md Embargo Rule.
 ESSENTIAL_ANTIPATTERN_FIXTURE_IDS = frozenset(
     {
         "RANK_CERTIFICATE_FORBIDDEN",

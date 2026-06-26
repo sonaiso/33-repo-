@@ -145,6 +145,8 @@ FORBIDDEN_PATTERN_RECORDS_BY_ID = {
 }
 FORBIDDEN_PATTERNS = compile_forbidden_runtime_patterns(FORBIDDEN_PATTERN_RECORDS)
 FORBIDDEN_PATTERNS_BY_ID = {pattern.id: pattern for pattern in FORBIDDEN_PATTERNS}
+# Essential subset of canonical artifact prohibitions for
+# docs/12_RUNTIME_EMBARGO_CONSTITUTION.md Explicit Prohibitions.
 ESSENTIAL_FORBIDDEN_ARTIFACT_NAMES = frozenset(
     {"binding_kernel.py", "decision_engine.py", "coverage_matrix_v0.1.yaml"}
 )
