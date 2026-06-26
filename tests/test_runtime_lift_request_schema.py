@@ -240,6 +240,11 @@ def test_ready_runtime_lift_request_payload_validates():
     _validate_payload(schema, payload)
 
 
+def test_ready_runtime_lift_request_payload_declares_full_non_scope_set():
+    payload = json.loads(READY_REQUEST_PATH.read_text(encoding="utf-8"))
+    assert set(payload["non_scope_artifacts"]) == set(FORBIDDEN_RUNTIME_ARTIFACTS)
+
+
 def test_runtime_lift_template_states_non_authorization():
     content = TEMPLATE_PATH.read_text(encoding="utf-8")
     assert "Readiness is not lift." in content
