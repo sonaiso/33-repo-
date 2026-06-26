@@ -123,10 +123,10 @@ COMPREHENSIVE_HARD_PROHIBITION_MARKERS = (
     "evidence list as proof",
     "identity preservation defaulting to true",
     "manual `ComputedVerdict`",
-    "DAL_ONLY",
-    "LAFZI_FORM",
-    "Euclidean Learning",
-    "FailureAlignment",
+    "DAL_ONLY",  # pre-runtime carrier/separation-only layer
+    "LAFZI_FORM",  # pre-runtime form-contract-only layer
+    "Euclidean Learning",  # audit sandbox; never runtime authority
+    "FailureAlignment",  # audit mapping; never replaces FailureCode
 )
 
 

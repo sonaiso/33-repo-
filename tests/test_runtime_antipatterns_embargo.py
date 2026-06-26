@@ -40,6 +40,10 @@ RUNTIME_EMBARGO_DOC = REPO_ROOT / "docs" / "12_RUNTIME_EMBARGO_CONSTITUTION.md"
 FORBIDDEN_ALLOWED_CONTEXT_BASES = frozenset(
     REPO_ROOT / path for path in ("src", "schemas", "ci", "tests")
 )
+AUDIT_ONLY_CONTEXT_PATTERN = re.compile(r"\baudit[-\s]+only\b")
+QUOTED_ANTIPATTERN_CONTEXT_PATTERN = re.compile(
+    r"\bquoted[-\s]+anti-patterns?\b"
+)
 CLASS_FIELD_LOOKAHEAD_LIMIT = 400
 RETURN_TYPE_LOOKAHEAD_LIMIT = 120
 REQUIRED_PATTERN_IDS = {
@@ -166,9 +170,13 @@ EMBARGO_TO_REJECTED_PATTERN_MARKERS = {
     "binding_kernel.py": ("binding_kernel.py",),
     "decision_engine.py": ("decision_engine.py",),
     "coverage_matrix_v0.1.yaml": ("coverage_matrix_v0.1.yaml",),
+    # Embargo prose names the capability; guardrails record both class and
+    # field spellings that could smuggle the capability into code/config.
     "Runtime predicates": ("RuntimePredicate", "runtime_predicate:"),
     "runtime translators": ("RuntimeTranslator", "runtime_translator:"),
     "Rank.CERTIFICATE": ("Rank.CERTIFICATE",),
+    # Manual computed verdict authority can appear as a class name or as a
+    # supplied field, so either guardrail marker satisfies the embargo link.
     "manual computed verdict": ("ComputedVerdict", "computed_verdict"),
 }
 TRANSFORM_ANTIPATTERN_PATTERNS = tuple(
@@ -398,8 +406,8 @@ def test_allowed_context_paths_are_audit_only_documentation():
             allowed_path.is_relative_to(base)
             for base in FORBIDDEN_ALLOWED_CONTEXT_BASES
         )
-        assert re.search(r"\baudit[-\s]+only\b", content)
-        assert re.search(r"\bquoted[-\s]+anti-patterns?\b", content)
+        assert AUDIT_ONLY_CONTEXT_PATTERN.search(content)
+        assert QUOTED_ANTIPATTERN_CONTEXT_PATTERN.search(content)
 
 
 def test_registered_allowed_contexts_do_not_report_registered_antipattern_text():
