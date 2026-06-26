@@ -109,6 +109,26 @@ HARD_PROHIBITION_MARKERS = (
     "runtime domain opening",
 )
 
+COMPREHENSIVE_HARD_PROHIBITION_MARKERS = (
+    *HARD_PROHIBITION_MARKERS,
+    "Rank.CERTIFICATE",
+    "Rank.REJECTED",
+    "ExecutionRank.CERTIFIED",
+    "domain_proved: true",
+    "unit_proved: true",
+    "identity_preserved: true",
+    "trace_preserved: true",
+    "gate_passed: true",
+    "is_preserved: true",
+    "evidence list as proof",
+    "identity preservation defaulting to true",
+    "manual `ComputedVerdict`",
+    "DAL_ONLY",  # audit-only carrier/separation layer; no runtime outputs
+    "LAFZI_FORM",  # audit-only form-contract layer; no runtime outputs
+    "Euclidean Learning",  # audit sandbox; must not become runtime authority
+    "FailureAlignment",  # audit mapping; must not replace FailureCode authority
+)
+
 
 def _read_text(path: Path) -> str:
     return path.read_text(encoding="utf-8")
@@ -224,6 +244,16 @@ def test_instruction_docs_share_core_hard_prohibitions():
     for marker in HARD_PROHIBITION_MARKERS:
         for path in (AGENT_AUTONOMY_RUNBOOK, COPILOT_INSTRUCTIONS):
             assert marker in _read_text(path)
+
+
+def test_runbook_mirrors_exact_copilot_hard_prohibition_markers():
+    """trace_ref: docs/12_RUNTIME_EMBARGO_CONSTITUTION.md Explicit Prohibitions."""
+    copilot_content = _read_text(COPILOT_INSTRUCTIONS)
+    runbook_content = _read_text(AGENT_AUTONOMY_RUNBOOK)
+
+    for marker in COMPREHENSIVE_HARD_PROHIBITION_MARKERS:
+        assert marker in copilot_content, f"missing Copilot hard prohibition marker: {marker}"
+        assert marker in runbook_content, f"missing runbook hard prohibition marker: {marker}"
 
 
 def test_agent_autonomy_runbook_declares_stop_conditions():
