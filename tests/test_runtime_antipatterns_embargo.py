@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import io
 import json
+import re
 import tokenize
 from bisect import bisect_right
 from pathlib import Path
@@ -387,8 +388,8 @@ def test_allowed_in_contexts_remain_approved_quoted_audit_document_exceptions():
         assert not allowed_path.is_relative_to(REPO_ROOT / "schemas")
         assert not allowed_path.is_relative_to(REPO_ROOT / "ci")
         assert not allowed_path.is_relative_to(REPO_ROOT / "tests")
-        assert "audit-only" in content
-        assert "quoted anti-pattern" in content
+        assert re.search(r"\baudit[-\s]+only\b", content)
+        assert re.search(r"\bquoted\s+anti-patterns?\b", content)
 
 
 def test_registered_allowed_contexts_do_not_report_registered_antipattern_text():
