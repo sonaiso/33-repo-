@@ -1,4 +1,4 @@
-# Independent Ifadah Model Boundary Law — `docs/61`
+# Independent Ifādah Model Boundary Law — `docs/61`
 
 ## Authority
 
@@ -31,7 +31,7 @@ The safe Arabic name is:
 
 ## Scope
 
-The independent ifadah model describes how a closed or closeable utterance
+The independent ifādah model describes how a closed or closeable utterance
 relation may be classified as minimally informative in its maqam.
 
 It is limited to this audit question:
@@ -70,23 +70,25 @@ The model assumes that prior constitutional gates remain prior and preserved:
 These are not re-founded here. They remain prior conditions and are used only
 as audit vocabulary for `D5_IFADAH`.
 
-## Ifadah Definition
+## Ifādah Definition
 
-Ifadah is the minimal completion of a speech function in its maqam so that a
+Ifādah is the minimal completion of a speech function in its maqam so that a
 qualified addressee knows what the utterance is doing.
 
 ```text
-Ifadah =
-    utterance candidate
-  + utterance type
-  + focal function
-  + required parts
-  + lexical or maqam-based closure
-  + no ifadah blocker
-  + visible classified residuals
+Ifādah is established only when:
+  Required positives:
+    - utterance candidate
+    - utterance type
+    - focal function
+    - required parts
+    - lexical or maqam-based closure
+    - visible classified residuals
+  Required negatives:
+    - no ifādah blocker
 ```
 
-Ifadah is not truth. Ifadah is not hukm. Ifadah is not yaqīn. Ifadah is not the
+Ifādah is not truth. Ifādah is not hukm. Ifādah is not yaqīn. Ifādah is not the
 mere adjacency of words.
 
 ## Eight Initial Utterance Types
@@ -105,9 +107,9 @@ mere adjacency of words.
 These eight are initial operating doors only. They are not an exhaustive
 runtime grammar of Arabic.
 
-## Minimal Ifadah Conditions by Type
+## Minimal Ifādah Conditions by Type
 
-| Type | Minimal condition | Ifadah blocker |
+| Type | Minimal condition | Ifādah blocker |
 |------|-------------------|----------------|
 | report | locus + predicate + intelligible relation | missing relation or blocking reference |
 | request | requested act + licensed addressee | unknown requested act or addressee |
@@ -120,12 +122,12 @@ runtime grammar of Arabic.
 
 ## Cause, Condition, Blocker
 
-The cause of ifadah is the presence of a focal speech function.
+The cause of ifādah is the presence of a focal speech function.
 
-The condition of ifadah is completion of the required parts of the utterance
+The condition of ifādah is completion of the required parts of the utterance
 type, either explicitly or through licensed ellipsis.
 
-The blocker of ifadah is any required absence that prevents a qualified
+The blocker of ifādah is any required absence that prevents a qualified
 addressee from understanding the utterance function in its maqam.
 
 Common blockers include:
@@ -147,14 +149,14 @@ Ellipsis may be supplied only by a sufficient lexical or maqam-based license:
 ```text
 Licensed ellipsis requires a prior expression, question, maqam, usage custom,
 or structural necessity that makes the supplied completion fixed or dominant
-enough for minimal ifadah.
+enough for minimal ifādah.
 ```
 
 Mental possibility alone is not a license.
 
 ## Maqam Boundary
 
-The maqam does not create ifadah from nothing. It closes or prefers what already
+The maqam does not create ifādah from nothing. It closes or prefers what already
 has a carrier:
 
 - expression;
@@ -169,7 +171,7 @@ Maqam is a cause for understanding, not truth.
 Maqam is a condition for closure, not hukm.
 ```
 
-## Four Ifadah Audit Outcomes
+## Four Ifādah Audit Outcomes
 
 | Outcome | Meaning |
 |---------|---------|
@@ -208,7 +210,7 @@ licenses the missing addressee.
 ```
 
 Audit result: `SUSPENDED_IFADAH` when the required reference is unresolved and
-could be closed by maqam; otherwise no complete ifadah is available.
+could be closed by maqam; otherwise no complete ifādah is available.
 
 ### Answer that misses the question
 
@@ -222,15 +224,15 @@ because it does not satisfy the question focus.
 
 ## Final Boundary Law
 
-No ifadah is established until the utterance type is fixed, its focal function
+No ifādah is established until the utterance type is fixed, its focal function
 is identified, its required parts are complete by expression or licensed
 ellipsis, blocking reference is absent, maqam closes only what it is licensed to
 close, and no required operator remains open.
 
-If the speech function completes, ifadah is present. If a required functional
-gap remains, ifadah is suspended or absent. If the gap concerns truth, evidence,
-or certainty, then ifadah may be present while hukm remains deferred.
+If the speech function completes, ifādah is present. If a required functional
+gap remains, ifādah is suspended or absent. If the gap concerns truth, evidence,
+or certainty, then ifādah may be present while hukm remains deferred.
 
 ---
 
-*End of Independent Ifadah Model Boundary Law.*
+*End of Independent Ifādah Model Boundary Law.*

@@ -1,4 +1,4 @@
-"""Audit-only boundary checks for the independent ifadah model law.
+"""Audit-only boundary checks for the independent ifādah model law.
 
 Origin: docs/61_INDEPENDENT_IFADAH_MODEL_LAW.md
 """
@@ -53,7 +53,7 @@ def test_eight_initial_utterance_types_are_recorded() -> None:
 
 
 def test_four_ifadah_audit_outcomes_are_non_runtime_labels() -> None:
-    """trace_ref: docs/61_INDEPENDENT_IFADAH_MODEL_LAW.md §Four Ifadah Audit Outcomes."""
+    """trace_ref: docs/61_INDEPENDENT_IFADAH_MODEL_LAW.md §Four Ifādah Audit Outcomes."""
     content = _content()
 
     for outcome in (
@@ -79,7 +79,7 @@ def test_acceptance_and_rejection_examples_cover_required_guardrails() -> None:
         "Unknown reference",
         "Answer that misses the question",
         "Mental possibility alone is not a license.",
-        "The maqam does not create ifadah from nothing.",
+        "The maqam does not create ifādah from nothing.",
     ):
         assert phrase in content
 
