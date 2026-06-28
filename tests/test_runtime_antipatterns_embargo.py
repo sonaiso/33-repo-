@@ -38,6 +38,10 @@ FORBIDDEN_CANONICAL_RUNTIME_ARTIFACTS = tuple(
     REPO_ROOT / artifact for artifact in FORBIDDEN_RUNTIME_ARTIFACT_PATHS
 )
 RUNTIME_EMBARGO_DOC = REPO_ROOT / "docs" / "12_RUNTIME_EMBARGO_CONSTITUTION.md"
+EUCLIDEAN_BOUNDARY_DOC = (
+    REPO_ROOT / "docs" / "14_EUCLIDEAN_LEARNING_DOMAIN_BOUNDARY.md"
+)
+AGENT_AUTONOMY_RUNBOOK = REPO_ROOT / "docs" / "20_AGENT_AUTONOMY_RUNBOOK.md"
 FORBIDDEN_ALLOWED_CONTEXT_BASES = frozenset(
     REPO_ROOT / path for path in ("src", "schemas", "ci", "tests")
 )
@@ -181,6 +185,24 @@ EMBARGO_TO_REJECTED_PATTERN_MARKERS = {
     # Manual computed verdict authority can appear as a class name or as a
     # supplied field, so either guardrail marker satisfies the embargo link.
     "manual computed verdict": ("ComputedVerdict", "computed_verdict"),
+}
+RUNTIME_STATUS_AUTHORITY_DOCS = {
+    RUNTIME_EMBARGO_DOC: (
+        "Runtime remains embargoed.",
+        "Runtime predicates and runtime translators are forbidden in this phase.",
+        "L1 output rank remains `CANDIDATE` only.",
+    ),
+    EUCLIDEAN_BOUNDARY_DOC: (
+        "does not authorize runtime domain opening.",
+        "Euclidean learning remains `AUDIT_SANDBOX_ONLY`.",
+        "This boundary map cannot be used to open `D3/D4/D5/D6` runtime domains.",
+    ),
+    AGENT_AUTONOMY_RUNBOOK: (
+        "Runtime Embargo is active.",
+        "This runbook does not authorize runtime.",
+        "computed verdict runtime",
+        "runtime domain opening",
+    ),
 }
 TRANSFORM_ANTIPATTERN_PATTERNS = tuple(
     pattern
@@ -397,6 +419,18 @@ def test_runtime_embargo_explicit_prohibitions_are_reflected_in_audit_guardrails
         assert any(marker in audit_guardrail_text for marker in guardrail_markers), (
             f"Runtime embargo marker must be reflected in audit guardrails: {embargo_marker}"
         )
+
+
+def test_runtime_embargo_status_is_synchronized_across_authority_docs():
+    """trace_ref: docs/12_RUNTIME_EMBARGO_CONSTITUTION.md Embargo Rule."""
+    for authority_doc, required_phrases in RUNTIME_STATUS_AUTHORITY_DOCS.items():
+        assert authority_doc.exists(), f"Missing runtime status authority doc: {authority_doc}"
+        content = authority_doc.read_text(encoding="utf-8")
+        for phrase in required_phrases:
+            assert phrase in content, (
+                f"Runtime embargo status phrase missing from "
+                f"{authority_doc.relative_to(REPO_ROOT)}: {phrase}"
+            )
 
 
 def test_allowed_context_paths_are_audit_only_documentation():
