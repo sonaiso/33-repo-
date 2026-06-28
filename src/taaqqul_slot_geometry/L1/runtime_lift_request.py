@@ -41,8 +41,11 @@ _VALID_AUDIT_STATUSES = frozenset(
         "AUDIT_SHAPE_BLOCKED",
     }
 )
+# Reject wildcard scope, home/traversal shorthands, unsafe separators, and
+# control characters so every requested artifact remains an exact relative path.
 _FORBIDDEN_ARTIFACT_PATH_PARTS = ("*", "~", "..", "//", "\\", "\x00", "\r", "\n", "\t")
 _BROAD_ARTIFACT_SCOPES = frozenset({"runtime", "src/taaqqul_slot_geometry/runtime"})
+# Accept "PR" only as a standalone marker, or "#" only with a positive PR number.
 _PR_MARKER_PATTERN = re.compile(r"(^|[^A-Za-z])PR([^A-Za-z]|$)|#[1-9][0-9]*")
 
 
