@@ -120,6 +120,17 @@ from taaqqul_slot_geometry.L1.proof_objects import (
     ProofTrace,
     Rank,
 )
+from taaqqul_slot_geometry.L1.runtime_lift_request import (
+    RUNTIME_LIFT_TRACE_REF,
+    RuntimeLiftArtifact,
+    RuntimeLiftAuditResult,
+    RuntimeLiftAuditStatus,
+    RuntimeLiftArtifactKind,
+    RuntimeLiftRequest,
+    RuntimeLiftRequestSource,
+    RuntimeLiftStatus,
+    audit_runtime_lift_request_shape,
+)
 from taaqqul_slot_geometry.L1.signifier_domain import (
     AdditiveFunction,
     AdditiveLetterDomainCertificate,
@@ -187,7 +198,15 @@ __all__ = [
     "PostulateCategory",
     "ProofObject",
     "ProofTrace",
+    "RUNTIME_LIFT_TRACE_REF",
     "Rank",
+    "RuntimeLiftArtifact",
+    "RuntimeLiftArtifactKind",
+    "RuntimeLiftAuditResult",
+    "RuntimeLiftAuditStatus",
+    "RuntimeLiftRequest",
+    "RuntimeLiftRequestSource",
+    "RuntimeLiftStatus",
     "MRKProof",
     "DomainProof",
     "IdentityProof",
@@ -267,4 +286,5 @@ __all__ = [
     "verify_common_notion_coverage",
     "verify_identity_preservation",
     "verify_postulate_coverage",
+    "audit_runtime_lift_request_shape",
 ]
