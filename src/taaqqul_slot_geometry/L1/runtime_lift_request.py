@@ -13,6 +13,8 @@ from taaqqul_slot_geometry.constitution.failure_taxonomy import FailureCode
 
 Rank = Literal["CANDIDATE"]
 RuntimeLiftArtifactKind = Literal["MODULE", "TEST", "DOC", "DATA", "SCHEMA"]
+# Includes forbidden source labels so contract construction can explicitly reject
+# prompt/user/agent/readiness claims as non-lift authorization shapes.
 RuntimeLiftRequestSource = Literal[
     "RUNTIME_EMBARGO_LIFT_PR",
     "PROMPT",
@@ -20,6 +22,8 @@ RuntimeLiftRequestSource = Literal[
     "AGENT_RESPONSE",
     "READINESS_STATUS",
 ]
+# Kept as a named audit-contract alias to document that no open/authorized
+# runtime status is a valid L1 lift-request shape during the embargo.
 RuntimeLiftStatus = Literal["EXTERNALLY_BLOCKED"]
 RuntimeLiftAuditStatus = Literal[
     "AUDIT_SHAPE_VALID_RUNTIME_STILL_BLOCKED",
