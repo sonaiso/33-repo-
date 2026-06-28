@@ -20,7 +20,9 @@ from taaqqul_slot_geometry.L1.runtime_lift_request import (
 REPO_ROOT = Path(__file__).parent.parent.parent
 
 
-def _artifact(path: str = "src/taaqqul_slot_geometry/L1/example_future_runtime.py"):
+def _build_runtime_lift_artifact(
+    path: str = "src/taaqqul_slot_geometry/L1/example_future_runtime.py",
+):
     """Build a hypothetical exact artifact request; the file is not created."""
 
     return RuntimeLiftArtifact(
@@ -31,12 +33,12 @@ def _artifact(path: str = "src/taaqqul_slot_geometry/L1/example_future_runtime.p
     )
 
 
-def _request(**overrides):
+def _build_runtime_lift_request(**overrides):
     payload = {
         "request_id": "runtime-lift-shape-001",
         "request_source_type": "RUNTIME_EMBARGO_LIFT_PR",
         "pr_ref": "Runtime Embargo Lift PR #126",
-        "requested_artifacts": (_artifact(),),
+        "requested_artifacts": (_build_runtime_lift_artifact(),),
         "authority_refs": (
             "docs/00_MAQOOL_CONSTITUTION.md",
             "docs/12_RUNTIME_EMBARGO_CONSTITUTION.md",
@@ -55,7 +57,7 @@ def _request(**overrides):
 
 
 def test_valid_shape_remains_externally_blocked():
-    result = audit_runtime_lift_request_shape(_request())
+    result = audit_runtime_lift_request_shape(_build_runtime_lift_request())
 
     assert result.shape_valid is True
     assert result.runtime_lift_authorized is False
@@ -74,84 +76,86 @@ def test_valid_shape_remains_externally_blocked():
 )
 def test_non_lift_pr_source_types_are_rejected(source_type):
     with pytest.raises(ValueError):
-        _request(request_source_type=source_type)
+        _build_runtime_lift_request(request_source_type=source_type)
 
 
 def test_prompt_authorization_is_rejected():
     with pytest.raises(ValueError):
-        _request(request_source_type="PROMPT")
+        _build_runtime_lift_request(request_source_type="PROMPT")
 
 
 def test_user_delegation_is_rejected():
     with pytest.raises(ValueError):
-        _request(request_source_type="USER_DELEGATION")
+        _build_runtime_lift_request(request_source_type="USER_DELEGATION")
 
 
 def test_agent_response_is_rejected():
     with pytest.raises(ValueError):
-        _request(request_source_type="AGENT_RESPONSE")
+        _build_runtime_lift_request(request_source_type="AGENT_RESPONSE")
 
 
 def test_readiness_status_is_rejected():
     with pytest.raises(ValueError):
-        _request(request_source_type="READINESS_STATUS")
+        _build_runtime_lift_request(request_source_type="READINESS_STATUS")
 
 
 def test_wildcard_artifact_is_rejected():
     with pytest.raises(ValueError):
-        _artifact("src/**/*.py")
+        _build_runtime_lift_artifact("src/**/*.py")
 
 
 @pytest.mark.parametrize("artifact_path", ["runtime", "*"])
 def test_broad_runtime_scope_is_rejected(artifact_path):
     with pytest.raises(ValueError):
-        _artifact(artifact_path)
+        _build_runtime_lift_artifact(artifact_path)
 
 
 def test_missing_pr_ref_is_rejected():
     with pytest.raises(ValueError):
-        _request(pr_ref="")
+        _build_runtime_lift_request(pr_ref="")
 
 
 def test_missing_failure_alignment_ref_is_rejected():
     with pytest.raises(ValueError):
-        _request(failure_alignment_ref="")
+        _build_runtime_lift_request(failure_alignment_ref="")
 
 
 def test_missing_proof_policy_ref_is_rejected():
     with pytest.raises(ValueError):
-        _request(proof_policy_ref="")
+        _build_runtime_lift_request(proof_policy_ref="")
 
 
 def test_missing_rollback_policy_ref_is_rejected():
     with pytest.raises(ValueError):
-        _request(rollback_policy_ref="")
+        _build_runtime_lift_request(rollback_policy_ref="")
 
 
 def test_external_blockage_acknowledged_false_is_rejected():
     with pytest.raises(ValueError):
-        _request(external_blockage_acknowledged=False)
+        _build_runtime_lift_request(external_blockage_acknowledged=False)
 
 
 def test_prompt_delegation_disclaimed_false_is_rejected():
     with pytest.raises(ValueError):
-        _request(prompt_delegation_disclaimed=False)
+        _build_runtime_lift_request(prompt_delegation_disclaimed=False)
 
 
 @pytest.mark.parametrize("runtime_status", ["OPEN", "AUTHORIZED"])
 def test_runtime_status_cannot_be_open(runtime_status):
     with pytest.raises(ValueError):
-        _request(runtime_status=runtime_status)
+        _build_runtime_lift_request(runtime_status=runtime_status)
 
 
 def test_rank_promotion_rejected():
     with pytest.raises(ValueError):
-        _request(rank="CERTIFICATE")
+        _build_runtime_lift_request(rank="CERTIFICATE")
 
 
 def test_binding_kernel_path_not_authorized_by_shape_validator():
     artifact_path = "src/taaqqul_slot_geometry/L1/binding_kernel.py"
-    request = _request(requested_artifacts=(_artifact(artifact_path),))
+    request = _build_runtime_lift_request(
+        requested_artifacts=(_build_runtime_lift_artifact(artifact_path),)
+    )
     result = audit_runtime_lift_request_shape(request)
 
     assert result.shape_valid is True

@@ -46,6 +46,7 @@ _VALID_AUDIT_STATUSES = frozenset(
 _FORBIDDEN_ARTIFACT_PATH_PARTS = ("*", "~", "..", "//", "\\", "\x00", "\r", "\n", "\t")
 _BROAD_ARTIFACT_SCOPES = frozenset({"runtime", "src/taaqqul_slot_geometry/runtime"})
 # Accept "PR" only as a standalone marker, or "#" only with a positive PR number.
+# The word pattern matches PR with non-letter boundaries so PRtext is rejected.
 _PR_WORD_PATTERN = re.compile(r"(^|[^A-Za-z])PR([^A-Za-z]|$)")
 _PR_NUMBER_PATTERN = re.compile(r"#[1-9][0-9]*")
 
@@ -137,8 +138,8 @@ class RuntimeLiftRequest:
             raise ValueError(FailureCode.M_00_22.value)
         if not self.requested_artifacts:
             raise ValueError(FailureCode.M_00_22.value)
-        # Runtime payloads can arrive from untyped fixture data; reject malformed
-        # entries before audit result construction.
+        # Runtime payloads can arrive from untyped sources; reject malformed
+        # entries before any audit result is constructed.
         if not all(isinstance(artifact, RuntimeLiftArtifact) for artifact in self.requested_artifacts):
             raise ValueError(FailureCode.M_00_22.value)
         if not self.authority_refs or not all(self.authority_refs):
