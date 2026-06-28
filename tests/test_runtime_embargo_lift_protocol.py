@@ -19,6 +19,7 @@ REQUIRED_PHRASES = [
     "Runtime Embargo remains active.",
     "This PR defines authorization protocol only; it does not grant runtime execution authority.",
     "No implicit lift by user delegation/authorization.",
+    "لا رفع ضمني للحظر بمجرد تفويض المستخدم للتنفيذ.",
     "`binding_kernel.py` remains forbidden unless explicitly authorized by a Runtime Embargo Lift PR.",
     "`Rank.CERTIFICATE`",
     "`Rank.REJECTED`",

@@ -60,6 +60,7 @@ No implicit lift by DONE status.
 No implicit lift by passing tests.
 No implicit lift by agent approval.
 No implicit lift by user delegation/authorization.
+لا رفع ضمني للحظر بمجرد تفويض المستخدم للتنفيذ.
 No partial or blanket runtime opening.
 A lift PR must explicitly list exact files/artifacts it authorizes, and all non-listed artifacts remain blocked.
 

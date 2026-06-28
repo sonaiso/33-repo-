@@ -118,6 +118,13 @@ Not authorized:
 - Runtime predicates/translators.
 - Runtime domain opening.
 
+## Kernel path checkpoint (steps 1-4)
+
+1. Runtime Embargo remains active; `binding_kernel.py` is not authorized.
+2. Any remaining gap is closed only inside audit-only scope (no runtime).
+3. No Boolean-as-proof, no manual computed verdict, and no `Rank.CERTIFICATE`.
+4. Domain/Contract/BridgeSpec/ProofObject/FailureAlignment readiness remains audit-only.
+
 ## Constitutional conclusion
 Runtime Embargo remains active.
 Kernel is not authorized.

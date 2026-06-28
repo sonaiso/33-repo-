@@ -59,6 +59,11 @@ REQUIRED_PHRASES = [
     "Next authorized work is one of:",
     "Computed Coverage Schema Only.",
     "LAFZI-C2 Contract Refinement.",
+    "## Kernel path checkpoint (steps 1-4)",
+    "Runtime Embargo remains active; `binding_kernel.py` is not authorized.",
+    "Any remaining gap is closed only inside audit-only scope (no runtime).",
+    "No Boolean-as-proof, no manual computed verdict, and no `Rank.CERTIFICATE`.",
+    "Domain/Contract/BridgeSpec/ProofObject/FailureAlignment readiness remains audit-only.",
 ]
 
 FORBIDDEN_PHRASES = [
