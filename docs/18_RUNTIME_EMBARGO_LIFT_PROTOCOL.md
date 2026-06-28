@@ -56,10 +56,12 @@ Lift does not auto-open LEXICAL_MADLUL/RELATION/IFADAH/HUKM/TANZIL.
 - domain opening without bridge
 
 ## Lift authorization boundary
+Runtime lift remains externally blocked until a future explicit Runtime Embargo Lift PR is merged.
 No implicit lift by DONE status.
 No implicit lift by passing tests.
 No implicit lift by agent approval.
 No implicit lift by user delegation/authorization.
+A task prompt, agent response, or user delegation is not a Runtime Embargo Lift PR.
 لا رفع ضمني للحظر بمجرد تفويض المستخدم للتنفيذ.
 No partial or blanket runtime opening.
 A lift PR must explicitly list exact files/artifacts it authorizes, and all non-listed artifacts remain blocked.

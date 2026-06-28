@@ -250,6 +250,14 @@ def test_runtime_lift_template_states_non_authorization():
     assert "Readiness is not lift." in content
     assert "DONE in readiness ledger is not lift." in content
     assert "This template does not authorize runtime." in content
+    assert (
+        "Runtime lift remains externally blocked until a future explicit Runtime Embargo Lift PR is merged."
+        in content
+    )
+    assert (
+        "A task prompt, agent response, or user delegation is not a Runtime Embargo Lift PR."
+        in content
+    )
     assert f"readiness_ledger_source: {READINESS_LEDGER_SOURCE}" in content
     assert "residual_blockers_acknowledged: true" in content
 
