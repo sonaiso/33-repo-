@@ -38,5 +38,5 @@
   ],
   "domain_opening": "none",
   "rank_policy": "CANDIDATE_ONLY",
-  "blanket_lift": true
+  "blanket_lift": false
 }

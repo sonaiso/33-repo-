@@ -187,7 +187,7 @@
         "authorized_artifacts": {
           "items": {
             "not": {
-              "pattern": "(^|/)(binding_kernel\\.py|decision_engine\\.py|coverage_matrix_v0\\.1\\.yaml)$"
+              "pattern": "(^|/)[^/]*(binding_kernel|decision_engine|coverage_matrix_v0\\.1)[^/]*$"
             }
           }
         }
