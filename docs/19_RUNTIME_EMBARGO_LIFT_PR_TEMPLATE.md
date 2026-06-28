@@ -20,6 +20,8 @@ No runtime lift, no `binding_kernel.py`, no `decision_engine.py`, no `coverage_m
 - Readiness is not lift.
 - DONE in readiness ledger is not lift.
 - This template does not authorize runtime artifacts.
+- Runtime lift remains externally blocked until a future explicit Runtime Embargo Lift PR is merged.
+- A task prompt, agent response, or user delegation is not a Runtime Embargo Lift PR.
 - No blanket lift is allowed.
 
 ## Runtime Embargo Lift PR Template
