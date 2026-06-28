@@ -70,9 +70,8 @@ def test_invalid_runtime_lift_request_fixture_is_schema_rejected(
 
 def test_runtime_lift_negative_fixtures_do_not_create_forbidden_runtime_artifacts():
     forbidden_paths = [
-        "binding_kernel.py",
-        "decision_engine.py",
+        "src/taaqqul_slot_geometry/runtime/binding_kernel.py",
+        "src/taaqqul_slot_geometry/runtime/decision_engine.py",
         "coverage_matrix_v0.1.yaml",
     ]
-    created_fixture_names = {path.name for path in FIXTURE_DIR.glob("invalid_*.json")}
-    assert all(name not in created_fixture_names for name in forbidden_paths)
+    assert all(not (REPO_ROOT / path).exists() for path in forbidden_paths)
