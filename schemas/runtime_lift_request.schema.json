@@ -181,6 +181,17 @@
           ]
         }
       }
+    },
+    {
+      "properties": {
+        "authorized_artifacts": {
+          "not": {
+            "contains": {
+              "pattern": "(^|/)(binding_kernel|decision_engine)\\.py$|(^|/)coverage_matrix_v0\\.1\\.yaml$"
+            }
+          }
+        }
+      }
     }
   ],
   "required": [
@@ -269,6 +280,38 @@
     "blanket_lift": {
       "type": "boolean",
       "const": false
+    },
+    "authorization_source": {
+      "type": "string",
+      "const": "explicit_runtime_embargo_lift_pr",
+      "description": "Audit-only discriminator: prompts, user delegation, agent responses, and readiness status are not lift authority."
+    },
+    "pr_marker": {
+      "type": "string",
+      "pattern": "^Runtime Embargo Lift PR #[1-9][0-9]*$",
+      "description": "Audit-only explicit Runtime Embargo Lift PR marker with PR number."
+    },
+    "failure_alignment_reference": {
+      "type": "string",
+      "const": "docs/13_FAILURE_ALIGNMENT_CONSTITUTION.md"
+    },
+    "proof_policy_reference": {
+      "type": "string",
+      "const": "docs/08_PROOF_OBJECT_CONSTITUTION.md"
+    },
+    "artifact_authorization_scope": {
+      "type": "string",
+      "const": "exact_artifacts_only"
+    },
+    "requested_runtime_surface": {
+      "type": "string",
+      "enum": [
+        "schema_only",
+        "proof_evaluator",
+        "bridge_evaluator",
+        "coverage_runner"
+      ],
+      "description": "Audit-only runtime surface label; kernel/decision engine by default is not accepted."
     }
   }
 }
