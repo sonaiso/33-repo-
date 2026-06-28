@@ -21,6 +21,8 @@ REPO_ROOT = Path(__file__).parent.parent.parent
 
 
 def _artifact(path: str = "src/taaqqul_slot_geometry/L1/example_future_runtime.py"):
+    """Build a hypothetical exact artifact request; the file is not created."""
+
     return RuntimeLiftArtifact(
         artifact_path=path,
         artifact_kind="MODULE",

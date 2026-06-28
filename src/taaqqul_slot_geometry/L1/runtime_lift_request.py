@@ -6,6 +6,7 @@ Authority: docs/00_MAQOOL_CONSTITUTION.md §5; docs/12_RUNTIME_EMBARGO_CONSTITUT
 """
 from __future__ import annotations
 
+import re
 from dataclasses import dataclass, field
 from typing import FrozenSet, Literal, Tuple
 
@@ -42,6 +43,7 @@ _VALID_AUDIT_STATUSES = frozenset(
 )
 _FORBIDDEN_ARTIFACT_PATH_PARTS = ("*", "~", "..", "//", "\\", "\x00", "\r", "\n", "\t")
 _BROAD_ARTIFACT_SCOPES = frozenset({"runtime", "src/taaqqul_slot_geometry/runtime"})
+_PR_MARKER_PATTERN = re.compile(r"(^|[^A-Za-z])PR([^A-Za-z]|$)|#[1-9][0-9]*")
 
 
 def _require_trace_ref(trace_ref: str) -> None:
@@ -124,7 +126,7 @@ class RuntimeLiftRequest:
         _require_non_empty(self.request_id)
         if self.request_source_type != _VALID_REQUEST_SOURCE:
             raise ValueError(FailureCode.M_CX_02.value)
-        if not self.pr_ref or ("PR" not in self.pr_ref and "#" not in self.pr_ref):
+        if not self.pr_ref or not _PR_MARKER_PATTERN.search(self.pr_ref):
             raise ValueError(FailureCode.M_00_22.value)
         if not self.requested_artifacts:
             raise ValueError(FailureCode.M_00_22.value)
@@ -177,7 +179,12 @@ class RuntimeLiftAuditResult:
 
 
 def audit_runtime_lift_request_shape(request: RuntimeLiftRequest) -> RuntimeLiftAuditResult:
-    """Validate a future lift request shape without producing runtime authority."""
+    """Validate a future lift request shape without producing runtime authority.
+
+    request: RuntimeLiftRequest already accepted by the audit-only constructor.
+    returns: RuntimeLiftAuditResult with runtime_lift_authorized always False.
+    trace_ref: docs/18_RUNTIME_EMBARGO_LIFT_PROTOCOL.md
+    """
 
     return RuntimeLiftAuditResult(
         request_id=request.request_id,
