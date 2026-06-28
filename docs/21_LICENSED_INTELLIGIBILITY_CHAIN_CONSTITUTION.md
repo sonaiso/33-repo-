@@ -297,6 +297,11 @@ surface_residuals_visible
 
 ## 6. S3 — LafziForm (المدلول اللفظي / الصورة اللفظية)
 
+> The canonical English name for this stage is `LafziForm`. The Arabic label
+> records both the classical phrasings `المدلول اللفظي` (the lafzi signified)
+> and `الصورة اللفظية` (the lafzi form); both refer to the same audit stage
+> and are not two layers.
+
 ### Definition
 
 This is the layer of the lafzi form — not the layer of meaning.

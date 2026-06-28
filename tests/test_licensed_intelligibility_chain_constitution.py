@@ -133,16 +133,10 @@ def test_full_s0_to_s13_chain_is_enumerated_in_order() -> None:
         ("S13", "Mafhoom", "المفهوم"),
     )
 
-    last_index = -1
     for stage_id, english, arabic in stages:
         assert stage_id in content, f"missing stage id: {stage_id}"
         assert english in content, f"missing english stage name: {english}"
         assert arabic in content, f"missing arabic stage name: {arabic}"
-        idx = content.find(f"{stage_id}  ") if len(stage_id) == 2 else content.find(
-            f"{stage_id} "
-        )
-        # ordering check using the §2 chain block
-        # (presence already asserted above; order asserted below via index)
     # Strict ordering across S0..S13 in the document:
     indices = [content.find(f"\n{stage_id} ") for stage_id, _, _ in stages]
     for i, idx in enumerate(indices):
