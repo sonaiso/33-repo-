@@ -18,7 +18,7 @@ from tests.test_runtime_lift_request_schema import (
 )
 
 
-REPO_ROOT = Path(__file__).parent.parent
+REPO_ROOT = Path(__file__).resolve().parents[1]
 FIXTURE_DIR = REPO_ROOT / "tests" / "fixtures" / "runtime_lift_requests"
 MANIFEST_PATH = FIXTURE_DIR / "manifest.json"
 REQUIRED_INVALID_CASES = [
