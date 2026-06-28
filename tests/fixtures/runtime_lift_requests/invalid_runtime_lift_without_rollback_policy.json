@@ -1,0 +1,43 @@
+{
+  "lift_type": "LIFT_TYPE_SCHEMA_RUNTIME",
+  "authorization_source": "explicit_runtime_embargo_lift_pr",
+  "pr_marker": "Runtime Embargo Lift PR #126",
+  "authorized_artifacts": [
+    "schemas/runtime_lift_request.schema.json"
+  ],
+  "artifact_authorization_scope": "exact_artifacts_only",
+  "requested_runtime_surface": "schema_only",
+  "non_scope_artifacts": [
+    "src/taaqqul_slot_geometry/L1/binding_kernel.py",
+    "src/taaqqul_slot_geometry/L1/decision_engine.py",
+    "src/taaqqul_slot_geometry/runtime/binding_kernel.py",
+    "src/taaqqul_slot_geometry/runtime/decision_engine.py",
+    "src/taaqqul_slot_geometry/core/binding_kernel.py",
+    "src/taaqqul_slot_geometry/core/decision_engine.py",
+    "coverage_matrix_v0.1.yaml",
+    "docs/coverage_matrix_v0.1.yaml",
+    "data/coverage_matrix_v0.1.yaml",
+    "schemas/coverage_matrix_v0.1.yaml",
+    "tests/test_binding_constraints.py",
+    "l_protocol/contracts/binding_instructions.py",
+    "l_protocol/engine/binding_kernel.py",
+    "l_protocol/engine/decision_engine.py",
+    "l_protocol/coverage_matrix_v0.1.yaml",
+    "l_protocol/tests/test_binding_constraints.py"
+  ],
+  "readiness_ledger_source": "docs/17_RUNTIME_EMBARGO_READINESS_LEDGER.md",
+  "failure_alignment_reference": "docs/13_FAILURE_ALIGNMENT_CONSTITUTION.md",
+  "proof_policy_reference": "docs/08_PROOF_OBJECT_CONSTITUTION.md",
+  "residual_blockers_acknowledged": true,
+  "negative_tests": [
+    "reject-rank-certificate",
+    "reject-rank-rejected",
+    "reject-boolean-as-proof",
+    "reject-evidence-list-as-proof",
+    "reject-domain-open-without-bridge",
+    "reject-manual-computed-verdict"
+  ],
+  "domain_opening": "none",
+  "rank_policy": "CANDIDATE_ONLY",
+  "blanket_lift": false
+}

@@ -1,0 +1,78 @@
+{
+  "trace_ref": "docs/12_RUNTIME_EMBARGO_CONSTITUTION.md; docs/18_RUNTIME_EMBARGO_LIFT_PROTOCOL.md",
+  "description": "Audit-only manifest for invalid Runtime Embargo Lift request fixtures. These fixtures do not authorize runtime.",
+  "required_invalid_cases": [
+    "prompt_authorization_only",
+    "user_delegation_only",
+    "agent_response_only",
+    "readiness_status_only",
+    "broad_runtime_lift_without_artifacts",
+    "artifact_wildcard_lift",
+    "unspecified_artifact_scope",
+    "runtime_lift_without_explicit_pr_number_or_pr_marker",
+    "runtime_lift_without_failure_alignment_reference",
+    "runtime_lift_without_proof_policy_reference",
+    "runtime_lift_without_rollback_policy",
+    "runtime_lift_that_attempts_kernel_or_decision_engine_by_default",
+    "runtime_lift_that_mentions_binding_kernel_py_without_exact_explicit_artifact_authorization",
+    "runtime_lift_that_mentions_coverage_matrix_v0_1_yaml_before_computed_coverage_schema_authorization"
+  ],
+  "cases": [
+    {
+      "case_id": "prompt_authorization_only",
+      "file": "invalid_prompt_authorization_only.json"
+    },
+    {
+      "case_id": "user_delegation_only",
+      "file": "invalid_user_delegation_only.json"
+    },
+    {
+      "case_id": "agent_response_only",
+      "file": "invalid_agent_response_only.json"
+    },
+    {
+      "case_id": "readiness_status_only",
+      "file": "invalid_readiness_status_only.json"
+    },
+    {
+      "case_id": "broad_runtime_lift_without_artifacts",
+      "file": "invalid_broad_runtime_lift_without_artifacts.json"
+    },
+    {
+      "case_id": "artifact_wildcard_lift",
+      "file": "invalid_artifact_wildcard_lift.json"
+    },
+    {
+      "case_id": "unspecified_artifact_scope",
+      "file": "invalid_unspecified_artifact_scope.json"
+    },
+    {
+      "case_id": "runtime_lift_without_explicit_pr_number_or_pr_marker",
+      "file": "invalid_runtime_lift_without_explicit_pr_number_or_pr_marker.json"
+    },
+    {
+      "case_id": "runtime_lift_without_failure_alignment_reference",
+      "file": "invalid_runtime_lift_without_failure_alignment_reference.json"
+    },
+    {
+      "case_id": "runtime_lift_without_proof_policy_reference",
+      "file": "invalid_runtime_lift_without_proof_policy_reference.json"
+    },
+    {
+      "case_id": "runtime_lift_without_rollback_policy",
+      "file": "invalid_runtime_lift_without_rollback_policy.json"
+    },
+    {
+      "case_id": "runtime_lift_that_attempts_kernel_or_decision_engine_by_default",
+      "file": "invalid_runtime_lift_that_attempts_kernel_or_decision_engine_by_default.json"
+    },
+    {
+      "case_id": "runtime_lift_that_mentions_binding_kernel_py_without_exact_explicit_artifact_authorization",
+      "file": "invalid_runtime_lift_that_mentions_binding_kernel_py_without_exact_explicit_artifact_authorization.json"
+    },
+    {
+      "case_id": "runtime_lift_that_mentions_coverage_matrix_v0_1_yaml_before_computed_coverage_schema_authorization",
+      "file": "invalid_runtime_lift_that_mentions_coverage_matrix_v0_1_yaml_before_computed_coverage_schema_authorization.json"
+    }
+  ]
+}
