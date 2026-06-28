@@ -12,7 +12,7 @@ from typing import FrozenSet, Literal, Tuple
 
 from taaqqul_slot_geometry.constitution.failure_taxonomy import FailureCode
 
-Rank = Literal["CANDIDATE"]
+RuntimeLiftRank = Literal["CANDIDATE"]
 RuntimeLiftArtifactKind = Literal["MODULE", "TEST", "DOC", "DATA", "SCHEMA"]
 # Includes forbidden source labels so contract construction can explicitly reject
 # prompt/user/agent/readiness claims as non-lift authorization shapes.
@@ -46,7 +46,8 @@ _VALID_AUDIT_STATUSES = frozenset(
 _FORBIDDEN_ARTIFACT_PATH_PARTS = ("*", "~", "..", "//", "\\", "\x00", "\r", "\n", "\t")
 _BROAD_ARTIFACT_SCOPES = frozenset({"runtime", "src/taaqqul_slot_geometry/runtime"})
 # Accept "PR" only as a standalone marker, or "#" only with a positive PR number.
-_PR_MARKER_PATTERN = re.compile(r"(^|[^A-Za-z])PR([^A-Za-z]|$)|#[1-9][0-9]*")
+_PR_WORD_PATTERN = re.compile(r"(^|[^A-Za-z])PR([^A-Za-z]|$)")
+_PR_NUMBER_PATTERN = re.compile(r"#[1-9][0-9]*")
 
 
 def _require_trace_ref(trace_ref: str) -> None:
@@ -90,7 +91,7 @@ class RuntimeLiftArtifact:
     artifact_kind: RuntimeLiftArtifactKind
     exact_scope_only: bool
     trace_ref: str = RUNTIME_LIFT_TRACE_REF
-    rank: Rank = "CANDIDATE"
+    rank: RuntimeLiftRank = "CANDIDATE"
     residuals: FrozenSet[str] = field(default_factory=frozenset)
 
     def __post_init__(self) -> None:
@@ -122,17 +123,22 @@ class RuntimeLiftRequest:
     prompt_delegation_disclaimed: bool
     runtime_status: RuntimeLiftStatus = "EXTERNALLY_BLOCKED"
     trace_ref: str = RUNTIME_LIFT_TRACE_REF
-    rank: Rank = "CANDIDATE"
+    rank: RuntimeLiftRank = "CANDIDATE"
     residuals: FrozenSet[str] = field(default_factory=frozenset)
 
     def __post_init__(self) -> None:
         _require_non_empty(self.request_id)
         if self.request_source_type != _VALID_REQUEST_SOURCE:
             raise ValueError(FailureCode.M_CX_02.value)
-        if not self.pr_ref or not _PR_MARKER_PATTERN.search(self.pr_ref):
+        if not self.pr_ref or not (
+            _PR_WORD_PATTERN.search(self.pr_ref)
+            or _PR_NUMBER_PATTERN.search(self.pr_ref)
+        ):
             raise ValueError(FailureCode.M_00_22.value)
         if not self.requested_artifacts:
             raise ValueError(FailureCode.M_00_22.value)
+        # Runtime payloads can arrive from untyped fixture data; reject malformed
+        # entries before audit result construction.
         if not all(isinstance(artifact, RuntimeLiftArtifact) for artifact in self.requested_artifacts):
             raise ValueError(FailureCode.M_00_22.value)
         if not self.authority_refs or not all(self.authority_refs):
@@ -164,7 +170,7 @@ class RuntimeLiftAuditResult:
     blocking_reasons: Tuple[str, ...]
     checked_artifacts: Tuple[str, ...]
     trace_ref: str = RUNTIME_LIFT_TRACE_REF
-    rank: Rank = "CANDIDATE"
+    rank: RuntimeLiftRank = "CANDIDATE"
     residuals: FrozenSet[str] = field(default_factory=frozenset)
 
     def __post_init__(self) -> None:
