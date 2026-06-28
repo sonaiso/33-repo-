@@ -52,14 +52,14 @@ Arabic statement:
 
 ```text
 الطبقة =
-  شرط إمكان
-  + حد أدنى مكتمل
+  شرط الإمكان
+  + الحد الأدنى المكتمل
   + فتح
   + طلب
-  + حفظ هوية
+  + حفظ الهوية
   + إغلاق
   + بقية
-  + انتقال مرخّص
+  + الانتقال المرخّص
 ```
 
 If a unit cannot answer these eight questions, it remains raw material,
@@ -249,4 +249,3 @@ audit-only hardening, such as:
 
 Opening L2 requires a separate explicit authorization. Opening L3 requires L2
 closure first.
-
