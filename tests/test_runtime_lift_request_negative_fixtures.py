@@ -57,15 +57,14 @@ def test_runtime_lift_negative_fixture_manifest_lists_required_cases():
     assert [case["case_id"] for case in manifest["cases"]] == REQUIRED_INVALID_CASES
 
 
-@pytest.mark.parametrize("case_id,file_name", _fixture_cases())
+@pytest.mark.parametrize("_case_id,file_name", _fixture_cases())
 def test_invalid_runtime_lift_request_fixture_is_schema_rejected(
-    case_id: str,
+    _case_id: str,
     file_name: str,
 ):
     payload = json.loads((FIXTURE_DIR / file_name).read_text(encoding="utf-8"))
     with pytest.raises((ValidationError, ValueError)):
         _validate_payload(_load_schema(), payload)
-    assert case_id in REQUIRED_INVALID_CASES
 
 
 def test_runtime_lift_negative_fixtures_do_not_create_forbidden_runtime_artifacts():
