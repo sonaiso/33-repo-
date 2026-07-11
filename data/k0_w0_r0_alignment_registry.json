@@ -1,0 +1,32 @@
+{
+  "trace_ref": "docs/54_GPT_ANSWER_REASONABLENESS_OBJECTIVE_LAW.md; docs/55_KNOWLEDGE_ORIGINS_FOR_GPT_REASONABLENESS_LAW.md; docs/20_AGENT_AUTONOMY_RUNBOOK.md",
+  "scope": "AUDIT_ONLY_ALIGNMENT_REGISTRY",
+  "runtime_status": "EMBARGOED",
+  "statuses": {
+    "K0": {
+      "status": "partial",
+      "law_doc": "docs/55_KNOWLEDGE_ORIGINS_FOR_GPT_REASONABLENESS_LAW.md",
+      "implementation_refs": [
+        "src/taaqqul_slot_geometry/L1/postulate.py"
+      ],
+      "test_refs": []
+    },
+    "R0": {
+      "status": "partial",
+      "law_doc": "docs/54_GPT_ANSWER_REASONABLENESS_OBJECTIVE_LAW.md",
+      "implementation_refs": [],
+      "test_refs": []
+    },
+    "W0": {
+      "status": "missing",
+      "law_doc": "",
+      "implementation_refs": [],
+      "test_refs": []
+    }
+  },
+  "forbidden_runtime_artifacts": [
+    "src/taaqqul_slot_geometry/runtime/binding_kernel.py",
+    "src/taaqqul_slot_geometry/runtime/decision_engine.py",
+    "coverage_matrix_v0.1.yaml"
+  ]
+}
