@@ -1,10 +1,39 @@
 {
   "trace_ref": "docs/54_GPT_ANSWER_REASONABLENESS_OBJECTIVE_LAW.md; docs/55_KNOWLEDGE_ORIGINS_FOR_GPT_REASONABLENESS_LAW.md; docs/20_AGENT_AUTONOMY_RUNBOOK.md",
   "scope": "AUDIT_ONLY_ALIGNMENT_REGISTRY",
-  "runtime_status": "EMBARGOED",
+  "runtime_policy": {
+    "existing_l0_pipeline": "ACTIVE_LEGACY_LIMITED",
+    "binding_kernel": "EMBARGOED",
+    "decision_kernel": "EMBARGOED",
+    "w0_runtime": "EMBARGOED"
+  },
   "statuses": {
     "K0": {
       "law_status": "partial",
+      "contract_status": "partial",
+      "runtime_status": "embargoed",
+      "test_status": "partial",
+      "closure_status": "unproven",
+      "law_doc": "docs/55_KNOWLEDGE_ORIGINS_FOR_GPT_REASONABLENESS_LAW.md",
+      "completion_criteria": [
+        "Typed origin-binding contract exists with deterministic validation outcomes.",
+        "Evidence provenance is represented in audit artifacts and validated by tests.",
+        "Contract residual handling is explicit for missing/contradictory origins."
+      ],
+      "evidence_refs": [
+        "docs/55_KNOWLEDGE_ORIGINS_FOR_GPT_REASONABLENESS_LAW.md",
+        "src/taaqqul_slot_geometry/L1/postulate.py",
+        "tests/L1/test_l1_postulate.py"
+      ],
+      "implementation_refs": [
+        "src/taaqqul_slot_geometry/L1/postulate.py"
+      ],
+      "test_refs": [
+        "tests/L1/test_l1_postulate.py"
+      ],
+      "known_gaps": [
+        "No typed origin store/governor contract for runtime evaluation.",
+        "No proof-dependency graph for invalidation propagation."
       "vocabulary_status": "partial",
       "registry_status": "present",
       "contract_status": "missing",
@@ -25,6 +54,30 @@
     },
     "R0": {
       "law_status": "partial",
+      "contract_status": "partial",
+      "runtime_status": "missing",
+      "test_status": "partial",
+      "closure_status": "unproven",
+      "law_doc": "docs/54_GPT_ANSWER_REASONABLENESS_OBJECTIVE_LAW.md",
+      "completion_criteria": [
+        "Decision contract separates rank/decision/conflict/residual states.",
+        "Reasonableness verdict path is evidence-linked and failure-coded.",
+        "Regression tests cover approved/rejected/deferred decision states."
+      ],
+      "evidence_refs": [
+        "docs/54_GPT_ANSWER_REASONABLENESS_OBJECTIVE_LAW.md",
+        "src/taaqqul_slot_geometry/L1/postulate.py",
+        "tests/L1/test_l1_postulate.py"
+      ],
+      "implementation_refs": [
+        "src/taaqqul_slot_geometry/L1/postulate.py"
+      ],
+      "test_refs": [
+        "tests/L1/test_l1_postulate.py"
+      ],
+      "known_gaps": [
+        "No independent governor decision contract in source.",
+        "No typed conflict state model wired to reasonableness decisions."
       "vocabulary_status": "partial",
       "registry_status": "present",
       "contract_status": "missing",
@@ -42,19 +95,24 @@
     },
     "W0": {
       "law_status": "missing",
-      "vocabulary_status": "missing",
-      "registry_status": "missing",
       "contract_status": "missing",
-      "runtime_status": "missing",
-      "behavioral_test_status": "missing",
-      "registry_test_status": "present",
+      "runtime_status": "embargoed",
+      "test_status": "missing",
+      "closure_status": "unproven",
       "law_doc": "",
-      "evidence_refs": [],
-      "contract_refs": [],
-      "runtime_refs": [],
-      "behavioral_test_refs": [],
-      "registry_test_refs": [
-        "tests/test_k0_w0_r0_alignment_registry.py"
+      "completion_criteria": [
+        "Minimal word architecture contract exists from written trace to formal path.",
+        "Root/weight readiness contracts are typed and separately testable.",
+        "PRECOMP handoff contract blocks unresolved lexical residuals."
+      ],
+      "evidence_refs": [
+        "docs/20_AGENT_AUTONOMY_RUNBOOK.md"
+      ],
+      "implementation_refs": [],
+      "test_refs": [],
+      "known_gaps": [
+        "No rebased W0 contract module exists in src.",
+        "No W0 runtime-eligible kernel under current embargo posture."
       ]
     }
   },
