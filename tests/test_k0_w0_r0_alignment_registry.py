@@ -33,8 +33,8 @@ def test_registry_declares_exactly_k0_w0_r0_statuses() -> None:
     statuses = _registry()["statuses"]
     assert isinstance(statuses, dict)
     assert set(statuses.keys()) == {"K0", "W0", "R0"}
-    for key in ("K0", "W0", "R0"):
-        status = statuses[key]["status"]
+    for entry in statuses.values():
+        status = entry["status"]
         assert status in ALLOWED_STATUSES
 
 
