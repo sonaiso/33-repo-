@@ -163,8 +163,6 @@ class MinimumClosureProbe:
             raise ValueError(FailureCode.M_00_22.value)
         if not self.identity_proofs and self.claimed_identity_kinds:
             raise ValueError(FailureCode.M_CX_30.value)
-        if not self.identity_proofs:
-            raise ValueError(FailureCode.M_CX_30.value)
 
 
 @dataclass(frozen=True)
@@ -274,9 +272,7 @@ def audit_minimum_closure(
     blocking_residuals = tuple(probe.blocking_residuals)
 
     failure_codes: list[FailureCode] = []
-    if missing_fields:
-        failure_codes.append(FailureCode.M_00_22)
-    if missing_evidence_requirements:
+    if missing_fields or missing_evidence_requirements:
         failure_codes.append(FailureCode.M_00_22)
     if missing_identity_requirements:
         failure_codes.append(FailureCode.M_CX_30)
@@ -507,10 +503,21 @@ def issue_mrk_proof(
     """Issue audit-only MRKProof from a successful minimum closure audit result."""
     if audit_result.status != "MINIMUM_CLOSURE_MET":
         raise ValueError(FailureCode.M_00_22.value)
+    if contract.carrier_kind != probe.carrier_kind or audit_result.carrier_kind != contract.carrier_kind:
+        raise ValueError(FailureCode.M_CX_02.value)
+    if audit_result.contract_id != contract.contract_id or audit_result.contract_version != contract.contract_version:
+        raise ValueError(FailureCode.M_00_22.value)
+    if audit_result.trace_ref != probe.trace_ref:
+        raise ValueError(FailureCode.M_01_14.value)
+    if audit_result.rank != probe.rank:
+        raise ValueError(FailureCode.M_01_16.value)
 
     evidence_refs = tuple(
         evidence_ref
         for proof in probe.evidence_proofs
+        if proof.domain_id == probe.carrier_id
+        and proof.trace_ref == probe.trace_ref
+        and proof.trace.trace_ref == probe.trace_ref
         for evidence_ref in proof.evidence_refs
     )
     if not evidence_refs:
@@ -530,7 +537,12 @@ def issue_mrk_proof(
         checked_gate_ids=(f"{contract.contract_id}@{contract.contract_version}",),
         checked_bridge_ids=(contract.constitutional_source,),
         preserved_identity_refs=tuple(
-            ref for proof in probe.identity_proofs for ref in proof.preserved_identity_refs
+            ref
+            for proof in probe.identity_proofs
+            if proof.domain_id == probe.carrier_id
+            and proof.trace_ref == probe.trace_ref
+            and proof.trace.trace_ref == probe.trace_ref
+            for ref in proof.preserved_identity_refs
         ),
         forbidden_outputs_checked=("runtime_authority", "layer_opening"),
         evidence_refs=evidence_refs,

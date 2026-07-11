@@ -7,11 +7,13 @@ import pytest
 
 from taaqqul_slot_geometry.constitution.failure_taxonomy import FailureCode
 from taaqqul_slot_geometry.L1.minimum_closure_contracts import (
+    EvidenceRequirement,
     MINIMUM_CLOSURE_CARRIERS,
     MINIMUM_CLOSURE_CONTRACT_BY_CARRIER,
     MINIMUM_CLOSURE_CONTRACTS,
     MINIMUM_CLOSURE_CONTRACT_ID,
     MINIMUM_CLOSURE_CONTRACT_VERSION,
+    MinimumClosureContract,
     MinimumClosureProbe,
     audit_minimum_closure,
     audit_minimum_closure_for_carrier,
@@ -329,6 +331,23 @@ def test_claimed_identity_without_identity_proofs_is_rejected() -> None:
         )
 
 
+def test_empty_identity_proofs_without_claims_is_auditable() -> None:
+    base_probe = _valid_probe("SoundUnitCandidate")
+    probe = MinimumClosureProbe(
+        carrier_kind=base_probe.carrier_kind,
+        carrier_id=base_probe.carrier_id,
+        present_fields=base_probe.present_fields,
+        evidence_proofs=base_probe.evidence_proofs,
+        identity_proofs=(),
+        trace_ref=base_probe.trace_ref,
+    )
+    result = audit_minimum_closure_for_carrier(probe)
+
+    assert result.status == "MINIMUM_CLOSURE_NOT_MET"
+    assert result.identity_requirements_met is False
+    assert FailureCode.M_CX_30 in result.failure_codes
+
+
 def test_contract_probe_carrier_mismatch_is_rejected() -> None:
     contract = MINIMUM_CLOSURE_CONTRACT_BY_CARRIER["LetterUnitCandidate"]
     with pytest.raises(ValueError, match=FailureCode.M_CX_02.value):
@@ -364,3 +383,90 @@ def test_issue_mrk_proof_requires_met_status() -> None:
 
     with pytest.raises(ValueError, match=FailureCode.M_00_22.value):
         issue_mrk_proof(contract=contract, audit_result=failed_result, probe=failed_probe)
+
+
+def test_issue_mrk_proof_rejects_carrier_mismatch() -> None:
+    probe = _valid_probe("SoundUnitCandidate")
+    sound_contract = MINIMUM_CLOSURE_CONTRACT_BY_CARRIER[probe.carrier_kind]
+    result = audit_minimum_closure(sound_contract, probe)
+    mismatched_contract = MINIMUM_CLOSURE_CONTRACT_BY_CARRIER["LetterUnitCandidate"]
+
+    with pytest.raises(ValueError, match=FailureCode.M_CX_02.value):
+        issue_mrk_proof(contract=mismatched_contract, audit_result=result, probe=probe)
+
+
+def test_issue_mrk_proof_filters_mismatched_envelope_proofs() -> None:
+    probe = _valid_probe("SoundUnitCandidate")
+    contract = MINIMUM_CLOSURE_CONTRACT_BY_CARRIER[probe.carrier_kind]
+    result = audit_minimum_closure(contract, probe)
+
+    mismatched_evidence = _evidence_proof(
+        kind=contract.required_evidence[0].accepted_kinds[0],
+        carrier_id="other-carrier",
+        trace_ref=probe.trace_ref,
+        suffix="mismatched-evidence",
+    )
+    mismatched_identity = _identity_proof(
+        kind="NonRequiredIdentity",
+        carrier_id="other-carrier",
+        trace_ref=probe.trace_ref,
+        suffix="mismatched-identity",
+    )
+    proof = issue_mrk_proof(
+        contract=contract,
+        audit_result=result,
+        probe=MinimumClosureProbe(
+            carrier_kind=probe.carrier_kind,
+            carrier_id=probe.carrier_id,
+            present_fields=probe.present_fields,
+            evidence_proofs=probe.evidence_proofs + (mismatched_evidence,),
+            identity_proofs=probe.identity_proofs + (mismatched_identity,),
+            trace_ref=probe.trace_ref,
+            residuals=probe.residuals,
+        ),
+    )
+
+    assert "ev::mismatched-evidence" not in proof.evidence_refs
+    assert contract.required_identity[0].identity_kind in proof.preserved_identity_refs
+    assert "NonRequiredIdentity" not in proof.preserved_identity_refs
+
+
+def test_evidence_requirement_minimum_matches_semantics() -> None:
+    base_probe = _valid_probe("SoundUnitCandidate")
+    base_contract = MINIMUM_CLOSURE_CONTRACT_BY_CARRIER[base_probe.carrier_kind]
+    at_least_two_contract = MinimumClosureContract(
+        carrier_kind=base_contract.carrier_kind,
+        required_fields=base_contract.required_fields,
+        required_evidence=(
+            EvidenceRequirement(
+                requirement_id="two_of_two_required",
+                accepted_kinds=("kind-a", "kind-b"),
+                minimum_matches=2,
+            ),
+        ),
+        required_identity=base_contract.required_identity,
+    )
+    matching_probe = MinimumClosureProbe(
+        carrier_kind=base_probe.carrier_kind,
+        carrier_id=base_probe.carrier_id,
+        present_fields=base_probe.present_fields,
+        evidence_proofs=(
+            _evidence_proof("kind-a", base_probe.carrier_id, base_probe.trace_ref, "kinda"),
+            _evidence_proof("kind-b", base_probe.carrier_id, base_probe.trace_ref, "kindb"),
+        ),
+        identity_proofs=base_probe.identity_proofs,
+        trace_ref=base_probe.trace_ref,
+    )
+    one_match_probe = MinimumClosureProbe(
+        carrier_kind=base_probe.carrier_kind,
+        carrier_id=base_probe.carrier_id,
+        present_fields=base_probe.present_fields,
+        evidence_proofs=(_evidence_proof("kind-a", base_probe.carrier_id, base_probe.trace_ref, "kinda"),),
+        identity_proofs=base_probe.identity_proofs,
+        trace_ref=base_probe.trace_ref,
+    )
+
+    assert audit_minimum_closure(at_least_two_contract, matching_probe).status == "MINIMUM_CLOSURE_MET"
+    failing_result = audit_minimum_closure(at_least_two_contract, one_match_probe)
+    assert failing_result.status == "MINIMUM_CLOSURE_NOT_MET"
+    assert failing_result.missing_evidence_requirements == ("two_of_two_required",)
