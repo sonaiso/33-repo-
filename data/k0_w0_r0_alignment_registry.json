@@ -4,24 +4,58 @@
   "runtime_status": "EMBARGOED",
   "statuses": {
     "K0": {
-      "status": "partial",
+      "law_status": "partial",
+      "vocabulary_status": "partial",
+      "registry_status": "present",
+      "contract_status": "missing",
+      "runtime_status": "embargoed",
+      "behavioral_test_status": "missing",
+      "registry_test_status": "present",
       "law_doc": "docs/55_KNOWLEDGE_ORIGINS_FOR_GPT_REASONABLENESS_LAW.md",
-      "implementation_refs": [
+      "evidence_refs": [
         "src/taaqqul_slot_geometry/L1/postulate.py"
       ],
-      "test_refs": []
+      "contract_refs": [],
+      "runtime_refs": [],
+      "behavioral_test_refs": [],
+      "registry_test_refs": [
+        "tests/L1/test_l1_postulate.py",
+        "tests/test_k0_w0_r0_alignment_registry.py"
+      ]
     },
     "R0": {
-      "status": "partial",
+      "law_status": "partial",
+      "vocabulary_status": "partial",
+      "registry_status": "present",
+      "contract_status": "missing",
+      "runtime_status": "missing",
+      "behavioral_test_status": "missing",
+      "registry_test_status": "present",
       "law_doc": "docs/54_GPT_ANSWER_REASONABLENESS_OBJECTIVE_LAW.md",
-      "implementation_refs": [],
-      "test_refs": []
+      "evidence_refs": [],
+      "contract_refs": [],
+      "runtime_refs": [],
+      "behavioral_test_refs": [],
+      "registry_test_refs": [
+        "tests/test_k0_w0_r0_alignment_registry.py"
+      ]
     },
     "W0": {
-      "status": "missing",
+      "law_status": "missing",
+      "vocabulary_status": "missing",
+      "registry_status": "missing",
+      "contract_status": "missing",
+      "runtime_status": "missing",
+      "behavioral_test_status": "missing",
+      "registry_test_status": "present",
       "law_doc": "",
-      "implementation_refs": [],
-      "test_refs": []
+      "evidence_refs": [],
+      "contract_refs": [],
+      "runtime_refs": [],
+      "behavioral_test_refs": [],
+      "registry_test_refs": [
+        "tests/test_k0_w0_r0_alignment_registry.py"
+      ]
     }
   },
   "forbidden_runtime_artifacts": [

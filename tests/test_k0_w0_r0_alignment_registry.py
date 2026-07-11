@@ -12,6 +12,7 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parents[1]
 REGISTRY_PATH = REPO_ROOT / "data" / "k0_w0_r0_alignment_registry.json"
 ALLOWED_STATUSES = {"present", "partial", "missing"}
+ALLOWED_RUNTIME_STATUSES = {"missing", "embargoed"}
 
 
 def _registry() -> dict[str, object]:
@@ -34,8 +35,13 @@ def test_registry_declares_exactly_k0_w0_r0_statuses() -> None:
     assert isinstance(statuses, dict)
     assert set(statuses.keys()) == {"K0", "W0", "R0"}
     for entry in statuses.values():
-        status = entry["status"]
-        assert status in ALLOWED_STATUSES
+        assert entry["law_status"] in ALLOWED_STATUSES
+        assert entry["vocabulary_status"] in ALLOWED_STATUSES
+        assert entry["registry_status"] in ALLOWED_STATUSES
+        assert entry["contract_status"] in ALLOWED_STATUSES
+        assert entry["runtime_status"] in ALLOWED_RUNTIME_STATUSES
+        assert entry["behavioral_test_status"] in ALLOWED_STATUSES
+        assert entry["registry_test_status"] in ALLOWED_STATUSES
 
 
 def test_k0_r0_w0_current_alignment_state() -> None:
@@ -44,17 +50,47 @@ def test_k0_r0_w0_current_alignment_state() -> None:
     r0 = statuses["R0"]
     w0 = statuses["W0"]
 
-    assert k0["status"] == "partial"
+    assert k0["law_status"] == "partial"
+    assert k0["vocabulary_status"] == "partial"
+    assert k0["registry_status"] == "present"
+    assert k0["contract_status"] == "missing"
+    assert k0["runtime_status"] == "embargoed"
+    assert k0["behavioral_test_status"] == "missing"
+    assert k0["registry_test_status"] == "present"
     assert k0["law_doc"] == "docs/55_KNOWLEDGE_ORIGINS_FOR_GPT_REASONABLENESS_LAW.md"
-    assert "src/taaqqul_slot_geometry/L1/postulate.py" in k0["implementation_refs"]
+    assert "src/taaqqul_slot_geometry/L1/postulate.py" in k0["evidence_refs"]
+    assert k0["contract_refs"] == []
+    assert k0["runtime_refs"] == []
+    assert k0["behavioral_test_refs"] == []
+    assert "tests/L1/test_l1_postulate.py" in k0["registry_test_refs"]
 
-    assert r0["status"] == "partial"
+    assert r0["law_status"] == "partial"
+    assert r0["vocabulary_status"] == "partial"
+    assert r0["registry_status"] == "present"
+    assert r0["contract_status"] == "missing"
+    assert r0["runtime_status"] == "missing"
+    assert r0["behavioral_test_status"] == "missing"
+    assert r0["registry_test_status"] == "present"
     assert r0["law_doc"] == "docs/54_GPT_ANSWER_REASONABLENESS_OBJECTIVE_LAW.md"
+    assert r0["evidence_refs"] == []
+    assert r0["contract_refs"] == []
+    assert r0["runtime_refs"] == []
+    assert r0["behavioral_test_refs"] == []
+    assert "tests/test_k0_w0_r0_alignment_registry.py" in r0["registry_test_refs"]
 
-    assert w0["status"] == "missing"
+    assert w0["law_status"] == "missing"
+    assert w0["vocabulary_status"] == "missing"
+    assert w0["registry_status"] == "missing"
+    assert w0["contract_status"] == "missing"
+    assert w0["runtime_status"] == "missing"
+    assert w0["behavioral_test_status"] == "missing"
+    assert w0["registry_test_status"] == "present"
     assert w0["law_doc"] == ""
-    assert w0["implementation_refs"] == []
-    assert w0["test_refs"] == []
+    assert w0["evidence_refs"] == []
+    assert w0["contract_refs"] == []
+    assert w0["runtime_refs"] == []
+    assert w0["behavioral_test_refs"] == []
+    assert "tests/test_k0_w0_r0_alignment_registry.py" in w0["registry_test_refs"]
 
 
 def test_registry_file_references_exist_when_declared() -> None:
@@ -63,8 +99,24 @@ def test_registry_file_references_exist_when_declared() -> None:
         law_doc = entry["law_doc"]
         if law_doc:
             assert (REPO_ROOT / law_doc).exists()
-        for rel_path in [*entry["implementation_refs"], *entry["test_refs"]]:
+        for rel_path in [
+            *entry["evidence_refs"],
+            *entry["contract_refs"],
+            *entry["runtime_refs"],
+            *entry["behavioral_test_refs"],
+            *entry["registry_test_refs"],
+        ]:
             assert (REPO_ROOT / rel_path).exists()
+
+
+def test_registry_separates_evidence_contract_runtime_and_tests() -> None:
+    statuses = _registry()["statuses"]
+    for entry in statuses.values():
+        assert isinstance(entry["evidence_refs"], list)
+        assert isinstance(entry["contract_refs"], list)
+        assert isinstance(entry["runtime_refs"], list)
+        assert isinstance(entry["behavioral_test_refs"], list)
+        assert isinstance(entry["registry_test_refs"], list)
 
 
 def test_registry_keeps_forbidden_runtime_artifacts_absent() -> None:
