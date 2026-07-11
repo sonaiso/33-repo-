@@ -92,8 +92,11 @@ def test_k0_r0_w0_current_alignment_state() -> None:
     assert w0["test_status"] == "missing"
     assert w0["closure_status"] == "unproven"
     assert w0["law_doc"] == ""
-    assert w0["implementation_refs"] == []
-    assert w0["test_refs"] == []
+    assert w0["evidence_refs"] == []
+    assert w0["contract_refs"] == []
+    assert w0["runtime_refs"] == []
+    assert w0["behavioral_test_refs"] == []
+    assert "tests/test_k0_w0_r0_alignment_registry.py" in w0["registry_test_refs"]
 
 
 def test_registry_file_references_exist_when_declared() -> None:
@@ -103,7 +106,24 @@ def test_registry_file_references_exist_when_declared() -> None:
         if law_doc:
             assert (REPO_ROOT / law_doc).exists()
         for rel_path in [*entry["evidence_refs"], *entry["implementation_refs"], *entry["test_refs"]]:
+        for rel_path in [
+            *entry["evidence_refs"],
+            *entry["contract_refs"],
+            *entry["runtime_refs"],
+            *entry["behavioral_test_refs"],
+            *entry["registry_test_refs"],
+        ]:
             assert (REPO_ROOT / rel_path).exists()
+
+
+def test_registry_separates_evidence_contract_runtime_and_tests() -> None:
+    statuses = _registry()["statuses"]
+    for entry in statuses.values():
+        assert isinstance(entry["evidence_refs"], list)
+        assert isinstance(entry["contract_refs"], list)
+        assert isinstance(entry["runtime_refs"], list)
+        assert isinstance(entry["behavioral_test_refs"], list)
+        assert isinstance(entry["registry_test_refs"], list)
 
 
 def test_registry_keeps_forbidden_runtime_artifacts_absent() -> None:
