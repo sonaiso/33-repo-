@@ -35,12 +35,13 @@ L0 (Object Language)  →  L1 (Formal Description)  →  L2 (Logical)  →  L3 (
 
 | Layer | Domain | Status | Entities |
 |-------|--------|--------|----------|
-| L0 | لغة موضوعية (صوت، خط، دلالة) | ✅ Complete | 13 entities |
+| L0 | لغة موضوعية (صوت، خط، دلالة) | ✅ Entity Inventory Complete | 13 entities |
 | L1 | وصف رسمي (تعريفات، مسلّمات، جسور) | ✅ Formally Closed | Closure declared |
 | L2 | منطق (قياس، برهان، إغلاق) | 🔒 Locked | 0/4 |
 | L3 | واقع (أدلة، مناط، حكم، تنزيل) | 🔒 Locked | 0/5 |
 
 \* راجع `docs/L1_CLOSURE_DECLARATION.md` لأدلة الإغلاق والتحقق.
+\* راجع `data/k0_w0_r0_alignment_registry.json` لتفصيل حالة K0/W0/R0 على مستويات law/contract/runtime/test/closure.
 
 ---
 
@@ -168,7 +169,7 @@ python -m ci.constitutional_guard --source-dir src
 
 ## الخطوة التالية
 
-**الحالة الحالية:** L1 مُغلق رسميًا وفق `docs/L1_CLOSURE_DECLARATION.md`.
+**الحالة الحالية:** L1 مُغلق رسميًا وفق `docs/L1_CLOSURE_DECLARATION.md`، بينما K0/W0/R0 ما زالت Audit Alignment وليست إعلان إغلاق معماري تنفيذي.
 
 **الخطوة التالية المرخّصة:** PR-14 لفتح L2 صراحةً؛ وحتى ذلك يبقى L2/L3 مقفلين.
 
