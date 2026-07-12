@@ -30,7 +30,7 @@ def test_anchor_nisba_doc_is_audit_only_and_locked_layer_safe() -> None:
         assert phrase in content
 
 
-def test_corrected_chain_includes_anchor_and_nisba_sequence() -> None:
+def test_corrected_chain_includes_anchor_relation_and_mantuq_sequence() -> None:
     """trace_ref: docs/65 §Corrected Chain."""
     content = _content()
     section = content.split("## Corrected Chain", maxsplit=1)[1]
@@ -38,17 +38,19 @@ def test_corrected_chain_includes_anchor_and_nisba_sequence() -> None:
 
     stages = (
         "WADI-L0",
-        "ANCHOR-L0",
+        "ONTO-ANCHOR-L0",
+        "DAL-MADLUL-LEXICAL-COUPLING-L0",
         "LEXEME-L0",
         "PRECOMP-L0",
-        "NISBA-K0",
-        "NISBA-C1",
-        "NISBA-G1",
+        "RELATION-READINESS-L0",
+        "RELATION-KERNEL-L0",
+        "ROLE-BINDING-L0",
+        "CASE-CONSTRUCTION-EVIDENCE-L0",
         "COMP-L0",
-        "CASE-L0",
         "IFADAH-L0",
         "MAQAM-L0",
-        "SPEECH-ACT-L0",
+        "DAL-MADLUL-CONTEXTUAL-COUPLING-L0",
+        "MANTUQ-EXPLICIT-L0",
     )
     chain_lines = [line.strip() for line in chain_block.splitlines()]
     indices = [chain_lines.index(stage) for stage in stages]
@@ -63,6 +65,7 @@ def test_boundary_separation_law_is_explicit() -> None:
         "النسبة ليست العامل",
         "والعامل ليس الطرف",
         "والعلامة الإعرابية ليست المقام",
+        "والمقام لا ينشئ النسبة",
         "None of these layers substitutes for another layer.",
     ):
         assert phrase in content
@@ -73,12 +76,27 @@ def test_anchor_types_and_nisba_gates_are_recorded() -> None:
     content = _content()
 
     for phrase in (
-        "GenusAnchor",
-        "SourceAttributeAnchor",
+        "LexemeAnchorBundle",
+        "CarrierAnchor",
+        "AttributeSourceAnchor",
         "RelationInterfaceAnchor",
         "ReferenceInterfaceAnchor",
-        "NisbahKernel",
-        "NisbahPossible is not NisbahEstablished.",
+        "RelationKernel",
+        "RelationReadinessCandidate is not LicensedRelation.",
+    ):
+        assert phrase in content
+
+
+def test_weight_and_case_boundaries_are_explicit() -> None:
+    """trace_ref: docs/65 §Weight Geometry Law and §Composition, Case, Ifadah, Maqam."""
+    content = _content()
+
+    for phrase in (
+        "Weight -> AnchorReadinessGeometry",
+        "Weight does not imply Predication.",
+        "I'rabMarker -> SyntacticRoleEvidence",
+        "I'rabMarker does not imply Maqam.",
+        "CaseMarker does not imply FinalRole.",
     ):
         assert phrase in content
 
@@ -88,7 +106,12 @@ def test_precomp_to_comp_direct_jump_is_prohibited() -> None:
     content = _content()
 
     assert "PRECOMP-L0 -> COMP-L0" in content
-    for gate in ("NISBA-K0", "NISBA-C1", "NISBA-G1"):
+    for gate in (
+        "RELATION-READINESS-L0",
+        "RELATION-KERNEL-L0",
+        "ROLE-BINDING-L0",
+        "CASE-CONSTRUCTION-EVIDENCE-L0",
+    ):
         assert gate in content
     assert "anti-patterns" in content
 
