@@ -33,6 +33,7 @@ Runtime embargo remains active.
 - Formalize that isolated lexeme outputs anchors/interfaces, not final relation.
 - Formalize an explicit Nisba stage between `PRECOMP-L0` and `COMP-L0`.
 - Preserve separation between relation, operator, operand, case, and maqam.
+- Prevent hidden leaps from readiness/evidence into established relation.
 
 ## Non-scope
 
@@ -61,21 +62,24 @@ AUG-L0
 WEIGHT-L0R
 LAFZI-L0
 WADI-L0
-ANCHOR-L0
+ONTO-ANCHOR-L0
+DAL-MADLUL-LEXICAL-COUPLING-L0
 LEXEME-L0
 PRECOMP-L0
 
-NISBA-K0
-NISBA-C1
-NISBA-G1
+RELATION-READINESS-L0
+RELATION-KERNEL-L0
+ROLE-SLOT-L0
+ROLE-BINDING-L0
+CASE-CONSTRUCTION-EVIDENCE-L0
 COMP-L0
-CASE-L0
 IFADAH-L0
 MAQAM-L0
-SPEECH-ACT-L0
+DAL-MADLUL-CONTEXTUAL-COUPLING-L0
+MANTUQ-EXPLICIT-L0
 ```
 
-The `ANCHOR-L0` stage is mandatory. It prevents overloading `WADI-L0` and
+The `ONTO-ANCHOR-L0` stage is mandatory. It prevents overloading `WADI-L0` and
 `LEXEME-L0` with relation-creating responsibilities.
 
 ## Boundary Separation Law
@@ -83,7 +87,8 @@ The `ANCHOR-L0` stage is mandatory. It prevents overloading `WADI-L0` and
 ```text
 النسبة ليست العامل،
 والعامل ليس الطرف،
-والعلامة الإعرابية ليست المقام.
+والعلامة الإعرابية ليست المقام،
+والمقام لا ينشئ النسبة.
 ```
 
 - Nisba is an independent typed binding structure.
@@ -97,8 +102,9 @@ None of these layers substitutes for another layer.
 
 The isolated lexeme may license anchor bundles only:
 
-- `GenusAnchor`
-- `SourceAttributeAnchor`
+- `LexemeAnchorBundle`
+- `CarrierAnchor`
+- `AttributeSourceAnchor`
 - `RelationInterfaceAnchor`
 - `ReferenceInterfaceAnchor`
 
@@ -108,7 +114,20 @@ truth.
 ```text
 RelationInterface does not imply ActualRelation.
 ReferenceCandidate is not ResolvedReference.
-GenusAnchor does not imply ActualIndividual.
+CarrierAnchor does not imply ActualMembership.
+SourceCandidate is not PredicatedAttribute.
+```
+
+## Weight Geometry Law
+
+Weight is readiness geometry, not an ontology verdict and not relation
+establishment.
+
+```text
+Weight -> AnchorReadinessGeometry
+Weight does not imply OntologyMembership.
+Weight does not imply ActualRole.
+Weight does not imply Predication.
 ```
 
 ## Isolated Lexeme Contract Boundary
@@ -126,33 +145,34 @@ and usage domains. It must not output:
 
 ## Nisba Kernel Law
 
-Nisba focus is a directed typed binding:
+Nisba focus is a licensed directed typed binding:
 
 ```text
-NisbahKernel =
-  <RelationType, Relata, Direction, SharedDomain, Scope, BindingLicense>
+RelationKernel =
+  <RelationType, TypedSlots, Direction, Scope, BindingLicense>
 ```
 
-Minimal Nisba possibility gates include:
+Readiness gates produce candidate readiness only:
 
-- identified relata;
-- typed relation;
-- arity satisfied;
-- shared domain;
-- direction defined;
-- scope defined;
-- interface compatibility;
-- evidence sufficient;
-- no defeating difference;
-- no blocking preventer.
+- TypedRelata;
+- AnchorSufficiency;
+- RelationTypeCandidate;
+- SharedDomainCandidate;
+- DirectionCandidate;
+- ScopeCandidate;
+- RoleSlotCandidate;
+- EvidenceRefs;
+- BlockerAudit.
 
 ```text
-NisbahPossible is not NisbahEstablished.
+RelationReadinessCandidate is not LicensedRelation.
+RelationKernel + CompatibleRelata + TransitionPermit -> LicensedRelation.
 ```
 
 ## Operator and Operand Boundary
 
-Operator is not the root of relation. Operand is not merely linear adjacency.
+Operator (governor candidate) is not the root of relation. Operand (governed
+candidate) is not merely linear adjacency.
 
 ```text
 OperatorPossible is not OperatorActive.
@@ -174,9 +194,16 @@ TemporalSuccession does not imply Causation.
 
 ## Composition, Case, Ifadah, Maqam
 
-`COMP-L0` requires licensed Nisba, not just lexical adjacency.
+`COMP-L0` requires licensed relation, not just lexical adjacency.
 
-`CASE-L0` is formal role marking inside composition and does not replace maqam.
+`CASE-CONSTRUCTION-EVIDENCE-L0` is syntactic evidence and does not replace
+`MAQAM-L0`.
+
+```text
+I'rabMarker -> SyntacticRoleEvidence
+I'rabMarker does not imply Maqam.
+CaseMarker does not imply FinalRole.
+```
 
 `MAQAM-L0` constrains reference, interpretation, and speech-act felicity, but:
 
@@ -195,9 +222,10 @@ PRECOMP-L0 -> COMP-L0
 without explicit validation layers:
 
 ```text
-NISBA-K0
-NISBA-C1
-NISBA-G1
+RELATION-READINESS-L0
+RELATION-KERNEL-L0
+ROLE-BINDING-L0
+CASE-CONSTRUCTION-EVIDENCE-L0
 ```
 
 Rejected shortcuts are anti-patterns, not implementation plans.
