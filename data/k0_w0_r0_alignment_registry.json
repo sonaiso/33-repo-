@@ -34,21 +34,11 @@
       "known_gaps": [
         "No typed origin store/governor contract for runtime evaluation.",
         "No proof-dependency graph for invalidation propagation."
-      "vocabulary_status": "partial",
-      "registry_status": "present",
-      "contract_status": "missing",
-      "runtime_status": "embargoed",
-      "behavioral_test_status": "missing",
-      "registry_test_status": "present",
-      "law_doc": "docs/55_KNOWLEDGE_ORIGINS_FOR_GPT_REASONABLENESS_LAW.md",
-      "evidence_refs": [
-        "src/taaqqul_slot_geometry/L1/postulate.py"
       ],
       "contract_refs": [],
       "runtime_refs": [],
       "behavioral_test_refs": [],
       "registry_test_refs": [
-        "tests/L1/test_l1_postulate.py",
         "tests/test_k0_w0_r0_alignment_registry.py"
       ]
     },
@@ -78,18 +68,12 @@
       "known_gaps": [
         "No independent governor decision contract in source.",
         "No typed conflict state model wired to reasonableness decisions."
-      "vocabulary_status": "partial",
-      "registry_status": "present",
-      "contract_status": "missing",
-      "runtime_status": "missing",
-      "behavioral_test_status": "missing",
-      "registry_test_status": "present",
-      "law_doc": "docs/54_GPT_ANSWER_REASONABLENESS_OBJECTIVE_LAW.md",
-      "evidence_refs": [],
+      ],
       "contract_refs": [],
       "runtime_refs": [],
       "behavioral_test_refs": [],
       "registry_test_refs": [
+        "tests/L1/test_l1_postulate.py",
         "tests/test_k0_w0_r0_alignment_registry.py"
       ]
     },
@@ -106,13 +90,18 @@
         "PRECOMP handoff contract blocks unresolved lexical residuals."
       ],
       "evidence_refs": [
-        "docs/20_AGENT_AUTONOMY_RUNBOOK.md"
       ],
       "implementation_refs": [],
       "test_refs": [],
       "known_gaps": [
         "No rebased W0 contract module exists in src.",
         "No W0 runtime-eligible kernel under current embargo posture."
+      ],
+      "contract_refs": [],
+      "runtime_refs": [],
+      "behavioral_test_refs": [],
+      "registry_test_refs": [
+        "tests/test_k0_w0_r0_alignment_registry.py"
       ]
     }
   },

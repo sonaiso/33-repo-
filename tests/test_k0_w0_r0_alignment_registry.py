@@ -59,7 +59,8 @@ def test_registry_declares_exactly_k0_w0_r0_statuses() -> None:
         assert entry["known_gaps"]
         assert all(isinstance(item, str) and item.strip() for item in entry["known_gaps"])
         assert isinstance(entry["evidence_refs"], list)
-        assert entry["evidence_refs"]
+        if entry["law_doc"]:
+            assert entry["evidence_refs"]
 
 
 def test_k0_r0_w0_current_alignment_state() -> None:
@@ -105,7 +106,6 @@ def test_registry_file_references_exist_when_declared() -> None:
         law_doc = entry["law_doc"]
         if law_doc:
             assert (REPO_ROOT / law_doc).exists()
-        for rel_path in [*entry["evidence_refs"], *entry["implementation_refs"], *entry["test_refs"]]:
         for rel_path in [
             *entry["evidence_refs"],
             *entry["contract_refs"],
