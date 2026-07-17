@@ -155,6 +155,13 @@ from taaqqul_slot_geometry.core.lexical_path_gate import (
     VerbGenerator,
     process_lexical_item,
 )
+from taaqqul_slot_geometry.core.identity_simulation_law import (
+    IdentitySimulationLaw,
+    IdentitySimulationResult,
+    IdentitySimulationVerdict,
+    SimulationTransitionSnapshot,
+    evaluate_identity_simulation,
+)
 
 __all__ = [
     "Rank",
@@ -301,4 +308,10 @@ __all__ = [
     "ResidualSink",
     "VerbGenerator",
     "process_lexical_item",
+    # Identity Simulation Law (audit-only)
+    "IdentitySimulationLaw",
+    "IdentitySimulationResult",
+    "IdentitySimulationVerdict",
+    "SimulationTransitionSnapshot",
+    "evaluate_identity_simulation",
 ]
