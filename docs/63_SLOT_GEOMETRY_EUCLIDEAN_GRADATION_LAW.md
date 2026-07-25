@@ -123,23 +123,55 @@ be treated as a licensed layer.
 No answer may be replaced by silence, probability, context alone, or a bare
 assertion. Residuals remain visible until discharged by a later licensed gate.
 
-## Foundational Pre-word Chain
+## Foundational Pre-word Topology
 
-This law recognizes the following pre-word movement as audit vocabulary only:
+This law records a topology correction for pre-word audit vocabulary:
+carriers, licenses, and path selection are not one genus and must not be forced
+into one linear list.
 
 ```text
-Letter
-  → Vowel
-  → LetterWithVowel
-  → WaqfWasl
-  → Syllable
-  → RootOrAugmentCandidate
-  → BuiltOrDeclinableCandidate
-  → WeightCandidate
+CarrierLayer = {Trace, LetterCarrier, HarakaCarrier, SyllableCarrier, SurfaceCarrier, RootStemCarrier, WeightCarrier}
+LicenseKind = {TraceToLetter, TraceToHaraka, LetterHarakaLink, SyllableClosure, SurfacePathSelection, RootStemToWeight}
+PathKind = {RootStem, Jamid, Mabni, Particle, Pronoun, Residual}
 ```
 
-Each arrow is a gate. No arrow is free movement. No pre-word gate may produce
-meaning, ifādah, hukm, truth, or yaqīn by itself.
+Correct pre-word movement (audit-only):
+
+```text
+Trace
+  ↘ TraceToLetter → LetterCarrier
+  ↗ TraceToHaraka → HarakaCarrier
+
+LetterCarrier × HarakaCarrier × LetterHarakaLink
+  → SyllableCarrier
+
+SyllableCarrier+ × SyllableClosure × SurfacePathSelection
+  → SurfaceCarrier
+
+SurfaceCarrier × PathGate
+  → RootStemCarrier | JamidCarrier | MabniCarrier | ParticleCarrier | PronounCarrier | ResidualCarrier
+
+RootStemCarrier × RootStemToWeight
+  → WeightCarrier
+```
+
+License artifacts (for example: `LetterHarakaLink`, `PathGate`) witness the
+validity of a transition. They are not ontological replacement layers.
+No pre-word gate may produce meaning, ifādah, hukm, truth, or yaqīn by itself.
+
+## No-Leap Topology Rule
+
+No-Leap must be enforced from a declared direct-step relation, not from numeric
+index distance alone.
+
+```text
+DirectStep(a, b) is the source of transition truth.
+depth/index are derived metadata only.
+DirectStep(a, b) ⇒ depth(b) = depth(a) + 1
+```
+
+Equal or close depth does not license transition between sibling branches
+(for example: `JamidCarrier` and `MabniCarrier`).
 
 ## Foundational Post-word Chain
 

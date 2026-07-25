@@ -91,11 +91,12 @@ def test_chains_are_recorded_without_opening_later_layers() -> None:
     content = _content()
 
     for phrase in (
-        "LetterWithVowel",
-        "WaqfWasl",
-        "Syllable",
-        "RootOrAugmentCandidate",
-        "WeightCandidate",
+        "CarrierLayer = {Trace, LetterCarrier, HarakaCarrier",
+        "LicenseKind = {TraceToLetter, TraceToHaraka, LetterHarakaLink",
+        "PathKind = {RootStem, Jamid, Mabni, Particle, Pronoun, Residual}",
+        "LetterCarrier × HarakaCarrier × LetterHarakaLink",
+        "SurfaceCarrier × PathGate",
+        "RootStemCarrier × RootStemToWeight",
         "GenusCandidate",
         "SentenceCandidate",
         "RelationCandidate",
@@ -104,6 +105,19 @@ def test_chains_are_recorded_without_opening_later_layers() -> None:
         "TruthCandidate",
         "YaqinCandidate",
         "The chain above does not open L2, L3, or runtime.",
+    ):
+        assert phrase in content
+
+
+def test_topology_no_leap_uses_direct_step_not_depth_only() -> None:
+    """trace_ref: docs/63_SLOT_GEOMETRY_EUCLIDEAN_GRADATION_LAW.md §No-Leap Topology Rule."""
+    content = _content()
+
+    for phrase in (
+        "DirectStep(a, b) is the source of transition truth.",
+        "depth/index are derived metadata only.",
+        "DirectStep(a, b) ⇒ depth(b) = depth(a) + 1",
+        "Equal or close depth does not license transition between sibling branches",
     ):
         assert phrase in content
 
