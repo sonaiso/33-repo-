@@ -70,8 +70,23 @@ class ReferenceLayer(str, Enum):
     TANZIL = "tanzil"           # A11: Application to reality
 
 
-# Canonical layer ordering for adjacency verification
+# Canonical layer ordering (derived metadata only; not the source of no-leap truth)
 REFERENCE_LAYER_INDEX: dict[str, int] = {layer.value: i for i, layer in enumerate(ReferenceLayer)}
+
+# Canonical direct-step graph (source of no-leap truth for transition-mode references)
+REFERENCE_DIRECT_STEPS: frozenset[tuple[ReferenceLayer, ReferenceLayer]] = frozenset({
+    (ReferenceLayer.DIGITAL, ReferenceLayer.GLYPH),
+    (ReferenceLayer.GLYPH, ReferenceLayer.LETTER_MARK),
+    (ReferenceLayer.LETTER_MARK, ReferenceLayer.VOCALIZED),
+    (ReferenceLayer.VOCALIZED, ReferenceLayer.SYLLABLE),
+    (ReferenceLayer.SYLLABLE, ReferenceLayer.LAFZ),
+    (ReferenceLayer.LAFZ, ReferenceLayer.MUFRAD),
+    (ReferenceLayer.MUFRAD, ReferenceLayer.WORD),
+    (ReferenceLayer.WORD, ReferenceLayer.COMPOSITION),
+    (ReferenceLayer.COMPOSITION, ReferenceLayer.IFADAH),
+    (ReferenceLayer.IFADAH, ReferenceLayer.HUKM),
+    (ReferenceLayer.HUKM, ReferenceLayer.TANZIL),
+})
 
 
 # ══════════════════════════════════════════════════════════════════════════════
@@ -408,32 +423,29 @@ class AlgebraicReference:
         self._check_adjacency()
 
     def _check_adjacency(self) -> None:
-        """Enforce No-Leap Axiom: source and target must be adjacent or same.
+        """Enforce No-Leap Axiom via direct-step topology.
 
         Origin: docs/00_MAQOOL_CONSTITUTION.md §5 Rule 8
 
         Same-layer references are only valid for REFINEMENT-mode types.
         """
-        src_idx = REFERENCE_LAYER_INDEX[self.source_layer.value]
-        tgt_idx = REFERENCE_LAYER_INDEX[self.target_layer.value]
-        distance = abs(src_idx - tgt_idx)
         mode = REFERENCE_TYPE_MODE.get(self.reference_type, ReferenceMode.TRANSITION)
 
         if mode == ReferenceMode.REFINEMENT:
             # Refinement must be same-layer
-            if distance != 0:
+            if self.source_layer != self.target_layer:
                 raise ValueError(
                     f"{FailureCode.M_CX_29.value}: "
                     f"refinement reference {self.reference_type.value} must be same-layer, "
                     f"got {self.source_layer.value} → {self.target_layer.value}"
                 )
         else:
-            # Transition must be to adjacent layer (distance == 1 exactly)
-            if distance != 1:
+            # Transition must be an explicitly licensed direct step in the topology graph
+            if (self.source_layer, self.target_layer) not in REFERENCE_DIRECT_STEPS:
                 raise ValueError(
                     f"{FailureCode.M_CX_29.value}: "
                     f"transition from {self.source_layer.value} to {self.target_layer.value} "
-                    f"requires distance=1, got distance={distance}"
+                    "is not a licensed direct step"
                 )
 
     @property

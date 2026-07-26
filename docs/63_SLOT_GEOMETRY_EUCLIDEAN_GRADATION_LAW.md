@@ -65,6 +65,27 @@ Arabic statement:
 If a unit cannot answer these eight questions, it remains raw material,
 possibility, or candidate. It is not a licensed layer.
 
+## Minimal Formal Core First (Pre-Lean Constraint)
+
+Before proving full Arabic-layer theorems in Lean, work must close one minimal
+formal core first. Proof work must not attempt all concepts at once.
+
+The minimal core must be sufficient to prove meta-theorems over transitions,
+then expand to Arabic layers in licensed increments.
+
+Missing obligations to close in this core:
+
+```text
+1) model semantics
+2) transition composition
+3) path execution
+4) residual/trace algebra
+5) correspondence theorems
+```
+
+No claim of formal completion is valid before these five obligations are
+declared and test-audited.
+
 ## Scope
 
 This document establishes the foundational audit law for treating every
@@ -123,23 +144,218 @@ be treated as a licensed layer.
 No answer may be replaced by silence, probability, context alone, or a bare
 assertion. Residuals remain visible until discharged by a later licensed gate.
 
-## Foundational Pre-word Chain
+## Foundational Pre-word Topology
 
-This law recognizes the following pre-word movement as audit vocabulary only:
+This law records a topology correction for pre-word audit vocabulary:
+carriers, licenses, and path selection are not one genus and must not be forced
+into one linear list.
 
 ```text
-Letter
-  → Vowel
-  → LetterWithVowel
-  → WaqfWasl
-  → Syllable
-  → RootOrAugmentCandidate
-  → BuiltOrDeclinableCandidate
-  → WeightCandidate
+CarrierLayer = {Trace, LetterCarrier, HarakaCarrier, SyllableCarrier, SurfaceCarrier, RootStemCarrier, WeightCarrier}
+LicenseKind = {TraceToLetter, TraceToHaraka, LetterHarakaLink, SyllableClosure, SurfacePathSelection, RootStemToWeight}
+PathKind = {RootStem, Jamid, Mabni, Particle, Pronoun, Residual}
 ```
 
-Each arrow is a gate. No arrow is free movement. No pre-word gate may produce
-meaning, ifādah, hukm, truth, or yaqīn by itself.
+Correct pre-word movement (audit-only):
+
+```text
+Trace
+  ↘ TraceToLetter → LetterCarrier
+  ↗ TraceToHaraka → HarakaCarrier
+
+LetterCarrier × HarakaCarrier × LetterHarakaLink
+  → SyllableCarrier
+
+SyllableCarrier+ × SyllableClosure × SurfacePathSelection
+  → SurfaceCarrier
+
+SurfaceCarrier × PathGate
+  → RootStemCarrier | JamidCarrier | MabniCarrier | ParticleCarrier | PronounCarrier | ResidualCarrier
+
+RootStemCarrier × RootStemToWeight
+  → WeightCarrier
+```
+
+License artifacts (for example: `LetterHarakaLink`, `PathGate`) witness the
+validity of a transition. They are not ontological replacement layers.
+No pre-word gate may produce meaning, ifādah, hukm, truth, or yaqīn by itself.
+
+## Many-Sorted Transition Algebra
+
+The core topology is not a single linear algebra. It is a typed directed graph
+with multi-source edges (audit-only formal vocabulary):
+
+```text
+G = (V, E)
+V = {Trace, Letter, Haraka, LinkLicense, Syllable, Surface, PathGate, RootStem, Weight}
+```
+
+Unary edges include:
+
+```text
+Trace → Letter
+Trace → Haraka
+LinkLicense → Syllable
+Syllable → Surface
+Surface → PathGate
+PathGate → RootStem
+RootStem → Weight
+```
+
+Binary edge:
+
+```text
+Letter × Haraka → LinkLicense
+```
+
+The required shape is:
+
+```text
+Many-Sorted Partial Hypergraph Algebra
+```
+
+## Carrier/Gate Separation
+
+`Layer` and `Gate` must not be collapsed into one ontological kind.
+
+```text
+CarrierKind = {trace, letter, haraka, syllable, surface, rootStem, weight}
+GateKind = {traceRecognition, letterRecognition, harakaRecognition, linkLicense, syllableClosure, pathSelection, rootStemLicense, weightLicense}
+```
+
+Transition specification must be typed:
+
+```text
+TransitionSpec := {sources : List CarrierKind, target : CarrierKind, gate : GateKind}
+```
+
+If proof-bearing certificates are modeled as carriers, they must remain
+distinguished from linguistic carriers:
+
+```text
+LinguisticCarrier ≠ ProofCarrier
+```
+
+## Operation Family (Omega)
+
+Operations are not names only. They are typed partial functions with explicit
+policies:
+
+```text
+ω : C_s1 × ... × C_sn × Evidence ⇀ C_t
+ω = <Sources, Target, Pre, Transform, Post, Invariants, RankPolicy, ResidualPolicy, TracePolicy>
+```
+
+Examples (audit-only):
+
+```text
+ω_link   : Letter × Haraka × LinkEvidence ⇀ Syllable
+ω_root   : Surface × PathEvidence ⇀ RootStem
+ω_weight : RootStem × Surface × WeightEvidence ⇀ WeightCandidate
+```
+
+## Typed Partial Composition
+
+Composition is edge-indexed partial composition, not unrestricted merge:
+
+```text
+⊕_e : P_i × P_j ⇀ P_k
+```
+
+Defined only when all checks hold:
+
+```text
+TypeCompatible + DomainCompatible + IdentityCompatible + ConstraintsSatisfied + EvidenceAvailable
+```
+
+Therefore:
+
+```text
+Letter ⊕_link Haraka      is defined
+Letter ⊕_weight Haraka    is undefined
+```
+
+## Decision Kernel Boundary
+
+`DK` is verifier/dispatcher only:
+
+```text
+DK : TransitionRequest → DecisionCertificate
+DecisionCertificate = Approved(certificate) | Rejected(failures) | Suspended(residuals)
+```
+
+`DK` may validate and execute licensed operations. It may not invent new
+topology, edges, gates, or operations.
+
+## Semantic Model Obligation
+
+Syntactic contracts require explicit semantic interpretation:
+
+```text
+M = <[[Carrier]], [[Omega]], [[Gate]], [[Evidence]], [[Rank]], [[Residual]]>
+```
+
+Transition truth is model-based:
+
+```text
+M ⊨ Transition(ω, c⃗, c')
+iff [[ω]](c⃗) = c'
+```
+
+with gate, invariant, rank, trace, and residual constraints satisfied.
+
+## Core Theorem Obligations
+
+Minimum theorem obligations for core closure:
+
+```text
+1) Structural consistency:
+   Approved(r, c) → ¬ Rejected(r, c)  (same request/context/topology version)
+
+2) Decision exclusivity:
+   Decision(r) ∈ {Approved, Rejected, Suspended}
+   and cases are pairwise disjoint
+
+3) Soundness:
+   DK(r) = Approved(c) → M ⊨ c
+```
+
+Soundness should decompose into auditable lemmas:
+
+```text
+TypeCorrect + DomainCorrect + TopologyCorrect + IdentityPreserved + RankBounded + TraceComplete + BlockingResidualsAbsent
+```
+
+## Identity Preservation Refinement
+
+Identity preservation must not default to full state equality. Separate:
+
+```text
+AnchorIdentity
+StateIdentity
+```
+
+Required preservation shape:
+
+```text
+SameAnchor + NewInstance + LicensedLineageExtension
+```
+
+So outputs preserve origin anchor while permitting licensed state evolution.
+
+## No-Leap Topology Rule
+
+No-Leap must be enforced from a declared direct-step relation, not from numeric
+index distance alone.
+
+```text
+DirectStep(a, b) is the source of transition truth.
+depth/index are derived metadata only.
+DirectStep(a, b) ⇒ depth(b) = depth(a) + 1
+```
+
+Equal or close depth does not license transition between sibling branches
+(for example: `JamidCarrier` and `MabniCarrier`).
 
 ## Foundational Post-word Chain
 
