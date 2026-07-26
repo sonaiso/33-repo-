@@ -122,6 +122,58 @@ def test_topology_no_leap_uses_direct_step_not_depth_only() -> None:
         assert phrase in content
 
 
+def test_minimal_formal_core_first_is_explicit_before_lean() -> None:
+    """trace_ref: docs/63_SLOT_GEOMETRY_EUCLIDEAN_GRADATION_LAW.md §Minimal Formal Core First."""
+    content = _content()
+
+    for phrase in (
+        "Before proving full Arabic-layer theorems in Lean",
+        "Missing obligations to close in this core:",
+        "1) model semantics",
+        "2) transition composition",
+        "3) path execution",
+        "4) residual/trace algebra",
+        "5) correspondence theorems",
+    ):
+        assert phrase in content
+
+
+def test_formal_algebra_sections_define_carrier_gate_omega_and_dk_scope() -> None:
+    """trace_ref: docs/63_SLOT_GEOMETRY_EUCLIDEAN_GRADATION_LAW.md §Many-Sorted/Carrier-Gate/Omega/DK."""
+    content = _content()
+
+    for phrase in (
+        "Many-Sorted Partial Hypergraph Algebra",
+        "LinguisticCarrier ≠ ProofCarrier",
+        "TransitionSpec := {sources : List CarrierKind, target : CarrierKind, gate : GateKind}",
+        "ω : C_s1 × ... × C_sn × Evidence ⇀ C_t",
+        "⊕_e : P_i × P_j ⇀ P_k",
+        "Letter ⊕_link Haraka      is defined",
+        "Letter ⊕_weight Haraka    is undefined",
+        "DK : TransitionRequest → DecisionCertificate",
+        "topology, edges, gates, or operations.",
+    ):
+        assert phrase in content
+
+
+def test_semantics_soundness_and_identity_refinement_obligations_are_declared() -> None:
+    """trace_ref: docs/63_SLOT_GEOMETRY_EUCLIDEAN_GRADATION_LAW.md §Semantic/Theorem/Identity obligations."""
+    content = _content()
+
+    for phrase in (
+        "M = <[[Carrier]], [[Omega]], [[Gate]], [[Evidence]], [[Rank]], [[Residual]]>",
+        "M ⊨ Transition(ω, c⃗, c')",
+        "Approved(r, c) → ¬ Rejected(r, c)",
+        "Decision(r) ∈ {Approved, Rejected, Suspended}",
+        "DK(r) = Approved(c) → M ⊨ c",
+        "TypeCorrect + DomainCorrect + TopologyCorrect + IdentityPreserved + RankBounded + TraceComplete + BlockingResidualsAbsent",
+        "AnchorIdentity",
+        "StateIdentity",
+        "SameAnchor + NewInstance + LicensedLineageExtension",
+    ):
+        assert phrase in content
+
+
 def test_needgate_boundary_is_explicit() -> None:
     """trace_ref: docs/63_SLOT_GEOMETRY_EUCLIDEAN_GRADATION_LAW.md §NeedGate Boundary."""
     content = _content()
