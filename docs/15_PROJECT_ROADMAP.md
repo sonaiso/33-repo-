@@ -387,6 +387,62 @@ license = BranchLicense(
 
 ---
 
+## مسار النواة الصورية Lean — Lean Formal-Core Track (مرخّص ومحدود)
+
+> ترخيص صريح ومحدود لفتح مسار Lean formal-core في نطاق واحد فقط:
+> `Letter × Haraka → Syllable`.
+> هذا المسار لا يفتح runtime، ولا يفتح L2/L3 كطبقات تنفيذية عامة، ولا يمنح
+> سلطة حكم نظامية.
+
+### Scope
+
+- بناء نواة Lean دنيا للحالة: `Letter × Haraka → Syllable`.
+- تعريف الأنواع الدنيا اللازمة لهذه الحالة فقط.
+- بناء براهين الحالة الدنيا بدون `sorry` وبدون `admit`.
+- إبقاء جميع المخرجات `audit-only` تحت Runtime Embargo.
+
+### Non-scope
+
+- لا بناء runtime kernel.
+- لا بناء decision engine.
+- لا فتح عام لـ L2 أو L3.
+- لا توسيع إلى `Surface` أو `RootStem` أو `Weight`.
+- لا إدخال حكم MAQOOL/GHAYR_MAQOOL/MU'ALLAQ.
+- لا ترقية رتبة خارج `CANDIDATE`.
+
+### ترخيص الفرع (BranchLicense)
+
+```python
+from taaqqul_slot_geometry.constitution import BranchLicense
+
+license = BranchLicense(
+    roadmap_ref="docs/15_PROJECT_ROADMAP.md §مسار النواة الصورية Lean",
+    parent_ref="Phase 1 — L1 closure with runtime embargo active",
+    trunk_complete=True,
+    motive="إغلاق النواة الصورية الدنيا قبل أي توسيع طبقي",
+    description="Lean formal-core for Letter × Haraka → Syllable only",
+    qualifying_difference="مسار برهاني صوري ضيق لا يفتح runtime ولا يفعّل سلطة قرار نظامية",
+    condition="الالتزام بنطاق انتقال واحد وعدم استخدام sorry/admit",
+    cause="تثبيت الصحة الصورية للحالة الدنيا قبل التوسعة المحافظة",
+    barrier_absent=True,
+    barrier_check_description="لا فتح runtime/L2/L3 العام، لا kernel/decision engine، لا rank promotion",
+)
+```
+
+### سلسلة PRs الصغيرة المعتمدة للمسار
+
+| PR | الهدف | المخرج |
+|----|-------|--------|
+| PR-F1 | تنفيذ النواة الصورية الدنيا | Lean formal-core scoped to `Letter × Haraka → Syllable` only, with no `sorry`/`admit` |
+
+### قيود إلزامية لهذا المسار
+
+- Runtime Embargo يبقى فعالًا بالكامل.
+- `binding_kernel.py` و `decision_engine.py` و `coverage_matrix_v0.1.yaml` تبقى محظورة.
+- أي توسعة بعد PR-F1 تتطلب ترخيصًا منفصلًا جديدًا.
+
+---
+
 ## الخطوة التالية الفورية
 
 **Prepare L1 closure declaration and roadmap reconciliation**

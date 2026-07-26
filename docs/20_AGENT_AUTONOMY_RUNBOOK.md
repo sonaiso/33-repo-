@@ -32,6 +32,7 @@ It does not allow FailureAlignment artifacts to replace `FailureCode`.
 - L0 is closed.
 - L1 work remains contract/audit bounded.
 - L2 and L3 remain locked until explicit authorization.
+- An explicit narrow authorization exists in `docs/15_PROJECT_ROADMAP.md` for a Lean formal-core pilot scoped to `Letter × Haraka → Syllable` only.
 - Euclidean Learning is `AUDIT_SANDBOX_ONLY`.
 - FailureAlignment is `AUDIT_ONLY`.
 - All constitutional entities remain permanently constrained to `rank = "CANDIDATE"` under the current constitutional law.
@@ -135,6 +136,7 @@ Allowed next-safe-step categories include:
 - documenting agent-safe workflow boundaries
 - adding schema-only constraints that do not compute verdicts
 - refining L1 contract documentation without opening runtime
+- executing the explicitly authorized Lean formal-core pilot in `docs/15_PROJECT_ROADMAP.md` for `Letter × Haraka → Syllable` only, without `sorry`/`admit` and without runtime opening
 
 ## Highest-priority safe gap queue
 
@@ -149,6 +151,7 @@ After PR #110, select the first narrow gap that still applies:
 7. Closed by PR #110: keep post-PR #110 autonomy guardrails audit-only; rejected runtime examples remain anti-patterns, not implementation plans.
 8. Current safe gap after PR #110: fix unresolved review comments or weak tests from the latest merged PRs if they stay inside audit-only guardrails.
 9. Next safe gaps after PR #110: strengthen anti-pattern guardrails, forbidden-pattern drift tests, instruction/runbook hardening, and audit-only registry/schema hardening only.
+10. Explicitly authorized narrow exception: execute one Lean formal-core PR scoped to `Letter × Haraka → Syllable` only, with no `sorry`, no `admit`, no runtime kernel, and no domain opening; keep Runtime Embargo active.
 
 Stop after exactly one queue item. If the first remaining queue item would require runtime, a kernel, domain opening, semantic decision authority, rank promotion, Boolean-as-proof, or computed verdict runtime, report `BLOCKED`.
 
