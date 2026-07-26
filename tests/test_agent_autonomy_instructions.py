@@ -11,6 +11,7 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).parent.parent
 COPILOT_INSTRUCTIONS = REPO_ROOT / ".github" / "copilot-instructions.md"
 AGENT_AUTONOMY_RUNBOOK = REPO_ROOT / "docs" / "20_AGENT_AUTONOMY_RUNBOOK.md"
+PROJECT_ROADMAP = REPO_ROOT / "docs" / "15_PROJECT_ROADMAP.md"
 
 
 COMMON_CONSTITUTIONAL_MARKERS = (
@@ -295,3 +296,20 @@ def test_agent_autonomy_runbook_includes_explicit_arabic_next_safe_step_prompt()
     """trace_ref: docs/00B_AGENT_BINDING_CONSTITUTION.md Role Boundaries."""
     content = _read_text(AGENT_AUTONOMY_RUNBOOK)
     assert ARABIC_NEXT_SAFE_STEP_PROMPT in content
+
+
+def test_roadmap_and_runbook_authorize_narrow_lean_formal_core_path():
+    """trace_ref: docs/15_PROJECT_ROADMAP.md §مسار النواة الصورية Lean; docs/20_AGENT_AUTONOMY_RUNBOOK.md."""
+    roadmap = _read_text(PROJECT_ROADMAP)
+    runbook = _read_text(AGENT_AUTONOMY_RUNBOOK)
+
+    for marker in (
+        "Lean formal-core",
+        "Letter × Haraka → Syllable",
+    ):
+        assert marker in roadmap
+        assert marker in runbook
+
+    for marker in ("sorry", "admit"):
+        assert marker in roadmap
+        assert marker in runbook
