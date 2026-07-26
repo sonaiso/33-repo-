@@ -95,7 +95,7 @@ def test_chains_are_recorded_without_opening_later_layers() -> None:
         "LicenseKind = {TraceToLetter, TraceToHaraka, LetterHarakaLink",
         "PathKind = {RootStem, Jamid, Mabni, Particle, Pronoun, Residual}",
         "LetterCarrier × HarakaCarrier × LetterHarakaLink",
-        "SurfaceCarrier × PathGate",
+        "SurfaceCarrier × SurfacePathSelection",
         "RootStemCarrier × RootStemToWeight",
         "GenusCandidate",
         "SentenceCandidate",
@@ -144,6 +144,8 @@ def test_formal_algebra_sections_define_carrier_gate_omega_and_dk_scope() -> Non
 
     for phrase in (
         "Many-Sorted Partial Hypergraph Algebra",
+        "V = CarrierKind = {Trace, Letter, Haraka, Syllable, Surface, RootStem, Weight}",
+        "`LinkLicense` and `PathGate` are gate labels, not independent graph nodes.",
         "LinguisticCarrier ≠ ProofCarrier",
         "TransitionSpec := {sources : List CarrierKind, target : CarrierKind, gate : GateKind}",
         "ω : C_s1 × ... × C_sn × Evidence ⇀ C_t",
@@ -154,6 +156,12 @@ def test_formal_algebra_sections_define_carrier_gate_omega_and_dk_scope() -> Non
         "topology, edges, gates, or operations.",
     ):
         assert phrase in content
+
+    for forbidden_phrase in (
+        "V = {Trace, Letter, Haraka, LinkLicense, Syllable, Surface, PathGate, RootStem, Weight}",
+        "Letter × Haraka → LinkLicense",
+    ):
+        assert forbidden_phrase not in content
 
 
 def test_semantics_soundness_and_identity_refinement_obligations_are_declared() -> None:

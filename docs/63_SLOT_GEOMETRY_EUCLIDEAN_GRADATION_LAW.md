@@ -169,44 +169,40 @@ LetterCarrier × HarakaCarrier × LetterHarakaLink
 SyllableCarrier+ × SyllableClosure × SurfacePathSelection
   → SurfaceCarrier
 
-SurfaceCarrier × PathGate
+SurfaceCarrier × SurfacePathSelection
   → RootStemCarrier | JamidCarrier | MabniCarrier | ParticleCarrier | PronounCarrier | ResidualCarrier
 
 RootStemCarrier × RootStemToWeight
   → WeightCarrier
 ```
 
-License artifacts (for example: `LetterHarakaLink`, `PathGate`) witness the
+License artifacts (for example: `LetterHarakaLink`, `SurfacePathSelection`) witness the
 validity of a transition. They are not ontological replacement layers.
 No pre-word gate may produce meaning, ifādah, hukm, truth, or yaqīn by itself.
 
 ## Many-Sorted Transition Algebra
 
 The core topology is not a single linear algebra. It is a typed directed graph
-with multi-source edges (audit-only formal vocabulary):
+with multi-source edges and gate-labeled transitions (audit-only formal
+vocabulary):
 
 ```text
 G = (V, E)
-V = {Trace, Letter, Haraka, LinkLicense, Syllable, Surface, PathGate, RootStem, Weight}
+V = CarrierKind = {Trace, Letter, Haraka, Syllable, Surface, RootStem, Weight}
 ```
 
-Unary edges include:
+Edges are typed by source carrier tuple, target carrier, and gate label:
 
 ```text
-Trace → Letter
-Trace → Haraka
-LinkLicense → Syllable
-Syllable → Surface
-Surface → PathGate
-PathGate → RootStem
-RootStem → Weight
+e_trace_letter : Trace                 --traceRecognition--> Letter
+e_trace_haraka : Trace                 --harakaRecognition--> Haraka
+e_link         : Letter × Haraka       --linkLicense-------> Syllable
+e_surface      : Syllable              --syllableClosure---> Surface
+e_path         : Surface               --pathSelection-----> RootStem
+e_weight       : RootStem              --weightLicense-----> Weight
 ```
 
-Binary edge:
-
-```text
-Letter × Haraka → LinkLicense
-```
+`LinkLicense` and `PathGate` are gate labels, not independent graph nodes.
 
 The required shape is:
 
