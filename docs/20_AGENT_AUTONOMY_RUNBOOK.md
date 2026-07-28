@@ -57,6 +57,7 @@ It does not allow FailureAlignment artifacts to replace `FailureCode`.
 - Completed allowed-context negative fixture coverage must not be repeated when already covered.
 - do not regress it: future autonomy must build on schema, fixtures, manifests, registries, and audit guardrails.
 - Do not convert schema fixtures into runtime cases, computed outcomes, a coverage runner, or runtime readiness.
+- Integration gap baseline is tracked in `data/integration_gap_registry.json` and enforced by `tests/test_integration_gap_registry.py`.
 
 ## Hard prohibitions
 

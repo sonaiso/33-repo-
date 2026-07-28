@@ -73,6 +73,11 @@ CURRENT_BASELINE_MARKERS = (
     "do not regress it",
 )
 
+INTEGRATION_GAP_BASELINE_MARKERS = (
+    "data/integration_gap_registry.json",
+    "tests/test_integration_gap_registry.py",
+)
+
 SAFE_GAP_QUEUE_MARKERS = (
     "After PR #110",
     "Closed by PR #105: computed coverage verdict fixture tests are strengthened",
@@ -224,6 +229,14 @@ def test_copilot_instructions_declare_current_pr_110_baseline():
     assert "PR #105" in content
     for marker in CURRENT_BASELINE_MARKERS[:8]:
         assert marker in content
+
+
+def test_instruction_docs_include_integration_gap_registry_baseline_markers():
+    """trace_ref: docs/00B_AGENT_BINDING_CONSTITUTION.md Role Boundaries."""
+    for path in (AGENT_AUTONOMY_RUNBOOK, COPILOT_INSTRUCTIONS):
+        content = _read_text(path)
+        for marker in INTEGRATION_GAP_BASELINE_MARKERS:
+            assert marker in content
 
 
 def test_schema_only_boundary_preserved_after_pr_110():
