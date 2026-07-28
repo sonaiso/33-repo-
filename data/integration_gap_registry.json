@@ -1,0 +1,74 @@
+{
+  "trace_ref": "docs/67_IMPLEMENTATION_GAP_ANALYSIS_TAAQOL_GPT_TO_33_REPO.md; docs/20_AGENT_AUTONOMY_RUNBOOK.md; docs/12_RUNTIME_EMBARGO_CONSTITUTION.md",
+  "scope": "AUDIT_ONLY_INTEGRATION_GAP_REGISTRY",
+  "selected_safe_queue_item": 9,
+  "runtime_status": "EMBARGOED",
+  "priorities": [
+    {
+      "priority": "P0",
+      "capability_group": "Constitutional docs harmonization",
+      "status": "NOW",
+      "target_scope": "docs",
+      "execution_mode": "AUDIT_ONLY",
+      "reason": "Documentation hardening is explicitly allowed inside safe gap queue item #9."
+    },
+    {
+      "priority": "P0",
+      "capability_group": "Anti-pattern guardrail wording sync",
+      "status": "NOW",
+      "target_scope": "docs/tests",
+      "execution_mode": "AUDIT_ONLY",
+      "reason": "Guardrail reinforcement is allowed without adding runtime behavior."
+    },
+    {
+      "priority": "P0",
+      "capability_group": "Forbidden-pattern drift tests",
+      "status": "NOW",
+      "target_scope": "tests",
+      "execution_mode": "AUDIT_ONLY",
+      "reason": "Anti-pattern drift tests are a declared next-safe-step."
+    },
+    {
+      "priority": "P1",
+      "capability_group": "L1 contract enrichment (shape-only)",
+      "status": "DEFER",
+      "target_scope": "src/taaqqul_slot_geometry/L1",
+      "execution_mode": "AUDIT_ONLY",
+      "reason": "Allowed only as schema/contract work; no semantic/runtime opening."
+    },
+    {
+      "priority": "P1",
+      "capability_group": "Audit registry/data alignment",
+      "status": "DEFER",
+      "target_scope": "data/tests",
+      "execution_mode": "AUDIT_ONLY",
+      "reason": "Rows must stay non-executable and mapped as AUDIT_ONLY."
+    },
+    {
+      "priority": "P2",
+      "capability_group": "Ifadah/Hukm/Manat/Tanzil entities",
+      "status": "BLOCKED",
+      "target_scope": "src/taaqqul_slot_geometry/L2-L3",
+      "execution_mode": "BLOCKED_UNTIL_AUTHORIZED",
+      "requires_explicit_constitutional_authorization": true,
+      "reason": "L2/L3 are locked and require explicit constitutional opening."
+    },
+    {
+      "priority": "P2",
+      "capability_group": "Audit layer model-client execution",
+      "status": "BLOCKED",
+      "target_scope": "runtime-facing adapters",
+      "execution_mode": "BLOCKED_UNTIL_AUTHORIZED",
+      "requires_explicit_constitutional_authorization": true,
+      "reason": "Runtime embargo remains active for runtime-boundary execution."
+    }
+  ],
+  "forbidden_runtime_artifacts": [
+    "src/taaqqul_slot_geometry/runtime/binding_kernel.py",
+    "src/taaqqul_slot_geometry/runtime/decision_engine.py",
+    "coverage_matrix_v0.1.yaml"
+  ],
+  "registry_test_refs": [
+    "tests/test_integration_gap_registry.py"
+  ]
+}
