@@ -60,6 +60,48 @@ def test_spec_declares_core_signatures_relations_and_transitions() -> None:
         assert phrase in content
 
 
+def test_spec_declares_seven_layer_discipline_and_directional_dependency() -> None:
+    """trace_ref: docs/66_FORMAL_EPISTEMIC_SYSTEM_SPECIFICATION.md §GTLC Seven-Layer Discipline."""
+    content = _content()
+
+    for phrase in (
+        "Layer 1 — Axiomatic Layer",
+        "Layer 2 — Formal Definitions",
+        "Layer 3 — Mathematical System",
+        "Layer 4 — Theorems",
+        "Layer 5 — Falsifiable Hypotheses",
+        "Layer 6 — Prototype Contract",
+        "Layer 7 — Experimental Validation Protocol",
+        "A lower layer must be logically complete without importing claims from higher layers.",
+        "A higher layer may depend on a lower layer only through explicit derivation rules.",
+        "No theorem may be used as an axiom.",
+        "No experimental result may redefine an axiom.",
+    ):
+        assert phrase in content
+
+
+def test_spec_declares_axiom_set_and_falsifiable_hypothesis_fields() -> None:
+    """trace_ref: docs/66_FORMAL_EPISTEMIC_SYSTEM_SPECIFICATION.md §Layer 1; §Layer 5."""
+    content = _content()
+
+    for phrase in (
+        "Axiom 1 (Identity)",
+        "Axiom 2 (Domain)",
+        "Axiom 3 (License)",
+        "Axiom 4 (Evidence)",
+        "Axiom 5 (Rank Bound)",
+        "Axiom 6 (Trace Effect)",
+        "Axiom 7 (Residuals)",
+        "Axiom 8 (Reopenability)",
+        "independent variable,",
+        "dependent variable,",
+        "measurement method,",
+        "acceptance/rejection criterion,",
+        "reproducible protocol.",
+    ):
+        assert phrase in content
+
+
 def test_spec_preserves_no_leap_identity_and_residual_contracts() -> None:
     """trace_ref: docs/66_FORMAL_EPISTEMIC_SYSTEM_SPECIFICATION.md §Formal Objects; §Licensed Transition Functions; §Anti-Pattern Laws."""
     content = _content()
