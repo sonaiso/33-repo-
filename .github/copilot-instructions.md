@@ -34,6 +34,7 @@ bounded next-safe-step selection.
 - Completed computed-verdict fixture work must not be repeated by future autonomy.
 - PR #106 synchronizes autonomy guidance to the post-PR #106 state and hardens anti-pattern regression guards without adding runtime behavior.
 - PR #110 confirms the autonomy posture is guardrails-only: no runtime, kernel, decision engine, coverage matrix, predicates, translators, computed-verdict runtime, or domain opening.
+- Integration gap baseline is tracked in `data/integration_gap_registry.json` and enforced by `tests/test_integration_gap_registry.py`.
 - The agent posture is `Constitution-bound autonomous auditor`.
 - Autonomy inside audit. No autonomy inside runtime.
 - Rejected runtime examples are anti-patterns, not implementation plans.

@@ -96,6 +96,27 @@ ESSENTIAL_ANTIPATTERN_FIXTURE_IDS = frozenset(
     }
 )
 
+DAL_ONLY_FORBIDDEN_OUTPUT_TERMS = (
+    "root",
+    "weight",
+    "word",
+    "tool",
+    "meaning",
+    "isnad",
+    "ifadah",
+    "hukm",
+    "tanzil",
+)
+
+LAFZI_FORM_FORBIDDEN_OUTPUT_TERMS = (
+    "lexical meaning",
+    "usage",
+    "isnad",
+    "ifadah",
+    "hukm",
+    "tanzil",
+)
+
 
 def test_forbidden_runtime_pattern_fixtures_cover_every_registry_id():
     """trace_ref: docs/12_RUNTIME_EMBARGO_CONSTITUTION.md Embargo Rule."""
@@ -144,3 +165,33 @@ def test_essential_antipattern_fixtures_remain_explicit():
     missing = ESSENTIAL_ANTIPATTERN_FIXTURE_IDS - set(PATTERN_FIXTURES)
     assert not missing
     assert ESSENTIAL_ANTIPATTERN_FIXTURE_IDS <= set(ALLOWED_CONTEXT_NEGATIVE_FIXTURES)
+
+
+def test_dal_only_forbidden_output_pattern_covers_all_declared_output_terms():
+    """trace_ref: docs/12_RUNTIME_EMBARGO_CONSTITUTION.md Explicit Prohibitions."""
+    compiled_by_id = {
+        pattern.id: pattern.matcher
+        for pattern in compile_forbidden_runtime_patterns(
+            load_forbidden_runtime_patterns()
+        )
+    }
+    matcher = compiled_by_id["DAL_ONLY_FORBIDDEN_OUTPUT_CONTRACT_FORBIDDEN"]
+
+    for term in DAL_ONLY_FORBIDDEN_OUTPUT_TERMS:
+        sample = f"DAL_ONLY produces {term}"
+        assert matcher.search(sample), term
+
+
+def test_lafzi_form_forbidden_output_pattern_covers_all_declared_output_terms():
+    """trace_ref: docs/12_RUNTIME_EMBARGO_CONSTITUTION.md Explicit Prohibitions."""
+    compiled_by_id = {
+        pattern.id: pattern.matcher
+        for pattern in compile_forbidden_runtime_patterns(
+            load_forbidden_runtime_patterns()
+        )
+    }
+    matcher = compiled_by_id["LAFZI_FORM_FORBIDDEN_OUTPUT_CONTRACT_FORBIDDEN"]
+
+    for term in LAFZI_FORM_FORBIDDEN_OUTPUT_TERMS:
+        sample = f"LAFZI_FORM outputs {term}"
+        assert matcher.search(sample), term

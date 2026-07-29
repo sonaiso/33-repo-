@@ -74,6 +74,10 @@ This document is the sole output. It provides:
 - explicit blocked items requiring constitutional authorization,
 - and no runtime or locked-layer behavior.
 
+Canonical machine-readable mirror:
+
+- `data/integration_gap_registry.json` (validated by `tests/test_integration_gap_registry.py`)
+
 ## Constitutional Invariants Preserved
 
 - No runtime embargo breach.
