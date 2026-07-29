@@ -59,6 +59,143 @@ This document does not:
 - promote rank above `CANDIDATE`;
 - replace `FailureCode` with FailureAlignment artifacts.
 
+## GTLC Seven-Layer Discipline (Audit Contract Only)
+
+The formal epistemic specification follows a strict seven-layer theory scaffold:
+
+1. `Layer 1 — Axiomatic Layer`
+2. `Layer 2 — Formal Definitions`
+3. `Layer 3 — Mathematical System`
+4. `Layer 4 — Theorems`
+5. `Layer 5 — Falsifiable Hypotheses`
+6. `Layer 6 — Prototype Contract`
+7. `Layer 7 — Experimental Validation Protocol`
+
+Directional dependency rule:
+
+- A lower layer must be logically complete without importing claims from higher layers.
+- A higher layer may depend on a lower layer only through explicit derivation rules.
+- No theorem may be used as an axiom.
+- No experimental result may redefine an axiom.
+
+### Layer 1 — Axiomatic Layer
+
+Operationally minimal axioms for licensed cognition:
+
+- `Axiom 1 (Identity)`: every in-domain entity has a traceable preserved identity.
+- `Axiom 2 (Domain)`: every cognitive operation is performed in a declared domain.
+- `Axiom 3 (License)`: no cross-level transition is valid without license conditions.
+- `Axiom 4 (Evidence)`: no claim rank can be lifted without appropriate evidence.
+- `Axiom 5 (Rank Bound)`: claim rank cannot exceed evidence rank.
+- `Axiom 6 (Trace Effect)`: every valid operation yields traceable transformation effects.
+- `Axiom 7 (Residuals)`: missing license conditions yield residuals instead of final verdicts.
+- `Axiom 8 (Reopenability)`: non-final outcomes remain reopenable under new evidence.
+
+### Layer 2 — Formal Definitions
+
+Audit-only definitions; no judgments are issued here:
+
+- `Identity`: property preserved across licensed transitions.
+- `Domain`: entity/operation space governed by one licensing policy family.
+- `License`: satisfaction relation between transition and required conditions.
+- `Rank`: ordering function over claims by admissible evidence strength.
+- `Trace`: complete record of licensed transformations.
+- `Residual`: unresolved information that blocks epistemic closure without invalidating prior steps.
+
+### Layer 3 — Mathematical System
+
+Core abstract structure:
+
+```text
+𝒞 = <D, S, I, O, L, E, R, T, Δ>
+```
+
+Where:
+
+- `D`: domains.
+- `S`: slots.
+- `I`: identities.
+- `O`: operations.
+- `L`: licensing relations.
+- `E`: evidence set.
+- `R`: rank lattice/order.
+- `T`: trace structure.
+- `Δ`: residual set.
+
+Declared partial operators:
+
+- `Transfer`
+- `Validate`
+- `Close`
+- `Reopen`
+- `Merge`
+- `Review`
+
+Every operator must publish:
+
+- preconditions,
+- postconditions,
+- preserved invariants,
+- named failure conditions through `FailureCode`.
+
+### Layer 4 — Theorems
+
+Derived statements must depend only on Layer 1 + Layer 2 + Layer 3:
+
+- `Identity Preservation Theorem`: licensed transition preserves identity.
+- `Rank Bound Theorem`: result rank cannot exceed required weakest evidence rank.
+- `Trace Completeness Theorem`: valid results admit reconstructable full trace paths.
+- `Residual Theorem`: missing required license condition yields residual output, not final verdict.
+- `Directed Reopen Theorem`: non-final outcomes can be reevaluated without trace loss.
+
+### Layer 5 — Falsifiable Hypotheses
+
+Empirical claims must be stated as falsifiable hypotheses and must not alter axioms:
+
+- `H1`: trace retention improves interpretability against no-trace baselines.
+- `H2`: residual handling reduces unsupported final claims.
+- `H3`: evidence-rank binding reduces confidence inflation.
+- `H4`: reopenability reduces correction latency.
+- `H5`: licensed cognition improves consistency on declared inference tasks.
+
+Each hypothesis record must declare:
+
+- independent variable,
+- dependent variable,
+- measurement method,
+- acceptance/rejection criterion,
+- reproducible protocol.
+
+### Layer 6 — Prototype Contract
+
+Reference prototype is contract-only and non-authoritative:
+
+- `Slot Manager`
+- `Identity Manager`
+- `License Engine`
+- `Evidence Manager`
+- `Rank Manager`
+- `Residual Manager`
+- `Trace Manager`
+- `Revision Engine`
+- `Inference Engine`
+
+This layer defines interfaces and audit contracts only; it does not grant runtime verdict authority.
+
+### Layer 7 — Experimental Validation Protocol
+
+Experimental studies must be reproducible and baseline-comparative.
+Required metric families:
+
+- internal consistency,
+- interpretability,
+- trace completeness,
+- uncertainty signaling quality,
+- revision latency,
+- identity stability across transformations.
+
+Results in this layer may validate or refute hypotheses, but cannot modify Layer 1 axioms directly.
+
 ## Signature and Sorts
 
 Let:
