@@ -1,0 +1,47 @@
+{
+  "trace_ref": "docs/21_LICENSED_INTELLIGIBILITY_CHAIN_CONSTITUTION.md; docs/12_RUNTIME_EMBARGO_CONSTITUTION.md; docs/20_AGENT_AUTONOMY_RUNBOOK.md",
+  "scope": "AUDIT_ONLY_WADAI_LEXICON_INVENTORY",
+  "inventory_status": "AUDIT_SANDBOX_ONLY",
+  "runtime_policy": {
+    "lexicon_lookup_runtime": "EMBARGOED",
+    "binding_kernel": "EMBARGOED",
+    "decision_engine": "EMBARGOED"
+  },
+  "entries": [
+    {
+      "entry_id": "lex-wadai-001",
+      "surface_form": "كتب",
+      "lexical_sense_label": "الكتابة",
+      "source_ref": "docs/21_LICENSED_INTELLIGIBILITY_CHAIN_CONSTITUTION.md#7-s4--lexicalmadlul-المدلول-الوضعي-المعجمي",
+      "status": "candidate_only",
+      "execution_mode": "AUDIT_REFERENCE_ONLY",
+      "forbidden_runtime_use": true
+    },
+    {
+      "entry_id": "lex-wadai-002",
+      "surface_form": "علم",
+      "lexical_sense_label": "المعرفة",
+      "source_ref": "docs/21_LICENSED_INTELLIGIBILITY_CHAIN_CONSTITUTION.md#7-s4--lexicalmadlul-المدلول-الوضعي-المعجمي",
+      "status": "candidate_only",
+      "execution_mode": "AUDIT_REFERENCE_ONLY",
+      "forbidden_runtime_use": true
+    },
+    {
+      "entry_id": "lex-wadai-003",
+      "surface_form": "سلم",
+      "lexical_sense_label": "السلامة",
+      "source_ref": "docs/21_LICENSED_INTELLIGIBILITY_CHAIN_CONSTITUTION.md#7-s4--lexicalmadlul-المدلول-الوضعي-المعجمي",
+      "status": "candidate_only",
+      "execution_mode": "AUDIT_REFERENCE_ONLY",
+      "forbidden_runtime_use": true
+    }
+  ],
+  "forbidden_runtime_artifacts": [
+    "src/taaqqul_slot_geometry/runtime/binding_kernel.py",
+    "src/taaqqul_slot_geometry/runtime/decision_engine.py",
+    "coverage_matrix_v0.1.yaml"
+  ],
+  "registry_test_refs": [
+    "tests/test_wadai_lexicon_inventory_registry.py"
+  ]
+}

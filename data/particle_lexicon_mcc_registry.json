@@ -1,0 +1,195 @@
+{
+  "trace_ref": "docs/21_LICENSED_INTELLIGIBILITY_CHAIN_CONSTITUTION.md; docs/12_RUNTIME_EMBARGO_CONSTITUTION.md; docs/20_AGENT_AUTONOMY_RUNBOOK.md",
+  "scope": "AUDIT_ONLY_PARTICLE_LEXICON_MCC_REGISTRY",
+  "registry_status": "AUDIT_SANDBOX_ONLY",
+  "runtime_policy": {
+    "particle_runtime_resolution": "EMBARGOED",
+    "mcc_runtime_execution": "EMBARGOED",
+    "binding_kernel": "EMBARGOED",
+    "decision_engine": "EMBARGOED"
+  },
+  "particle_lexicon": {
+    "status": "candidate_only",
+    "execution_mode": "AUDIT_REFERENCE_ONLY",
+    "categories": [
+      {
+        "category_id": "3.1",
+        "title_ar": "حروف الجر",
+        "entries": [
+          {"particle": "مِنْ", "meaning": "ابتداء الغاية، التبعيض، البيان", "states": "حرف جر", "evidence": "معجمي"},
+          {"particle": "إِلَى", "meaning": "انتهاء الغاية", "states": "حرف جر", "evidence": "معجمي"},
+          {"particle": "عَنْ", "meaning": "المجاوزة", "states": "حرف جر", "evidence": "معجمي"},
+          {"particle": "عَلَى", "meaning": "الاستعلاء، التمكن", "states": "حرف جر", "evidence": "معجمي"},
+          {"particle": "فِي", "meaning": "الظرفية (الداخلية)", "states": "حرف جر", "evidence": "معجمي"},
+          {"particle": "بِ", "meaning": "الإلصاق، الاستعانة، المصاحبة، السببية", "states": "حرف جر", "evidence": "معجمي"},
+          {"particle": "لِ", "meaning": "الاختصاص، التعليل، الملكية", "states": "حرف جر", "evidence": "معجمي"},
+          {"particle": "رُبَّ", "meaning": "التقليل أو التكثير", "states": "حرف جر (للنكرة)", "evidence": "معجمي"},
+          {"particle": "حَاشَا", "meaning": "الاستثناء", "states": "حرف جر/فعل", "evidence": "معجمي"},
+          {"particle": "خَلَا", "meaning": "الاستثناء", "states": "حرف جر/فعل", "evidence": "معجمي"},
+          {"particle": "عَدَا", "meaning": "الاستثناء", "states": "حرف جر/فعل", "evidence": "معجمي"},
+          {"particle": "مُنْذُ / مُذْ", "meaning": "ابتداء الغاية الزمنية", "states": "حرف جر/ظرف", "evidence": "معجمي"},
+          {"particle": "حَتَّى", "meaning": "انتهاء الغاية", "states": "حرف جر/عطف", "evidence": "معجمي"},
+          {"particle": "وَاو القسم", "meaning": "القسم", "states": "حرف جر", "evidence": "معجمي"},
+          {"particle": "تَاء القسم", "meaning": "القسم", "states": "حرف جر", "evidence": "معجمي"}
+        ]
+      },
+      {
+        "category_id": "3.2",
+        "title_ar": "حروف العطف والنظم",
+        "entries": [
+          {"particle": "وَ", "meaning": "مطلق الجمع", "evidence": "معجمي"},
+          {"particle": "فَ", "meaning": "الترتيب مع التعقيب", "evidence": "معجمي"},
+          {"particle": "ثُمَّ", "meaning": "الترتيب مع التراخي", "evidence": "معجمي"},
+          {"particle": "أَوْ", "meaning": "التخيير", "evidence": "معجمي"},
+          {"particle": "أَمْ", "meaning": "تعليق الحكم بأحد المذكورين في الاستفهام", "evidence": "معجمي"},
+          {"particle": "لَا", "meaning": "النفي (في العطف)", "evidence": "معجمي"},
+          {"particle": "بَلْ", "meaning": "الإضراب", "evidence": "معجمي"},
+          {"particle": "لَكِنْ", "meaning": "الاستدراك", "evidence": "معجمي"},
+          {"particle": "حَتَّى", "meaning": "الغاية أو التعليل (في العطف)", "evidence": "معجمي"}
+        ]
+      },
+      {
+        "category_id": "3.3",
+        "title_ar": "حروف النفي",
+        "entries": [
+          {"particle": "مَا", "meaning": "نفي الحال أو الماضي القريب", "evidence": "معجمي"},
+          {"particle": "لَا", "meaning": "نفي المستقبل (أو نفي الجنس)", "evidence": "معجمي"},
+          {"particle": "لَمْ", "meaning": "نفي الماضي مع قلبه إلى المستقبل", "evidence": "معجمي"},
+          {"particle": "لَمَّا", "meaning": "نفي الماضي مع توقع الوقوع", "evidence": "معجمي"},
+          {"particle": "لَنْ", "meaning": "نفي المستقبل بتأكيد", "evidence": "معجمي"},
+          {"particle": "إِنْ", "meaning": "نفي الحال (المخففة)", "evidence": "معجمي"}
+        ]
+      },
+      {
+        "category_id": "3.4",
+        "title_ar": "حروف الاستفهام",
+        "entries": [
+          {"particle": "هَلْ", "meaning": "استفهام عن الخبر (للتصديق)", "evidence": "معجمي"},
+          {"particle": "أَ", "meaning": "استفهام (للتقرير أو الإنكار أو التعجب)", "evidence": "معجمي"},
+          {"particle": "أَمْ", "meaning": "استفهام تعييني", "evidence": "معجمي"}
+        ]
+      },
+      {
+        "category_id": "3.5",
+        "title_ar": "حروف الشرط",
+        "entries": [
+          {"particle": "إِنْ", "meaning": "الشرط الخام", "evidence": "معجمي"},
+          {"particle": "لَوْ", "meaning": "الشرط الامتناعي", "evidence": "معجمي"},
+          {"particle": "لَوْلَا", "meaning": "الامتناع للوجود", "evidence": "معجمي"},
+          {"particle": "لَوْمَا", "meaning": "الامتناع للوجود (مثل لولا)", "evidence": "معجمي"},
+          {"particle": "إِذْمَا", "meaning": "الشرط مع ظرف الزمان", "evidence": "معجمي"}
+        ]
+      },
+      {
+        "category_id": "3.6",
+        "title_ar": "حروف التنبيه والنداء",
+        "entries": [
+          {"particle": "يَا", "meaning": "نداء البعيد", "evidence": "معجمي"},
+          {"particle": "أَيَا", "meaning": "نداء البعيد", "evidence": "معجمي"},
+          {"particle": "هَيَا", "meaning": "نداء البعيد", "evidence": "معجمي"},
+          {"particle": "أَيْ", "meaning": "نداء القريب", "evidence": "معجمي"},
+          {"particle": "هَمْزَةُ النِّدَاءِ", "meaning": "نداء القريب", "evidence": "معجمي"},
+          {"particle": "وَ", "meaning": "نداء التحسر (الندبة)", "evidence": "معجمي"},
+          {"particle": "هَا", "meaning": "تنبيه المخاطب", "evidence": "معجمي"},
+          {"particle": "أَلَا", "meaning": "تنبيه واستفتاح", "evidence": "معجمي"},
+          {"particle": "أَمَا", "meaning": "تنبيه مع شرط", "evidence": "معجمي"}
+        ]
+      },
+      {
+        "category_id": "3.7",
+        "title_ar": "حروف الجواب",
+        "entries": [
+          {"particle": "نَعَمْ", "meaning": "تصديق الخبر الإيجابي", "evidence": "معجمي"},
+          {"particle": "بَلَى", "meaning": "تصديق الخبر المنفي", "evidence": "معجمي"},
+          {"particle": "أَجَلْ", "meaning": "تصديق الخبر دون نفي", "evidence": "معجمي"},
+          {"particle": "إِي", "meaning": "تحقيق وتوكيد", "evidence": "معجمي"},
+          {"particle": "جَيْرِ", "meaning": "تحقيق وتوكيد", "evidence": "معجمي"}
+        ]
+      },
+      {
+        "category_id": "3.8",
+        "title_ar": "حروف المصدر",
+        "entries": [
+          {"particle": "أَنْ", "meaning": "تأويل الفعل المضارع بمصدر", "evidence": "معجمي"},
+          {"particle": "أَنَّ", "meaning": "تأويل الجملة الاسمية بمصدر", "evidence": "معجمي"},
+          {"particle": "مَا", "meaning": "المصدرية: تأويل الجملة بمصدر", "evidence": "معجمي"}
+        ]
+      },
+      {
+        "category_id": "3.9",
+        "title_ar": "حروف التحضيض والتوقيع",
+        "entries": [
+          {"particle": "لَوْلَا", "meaning": "حث على الفعل", "evidence": "معجمي"},
+          {"particle": "لَوْمَا", "meaning": "حث على الفعل", "evidence": "معجمي"},
+          {"particle": "هَلَّا", "meaning": "حث وحض", "evidence": "معجمي"},
+          {"particle": "أَلَا", "meaning": "حث على الفعل (التحضيض)", "evidence": "معجمي"},
+          {"particle": "قَدْ", "meaning": "تقريب الماضي من الحال أو التحقيق", "evidence": "معجمي"},
+          {"particle": "سَ", "meaning": "استقبال قريب", "evidence": "معجمي"},
+          {"particle": "سَوْفَ", "meaning": "استقبال بعيد", "evidence": "معجمي"}
+        ]
+      },
+      {
+        "category_id": "3.10",
+        "title_ar": "حروف التوكيد والاستدراك",
+        "entries": [
+          {"particle": "إِنَّ", "meaning": "توكيد الجملة الاسمية", "evidence": "معجمي"},
+          {"particle": "أَنَّ", "meaning": "توكيد الجملة الاسمية (المصدرية)", "evidence": "معجمي"},
+          {"particle": "لَكِنَّ", "meaning": "الاستدراك والتوكيد", "evidence": "معجمي"},
+          {"particle": "كَأَنَّ", "meaning": "التشبيه", "evidence": "معجمي"},
+          {"particle": "لَيْتَ", "meaning": "التمني", "evidence": "معجمي"},
+          {"particle": "لَعَلَّ", "meaning": "الترجي أو الإشفاق", "evidence": "معجمي"}
+        ]
+      },
+      {
+        "category_id": "3.11",
+        "title_ar": "حروف الزيادة",
+        "entries": [
+          {"particle": "مَا", "meaning": "الزائدة: بعد إنْ الشرطية أو مع كلما", "evidence": "معجمي"},
+          {"particle": "مِنْ", "meaning": "الزائدة: للتوكيد في النفي", "evidence": "معجمي"},
+          {"particle": "الباء", "meaning": "الزائدة: مع كفى وحسب وغيرها", "evidence": "معجمي"},
+          {"particle": "اللام", "meaning": "الزائدة: في القسم أو في رب", "evidence": "معجمي"}
+        ]
+      }
+    ]
+  },
+  "mcc_contract": {
+    "status": "candidate_only",
+    "execution_mode": "AUDIT_REFERENCE_ONLY",
+    "core_requirements": [
+      {"requirement_id": "mcc-01", "label": "توفر العامل"},
+      {"requirement_id": "mcc-02", "label": "اكتمال الخانات الواجبة"},
+      {"requirement_id": "mcc-03", "label": "الترتيب المرخص"},
+      {"requirement_id": "mcc-04", "label": "المطابقة"},
+      {"requirement_id": "mcc-05", "label": "حفظ الهوية"},
+      {"requirement_id": "mcc-06", "label": "الدليل"},
+      {"requirement_id": "mcc-07", "label": "الرتبة"},
+      {"requirement_id": "mcc-08", "label": "البقايا"},
+      {"requirement_id": "mcc-09", "label": "الأثر"}
+    ],
+    "factor_patterns": [
+      {"factor_type": "فعل متعدٍ", "example": "كَتَبَ", "opens_slots": ["الفاعل", "المفعول به"]},
+      {"factor_type": "فعل لازم", "example": "جَلَسَ", "opens_slots": ["الفاعل"]},
+      {"factor_type": "فعل متعدٍ بحرف جر", "example": "ذَهَبَ إِلَى", "opens_slots": ["الفاعل", "المجرور"]},
+      {"factor_type": "ناسخ (إنَّ وأخواتها)", "example": "إِنَّ", "opens_slots": ["اسم الناسخ", "خبر الناسخ"]},
+      {"factor_type": "ناسخ (كان وأخواتها)", "example": "كَانَ", "opens_slots": ["اسم الناسخ", "خبر الناسخ"]},
+      {"factor_type": "حرف جر", "example": "فِي", "opens_slots": ["المجرور"]},
+      {"factor_type": "حرف عطف", "example": "وَ", "opens_slots": ["المعطوف"]},
+      {"factor_type": "أداة شرط", "example": "إِنْ", "opens_slots": ["فعل الشرط", "جواب الشرط"]}
+    ],
+    "applied_models": [
+      {"model_id": "mcc-model-01", "example_text": "كَتَبَ زَيْدٌ رِسَالَةً"},
+      {"model_id": "mcc-model-02", "example_text": "إِنَّ اللَّهَ غَفُورٌ رَحِيمٌ"},
+      {"model_id": "mcc-model-03", "example_text": "ذَهَبَ مُحَمَّدٌ إِلَى الْمَدْرَسَةِ"},
+      {"model_id": "mcc-model-04", "example_text": "الْكِتَابُ جَدِيدٌ"},
+      {"model_id": "mcc-model-05", "example_text": "إِنْ تَجْتَهِدْ تَنْجَحْ"}
+    ]
+  },
+  "forbidden_runtime_artifacts": [
+    "src/taaqqul_slot_geometry/runtime/binding_kernel.py",
+    "src/taaqqul_slot_geometry/runtime/decision_engine.py",
+    "coverage_matrix_v0.1.yaml"
+  ],
+  "registry_test_refs": [
+    "tests/test_particle_lexicon_mcc_registry.py"
+  ]
+}
