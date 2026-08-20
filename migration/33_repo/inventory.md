@@ -17,7 +17,7 @@ Freeze `33-repo-` as a **Legacy Euclidean Arabic Prototype** and publish an audi
 ## Constitutional Bounds (Restated)
 
 - L0 is closed.
-- L1 is contract/audit bounded.
+- L1 is formally closed; any remaining work is contract/audit bounded.
 - L2 and L3 are locked.
 - Runtime embargo is active.
 - Euclidean Learning remains `AUDIT_SANDBOX_ONLY`.
