@@ -6,6 +6,18 @@
 
 ---
 
+## Repository Status
+
+`33-repo-` is currently maintained as a **Legacy Euclidean Arabic Prototype** for:
+- historical theory traceability,
+- migration/reference corpus,
+- regression/countermodel preservation.
+
+It is not the algebra-first new-core repository baseline.  
+See `migration/33_repo/` for migration inventory, classification, and acceptance criteria.
+
+---
+
 ## الرؤية
 
 بناء نظام يُحلّل اللغة العربية عبر أربع طبقات متسلسلة (L0→L1→L2→L3) بحيث:
@@ -164,6 +176,7 @@ python -m ci.constitutional_guard --source-dir src
 | `docs/16_STRATEGIC_METHODOLOGY.md` | المنهجية الاستراتيجية + KPIs |
 | `docs/19_MORPHOLOGY_GENERATOR_THEOREM.md` | نظريات التوليد الصرفي |
 | `docs/20_WAQF_WASL_BOUNDARY_THEOREM.md` | نظرية الوقف والوصل |
+| `docs/70_LDI_LICENSED_DECISION_INFRASTRUCTURE_CHARTER.md` | ميثاق مسار LDI كمنتج مستقل (Audit-Only) |
 
 ---
 
