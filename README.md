@@ -176,6 +176,7 @@ python -m ci.constitutional_guard --source-dir src
 | `docs/16_STRATEGIC_METHODOLOGY.md` | المنهجية الاستراتيجية + KPIs |
 | `docs/19_MORPHOLOGY_GENERATOR_THEOREM.md` | نظريات التوليد الصرفي |
 | `docs/20_WAQF_WASL_BOUNDARY_THEOREM.md` | نظرية الوقف والوصل |
+| `docs/70_LDI_LICENSED_DECISION_INFRASTRUCTURE_CHARTER.md` | ميثاق مسار LDI كمنتج مستقل (Audit-Only) |
 
 ---
 
